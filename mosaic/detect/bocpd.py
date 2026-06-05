@@ -212,3 +212,78 @@ def events_to_daily_counts(
     weights = [date_weights[d] / max(date_event_count[d], 1) for d in all_dates]
 
     return all_dates, counts, weights
+
+
+if __name__ == "__main__":
+    """
+    Run BOCPD change-point detection on ProMED/WHO text event counts.
+    Reads data/output/promed_events.json → writes data/output/text_alarms.json.
+
+    Usage:
+        python -m mosaic.detect.bocpd
+    """
+    import sys
+    import re
+    from collections import defaultdict
+    from datetime import datetime
+    from mosaic.store import load, save
+
+    logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
+
+    print("[BOCPD] Loading ProMED/WHO events …")
+    data = load("promed_events.json")
+    if not data:
+        print("  ✗ data/output/promed_events.json not found — run: python -m mosaic.ingest.promed")
+        sys.exit(1)
+
+    events = data.get("events", [])
+    print(f"  {len(events)} events loaded")
+
+    # Lightweight pathogen detection (mirrors the Next.js regex in promed/route.ts)
+    PATHOGEN_RE = [
+        (re.compile(r"\bSARS-CoV-2\b|\bCOVID-19\b|\bcoronavirus\b", re.I), "SARS-CoV-2"),
+        (re.compile(r"\bmpox\b|\bmonkeypox\b", re.I),                        "mpox"),
+        (re.compile(r"\bH5N1\b|\bavian influenza\b|\bbird flu\b", re.I),      "H5N1"),
+        (re.compile(r"\bH5\b",                                                re.I), "H5"),
+        (re.compile(r"\binfluenza\b|\bflu\b",                                 re.I), "influenza"),
+        (re.compile(r"\bpoliovirus\b|\bpolio\b",                              re.I), "polio"),
+        (re.compile(r"\bebola\b",                                             re.I), "ebola"),
+        (re.compile(r"\bmarburg\b",                                           re.I), "marburg"),
+        (re.compile(r"\bcholera\b",                                           re.I), "cholera"),
+        (re.compile(r"\bdengue\b",                                            re.I), "dengue"),
+        (re.compile(r"\bmeasles\b",                                           re.I), "measles"),
+        (re.compile(r"\bRSV\b|\brespiratory syncytial\b",                     re.I), "RSV"),
+    ]
+
+    # Bucket events by pathogen and date
+    pathogen_daily: dict[str, dict[str, int]] = defaultdict(lambda: defaultdict(int))
+    for ev in events:
+        text = ev["title"] + " " + ev.get("body", "")[:500]
+        pub_date = ev["published_at"][:10]  # YYYY-MM-DD
+        for pat, name in PATHOGEN_RE:
+            if pat.search(text):
+                pathogen_daily[name][pub_date] += 1
+
+    if not pathogen_daily:
+        print("  ⚠ No pathogens detected in events")
+        save("text_alarms.json", {"alarms": {}, "run_at": datetime.utcnow().isoformat()})
+        sys.exit(0)
+
+    results = {}
+    for pathogen, daily_counts in pathogen_daily.items():
+        sorted_dates = sorted(daily_counts)
+        counts = [daily_counts[d] for d in sorted_dates]
+        if len(counts) < 3:
+            continue
+        bocpd = run_bocpd(counts, mean_run_length=30)
+        results[pathogen] = {
+            "dates": sorted_dates,
+            "counts": counts,
+            "change_point_prob": bocpd.change_point_prob.tolist(),
+            "cum_cp_prob": bocpd.cum_cp_prob.tolist(),
+            "latest_alarm_prob": float(bocpd.cum_cp_prob[-1]),
+        }
+        print(f"  {pathogen:20s}  latest alarm: {bocpd.cum_cp_prob[-1]:.3f}  ({len(counts)} days)")
+
+    save("text_alarms.json", {"alarms": results, "run_at": datetime.utcnow().isoformat()})
+    print(f"\n[BOCPD] Saved {len(results)} pathogen alarm series → data/output/text_alarms.json")

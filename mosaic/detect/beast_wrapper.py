@@ -29,6 +29,7 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
+from datetime import datetime
 
 import numpy as np
 import pandas as pd
@@ -179,3 +180,77 @@ def nwss_df_to_beast_input(
         conc = np.zeros(len(df))
 
     return df["date_end"].tolist(), conc
+
+
+if __name__ == "__main__":
+    """
+    Run BEAST change-point detection on wastewater concentrations.
+    Reads data/output/nwss_*.json → writes data/output/wastewater_alarms.json.
+
+    Usage:
+        python -m mosaic.detect.beast_wrapper
+        python -m mosaic.detect.beast_wrapper --pathogen SARS-CoV-2
+    """
+    import argparse
+    import sys
+    from datetime import datetime
+    from mosaic.store import load, save, list_files
+
+    parser = argparse.ArgumentParser(description="Run BEAST change-point detection on wastewater")
+    parser.add_argument("--pathogens", nargs="+", default=None,
+                        help="Pathogen names (default: all available in data/output/)")
+    args = parser.parse_args()
+
+    logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
+
+    # Discover available NWSS files
+    if args.pathogens:
+        pathogens = args.pathogens
+    else:
+        pathogens = [
+            f.replace("nwss_", "").replace(".json", "")
+            for f in list_files()
+            if f.startswith("nwss_")
+        ]
+
+    if not pathogens:
+        print("  ✗ No nwss_*.json files found — run: python -m mosaic.ingest.nwss")
+        sys.exit(1)
+
+    print(f"[BEAST] Processing {len(pathogens)} pathogen(s): {pathogens}")
+
+    all_results = {}
+    for pathogen in pathogens:
+        data = load(f"nwss_{pathogen.replace(' ', '_').replace('/', '_')}.json")
+        if not data:
+            print(f"  ✗ No data for {pathogen} — skipping")
+            continue
+
+        national = data.get("national", [])
+        if not national:
+            print(f"  ✗ No national aggregate for {pathogen} — skipping")
+            continue
+
+        dates = [d.get("date") for d in national]
+        conc = [d.get("detect_prop_national", 0) for d in national]
+
+        if len(dates) < 5:
+            continue
+
+        result = run_beast(
+            [datetime.fromisoformat(d).date() for d in dates if d],
+            np.array(conc),
+        )
+        latest_cp = float(result.change_point_prob[-1]) if len(result.change_point_prob) > 0 else 0
+
+        all_results[pathogen] = {
+            "dates": [str(d) for d in result.dates],
+            "change_point_prob": result.change_point_prob.tolist(),
+            "trend": result.trend.tolist(),
+            "latest_alarm_prob": latest_cp,
+            "n_changepoints_mean": result.n_changepoints_mean,
+        }
+        print(f"  {pathogen:25s}  latest alarm: {latest_cp:.3f}  ({len(result.dates)} weeks)")
+
+    save("wastewater_alarms.json", {"alarms": all_results, "run_at": datetime.utcnow().isoformat()})
+    print(f"\n[BEAST] Saved {len(all_results)} pathogen alarm series → data/output/wastewater_alarms.json")

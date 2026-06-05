@@ -141,3 +141,54 @@ def snapshots_to_matrix(
                 matrix[t, lineage_idx[lineage]] = freq
 
     return dates, lineages, matrix
+
+
+if __name__ == "__main__":
+    """
+    Fetch Nextstrain lineage frequency data and save to data/output/.
+
+    Usage:
+        python -m mosaic.ingest.nextstrain
+        python -m mosaic.ingest.nextstrain --pathogens sars-cov-2 h5n1 mpox
+    """
+    import argparse
+    import sys
+    from datetime import datetime, timezone
+    from mosaic.store import save
+
+    parser = argparse.ArgumentParser(description="Fetch Nextstrain lineage frequencies")
+    parser.add_argument("--pathogens", nargs="+",
+                        default=list(NEXTSTRAIN_DATASETS.keys()),
+                        help="Pathogen slugs to fetch")
+    args = parser.parse_args()
+
+    logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
+
+    for pathogen in args.pathogens:
+        print(f"\n[Nextstrain] Fetching: {pathogen} …")
+        try:
+            snapshots = fetch_nextstrain_frequencies(pathogen)
+            _, lineages, matrix = snapshots_to_matrix(snapshots)
+
+            payload = {
+                "pathogen": pathogen,
+                "n_pivots": len(snapshots),
+                "n_lineages": len(lineages),
+                "lineages": lineages,
+                "snapshots": [
+                    {
+                        "date": str(s.date),
+                        "frequencies": s.frequencies,
+                        "n_sequences": s.n_sequences,
+                    }
+                    for s in snapshots
+                ],
+                "fetched_at": datetime.now(timezone.utc).isoformat(),
+            }
+            filename = f"nextstrain_{pathogen}.json"
+            save(filename, payload)
+            print(f"  ✓ {len(snapshots)} pivots, {len(lineages)} lineages → data/output/{filename}")
+        except Exception as exc:
+            print(f"  ✗ Failed ({pathogen}): {exc}", file=sys.stderr)
+
+    print("\n[Nextstrain] Done.")

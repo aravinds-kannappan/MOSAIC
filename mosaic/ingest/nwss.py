@@ -18,6 +18,7 @@ from typing import Any
 
 import httpx
 import pandas as pd
+from datetime import timezone
 
 logger = logging.getLogger(__name__)
 
@@ -131,7 +132,7 @@ def get_site_time_series(
     return result
 
 
-def aggregate_national(df: pd.DataFrame) -> pd.DataFrame:
+def aggregate_national(df: pd.DataFrame) -> pd.DataFrame:  # noqa: E302
     """
     Aggregate NWSS data to national level by computing
     population-weighted mean percentile per date.
@@ -154,3 +155,72 @@ def aggregate_national(df: pd.DataFrame) -> pd.DataFrame:
     )
     national["detect_prop_national"] = national["percentile_national"] / 100.0
     return national.sort_values("date_end")
+
+
+if __name__ == "__main__":
+    """
+    Fetch CDC NWSS wastewater data and save to data/output/.
+
+    Usage:
+        python -m mosaic.ingest.nwss
+        python -m mosaic.ingest.nwss --pathogen "Influenza A" --days 180
+    """
+    import argparse
+    import sys
+    from mosaic.store import save
+
+    parser = argparse.ArgumentParser(description="Fetch CDC NWSS wastewater data")
+    parser.add_argument("--pathogens", nargs="+",
+                        default=["SARS-CoV-2", "Influenza A", "RSV", "H5"],
+                        help="Pathogen names to fetch")
+    parser.add_argument("--days", type=int, default=365, help="Days of history")
+    parser.add_argument("--state", default=None, help="Limit to one US state (e.g. CA)")
+    args = parser.parse_args()
+
+    logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
+
+    for pathogen in args.pathogens:
+        print(f"\n[NWSS] Fetching: {pathogen} …")
+        try:
+            df = fetch_nwss(pathogen=pathogen, state=args.state, days_back=args.days)
+            if df.empty:
+                print(f"  ⚠ No data returned for {pathogen}")
+                continue
+
+            national = aggregate_national(df)
+
+            # Build site-level records
+            sites = []
+            if "wwtp_id" in df.columns:
+                for site_id, grp in df.groupby("wwtp_id"):
+                    grp = grp.sort_values("date_end")
+                    latest = grp.iloc[-1]
+                    sites.append({
+                        "wwtp_id": str(site_id),
+                        "state": str(latest.get("wwtp_jurisdiction", "")),
+                        "population_served": int(latest.get("population_served", 0) or 0),
+                        "time_series": [
+                            {
+                                "date": str(r["date_end"]),
+                                "detect_prop_15d": float(r.get("detect_prop_15d") or 0),
+                                "percentile": float(r.get("percentile") or 0),
+                                "ptc_15d": float(r.get("ptc_15d") or 0),
+                            }
+                            for _, r in grp.iterrows()
+                        ],
+                    })
+
+            payload = {
+                "pathogen": pathogen,
+                "n_sites": len(sites),
+                "national": national.to_dict(orient="records"),
+                "sites": sites,
+                "fetched_at": datetime.now(timezone.utc).isoformat(),
+            }
+            filename = f"nwss_{pathogen.replace(' ', '_').replace('/', '_')}.json"
+            save(filename, payload)
+            print(f"  ✓ {len(sites)} sites, {len(national)} national time-points → data/output/{filename}")
+        except Exception as exc:
+            print(f"  ✗ Failed: {exc}", file=sys.stderr)
+
+    print("\n[NWSS] Done.")

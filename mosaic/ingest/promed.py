@@ -147,3 +147,54 @@ def _strip_html(text: str) -> str:
     """Remove HTML tags from text."""
     import re
     return re.sub(r"<[^>]+>", " ", text).strip()
+
+
+if __name__ == "__main__":
+    """
+    Fetch ProMED RSS + WHO DON events and save to data/output/promed_events.json.
+
+    Usage:
+        python -m mosaic.ingest.promed
+        python -m mosaic.ingest.promed --no-who   # ProMED only
+    """
+    import argparse
+    import sys
+    from mosaic.store import save
+
+    parser = argparse.ArgumentParser(description="Fetch ProMED RSS and WHO DON events")
+    parser.add_argument("--no-promed", action="store_true", help="Skip ProMED RSS")
+    parser.add_argument("--no-who", action="store_true", help="Skip WHO DON")
+    args = parser.parse_args()
+
+    logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
+
+    print("[ProMED/WHO] Fetching outbreak reports …")
+    events = list(stream_all_sources(
+        include_promed=not args.no_promed,
+        include_who=not args.no_who,
+    ))
+
+    if not events:
+        print("  ⚠ No events fetched — check network connectivity")
+        import sys; sys.exit(1)
+
+    serialised = [
+        {
+            "source": ev.source,
+            "title": ev.title,
+            "body": ev.body[:2000],
+            "url": ev.url,
+            "published_at": ev.published_at.isoformat(),
+        }
+        for ev in events
+    ]
+
+    payload = {
+        "events": serialised,
+        "n_promed": sum(1 for e in events if e.source == "ProMED"),
+        "n_who": sum(1 for e in events if e.source == "WHO"),
+        "fetched_at": datetime.now(tz=timezone.utc).isoformat(),
+    }
+    save("promed_events.json", payload)
+    print(f"  ✓ {len(events)} events ({payload['n_promed']} ProMED, {payload['n_who']} WHO) → data/output/promed_events.json")
+    print("[ProMED/WHO] Done.")

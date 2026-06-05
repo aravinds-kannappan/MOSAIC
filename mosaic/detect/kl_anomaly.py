@@ -160,3 +160,87 @@ def compute_genomic_anomaly_scores(
         )
 
     return results
+
+
+if __name__ == "__main__":
+    """
+    Compute KL/JSD genomic anomaly scores from stored Nextstrain data.
+    Reads data/output/nextstrain_{pathogen}.json → writes data/output/genomic_alarms.json.
+
+    Usage:
+        python -m mosaic.detect.kl_anomaly
+        python -m mosaic.detect.kl_anomaly --pathogens sars-cov-2 h5n1
+    """
+    import argparse
+    import sys
+    from datetime import datetime, date
+    from mosaic.store import load, save, list_files
+
+    parser = argparse.ArgumentParser(description="Compute KL/JSD genomic anomaly scores")
+    parser.add_argument("--pathogens", nargs="+", default=None,
+                        help="Pathogen slugs (default: all available in data/output/)")
+    args = parser.parse_args()
+
+    logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
+
+    # Discover available Nextstrain files
+    if args.pathogens:
+        pathogens = args.pathogens
+    else:
+        pathogens = [
+            f.replace("nextstrain_", "").replace(".json", "")
+            for f in list_files()
+            if f.startswith("nextstrain_")
+        ]
+
+    if not pathogens:
+        print("  ✗ No nextstrain_*.json files found — run: python -m mosaic.ingest.nextstrain")
+        sys.exit(1)
+
+    print(f"[KL-anomaly] Processing {len(pathogens)} pathogen(s): {pathogens}")
+
+    from mosaic.ingest.nextstrain import LineageSnapshot
+
+    all_results = {}
+    for pathogen in pathogens:
+        data = load(f"nextstrain_{pathogen}.json")
+        if not data:
+            print(f"  ✗ No data for {pathogen} — skipping")
+            continue
+
+        snapshots = [
+            LineageSnapshot(
+                pathogen=pathogen,
+                date=date.fromisoformat(s["date"]),
+                frequencies=s["frequencies"],
+                n_sequences=s.get("n_sequences", 100),
+            )
+            for s in data.get("snapshots", [])
+        ]
+
+        if len(snapshots) < 5:
+            print(f"  ✗ Too few snapshots for {pathogen} ({len(snapshots)}) — skipping")
+            continue
+
+        scores = compute_genomic_anomaly_scores(snapshots)
+        latest = scores[-1] if scores else None
+
+        all_results[pathogen] = {
+            "time_series": [
+                {
+                    "date": str(s.date),
+                    "jsd": s.jsd,
+                    "alarm_prob": s.alarm_prob,
+                    "top_shifting_lineages": s.top_shifting_lineages[:3],
+                }
+                for s in scores
+            ],
+            "latest_jsd": latest.jsd if latest else 0,
+            "latest_alarm_prob": latest.alarm_prob if latest else 0,
+            "latest_date": str(latest.date) if latest else None,
+        }
+        if latest:
+            print(f"  {pathogen:25s}  JSD={latest.jsd:.4f}  alarm={latest.alarm_prob:.3f}")
+
+    save("genomic_alarms.json", {"alarms": all_results, "run_at": datetime.utcnow().isoformat()})
+    print(f"\n[KL-anomaly] Saved {len(all_results)} pathogen scores → data/output/genomic_alarms.json")
