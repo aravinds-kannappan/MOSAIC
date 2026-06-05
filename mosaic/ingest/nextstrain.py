@@ -28,11 +28,11 @@ import numpy as np
 logger = logging.getLogger(__name__)
 
 NEXTSTRAIN_DATASETS: dict[str, str] = {
-    "sars-cov-2": "https://data.nextstrain.org/files/ncov/open/global/6m/tip-frequencies.json",
-    "h5n1": "https://data.nextstrain.org/files/workflows/avian-flu/h5n1/ha/tip-frequencies.json",
-    "mpox": "https://data.nextstrain.org/files/workflows/mpox/clade-iib/tip-frequencies.json",
-    "influenza-h3n2": "https://data.nextstrain.org/files/workflows/seasonal-flu/h3n2/ha/2y/tip-frequencies.json",
-    "influenza-h1n1": "https://data.nextstrain.org/files/workflows/seasonal-flu/h1n1pdm/ha/2y/tip-frequencies.json",
+    "sars-cov-2": "https://nextstrain.org/charon/getDataset?prefix=ncov/open/global/6m",
+    "h5n1": "https://nextstrain.org/charon/getDataset?prefix=avian-flu/h5n1/ha",
+    "mpox": "https://nextstrain.org/charon/getDataset?prefix=mpox/clade-iib",
+    "influenza-h3n2": "https://nextstrain.org/charon/getDataset?prefix=seasonal-flu/h3n2/ha/2y",
+    "influenza-h1n1": "https://nextstrain.org/charon/getDataset?prefix=seasonal-flu/h1n1pdm/ha/2y",
 }
 
 
@@ -76,44 +76,76 @@ def fetch_nextstrain_frequencies(
             f"Unknown pathogen '{pathogen}'. Available: {list(NEXTSTRAIN_DATASETS)}"
         )
 
-    logger.info("Fetching Nextstrain frequencies: %s (%s)", pathogen, url)
+    logger.info("Fetching Nextstrain data: %s (%s)", pathogen, url)
 
     with httpx.Client(timeout=timeout, follow_redirects=True) as client:
         resp = client.get(url, headers={"Accept": "application/json"})
         resp.raise_for_status()
         data = resp.json()
 
-    pivots: list[float] = data.pop("pivots", [])
-    data.pop("generated_by", None)
-    data.pop("counts", None)
+    tree = data.get("tree", {})
+    clade_tips: dict[str, list[str]] = {}
+    tip_dates: dict[str, list[str]] = {}
 
-    if not pivots:
-        raise ValueError("Nextstrain response missing 'pivots' key")
+    def walk_tree(node):
+        """Extract clade labels and dates from tree tips."""
+        if node.get("children"):
+            for child in node["children"]:
+                walk_tree(child)
+        else:
+            clade = node.get("clade", "unknown")
+            date_str = node.get("date", "")
+            if clade not in clade_tips:
+                clade_tips[clade] = []
+            clade_tips[clade].append(date_str)
+            if date_str not in tip_dates:
+                tip_dates[date_str] = []
+            tip_dates[date_str].append(clade)
 
-    # Each remaining key is a clade with a frequency array parallel to pivots
-    clades = {k: v for k, v in data.items() if isinstance(v, list) and len(v) == len(pivots)}
-    logger.info("Nextstrain: %d pivots, %d clades", len(pivots), len(clades))
+    walk_tree(tree)
+    total_tips = sum(len(v) for v in clade_tips.values())
+    logger.info("Nextstrain: %d tips in %d clades", total_tips, len(clade_tips))
 
+    if total_tips == 0:
+        raise ValueError("No tips found in Nextstrain tree")
+
+    # Build 14-day snapshots
     snapshots: list[LineageSnapshot] = []
-    for i, pivot in enumerate(pivots):
-        freq_at_pivot = {clade: float(freqs[i]) for clade, freqs in clades.items()}
-        # Normalise so frequencies sum to 1
-        total = sum(freq_at_pivot.values())
-        if total > 0:
-            freq_at_pivot = {k: v / total for k, v in freq_at_pivot.items()}
+    unique_dates = sorted([d for d in tip_dates.keys() if d and len(d) >= 10])
+    if not unique_dates:
+        raise ValueError("No valid dates in Nextstrain tips")
 
-        # Approximate sequence count from max frequency stability
-        # (Nextstrain doesn't always expose raw counts in tip-frequencies)
-        n_seq = max(10, int(1 / max(freq_at_pivot.values(), default=1.0)))
+    try:
+        first_date = date.fromisoformat(unique_dates[0][:10])
+        last_date = date.fromisoformat(unique_dates[-1][:10])
+    except (ValueError, IndexError):
+        raise ValueError("Cannot parse Nextstrain tip dates")
 
-        snapshots.append(
-            LineageSnapshot(
-                pathogen=pathogen,
-                date=_decimal_year_to_date(pivot),
-                frequencies=freq_at_pivot,
-                n_sequences=n_seq,
+    current = first_date
+    while current <= last_date:
+        window_clades: dict[str, int] = {}
+        for date_str in unique_dates:
+            try:
+                d = date.fromisoformat(date_str[:10])
+                if current <= d < current + timedelta(days=14):
+                    for clade in tip_dates[date_str]:
+                        window_clades[clade] = window_clades.get(clade, 0) + 1
+            except ValueError:
+                continue
+
+        if window_clades:
+            total = sum(window_clades.values())
+            freqs = {c: cnt / total for c, cnt in window_clades.items()}
+            snapshots.append(
+                LineageSnapshot(
+                    pathogen=pathogen,
+                    date=current,
+                    frequencies=freqs,
+                    n_sequences=total,
+                )
             )
-        )
+
+        current = current + timedelta(days=14)
 
     return snapshots
 
