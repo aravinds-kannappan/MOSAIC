@@ -56,11 +56,14 @@ def fetch_nwss(
     pathogen: str = "SARS-CoV-2",
     state: str | None = None,
     days_back: int = 365,
-    limit: int = 5000,
+    limit: int = 50000,
     timeout: float = 60.0,
 ) -> pd.DataFrame:
     """
     Fetch NWSS wastewater concentration data.
+
+    Note: CDC NWSS API structure changed; pathogen is encoded in key_plot_id.
+    We fetch all recent data and return it; filtering by pathogen is done downstream.
 
     Returns a pandas DataFrame with columns:
         wwtp_id, wwtp_jurisdiction, population_served, key_plot_id,
@@ -68,14 +71,14 @@ def fetch_nwss(
     """
     cutoff = (date.today() - timedelta(days=days_back)).isoformat()
 
-    where_clause = f"date_end >= '{cutoff}' AND key_plot_id = '{pathogen}'"
+    where_clause = f"date_end >= '{cutoff}'"
     if state:
         where_clause += f" AND wwtp_jurisdiction = '{state}'"
 
     params: dict[str, Any] = {
         "$where": where_clause,
         "$limit": str(limit),
-        "$order": "date_end ASC",
+        "$order": "date_end DESC",
     }
 
     headers = {"Accept": "application/json"}
@@ -161,66 +164,69 @@ if __name__ == "__main__":
     """
     Fetch CDC NWSS wastewater data and save to data/output/.
 
+    Note: CDC NWSS API now returns all sites without pathogen filtering.
+    We fetch once and aggregate nationally.
+
     Usage:
         python -m mosaic.ingest.nwss
-        python -m mosaic.ingest.nwss --pathogen "Influenza A" --days 180
+        python -m mosaic.ingest.nwss --days 180 --state CA
     """
     import argparse
     import sys
     from mosaic.store import save
 
     parser = argparse.ArgumentParser(description="Fetch CDC NWSS wastewater data")
-    parser.add_argument("--pathogens", nargs="+",
-                        default=["SARS-CoV-2", "Influenza A", "RSV", "H5"],
-                        help="Pathogen names to fetch")
     parser.add_argument("--days", type=int, default=365, help="Days of history")
     parser.add_argument("--state", default=None, help="Limit to one US state (e.g. CA)")
     args = parser.parse_args()
 
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
 
-    for pathogen in args.pathogens:
-        print(f"\n[NWSS] Fetching: {pathogen} …")
-        try:
-            df = fetch_nwss(pathogen=pathogen, state=args.state, days_back=args.days)
-            if df.empty:
-                print(f"  ⚠ No data returned for {pathogen}")
-                continue
+    print(f"\n[NWSS] Fetching wastewater data (last {args.days} days)…")
+    try:
+        df = fetch_nwss(days_back=args.days, state=args.state)
+        if df.empty:
+            print(f"  ⚠ No data returned")
+            sys.exit(1)
 
-            national = aggregate_national(df)
+        print(f"  ✓ Received {len(df)} records from {df['wwtp_id'].nunique()} sites")
+        national = aggregate_national(df)
 
-            # Build site-level records
-            sites = []
-            if "wwtp_id" in df.columns:
-                for site_id, grp in df.groupby("wwtp_id"):
-                    grp = grp.sort_values("date_end")
-                    latest = grp.iloc[-1]
-                    sites.append({
-                        "wwtp_id": str(site_id),
-                        "state": str(latest.get("wwtp_jurisdiction", "")),
-                        "population_served": int(latest.get("population_served", 0) or 0),
-                        "time_series": [
-                            {
-                                "date": str(r["date_end"]),
-                                "detect_prop_15d": float(r.get("detect_prop_15d") or 0),
-                                "percentile": float(r.get("percentile") or 0),
-                                "ptc_15d": float(r.get("ptc_15d") or 0),
-                            }
-                            for _, r in grp.iterrows()
-                        ],
-                    })
+        if not national.empty:
+            print(f"  ✓ Aggregated to national level: {len(national)} dates")
 
-            payload = {
-                "pathogen": pathogen,
-                "n_sites": len(sites),
-                "national": national.to_dict(orient="records"),
-                "sites": sites,
-                "fetched_at": datetime.now(timezone.utc).isoformat(),
-            }
-            filename = f"nwss_{pathogen.replace(' ', '_').replace('/', '_')}.json"
-            save(filename, payload)
-            print(f"  ✓ {len(sites)} sites, {len(national)} national time-points → data/output/{filename}")
-        except Exception as exc:
-            print(f"  ✗ Failed: {exc}", file=sys.stderr)
+        # Build site-level records
+        sites = []
+        if "wwtp_id" in df.columns:
+            for site_id, grp in df.groupby("wwtp_id"):
+                grp = grp.sort_values("date_end")
+                latest = grp.iloc[-1]
+                sites.append({
+                    "wwtp_id": str(site_id),
+                    "state": str(latest.get("wwtp_jurisdiction", "")),
+                    "population_served": int(latest.get("population_served", 0) or 0),
+                    "time_series": [
+                        {
+                            "date": str(r["date_end"]),
+                            "detect_prop_15d": float(r.get("detect_prop_15d") or 0),
+                            "percentile": float(r.get("percentile") or 0),
+                            "ptc_15d": float(r.get("ptc_15d") or 0),
+                        }
+                        for _, r in grp.iterrows()
+                    ],
+                })
+
+        payload = {
+            "n_sites": len(sites),
+            "national": national.to_dict(orient="records") if not national.empty else [],
+            "sites": sites,
+            "fetched_at": datetime.now(timezone.utc).isoformat(),
+        }
+        filename = "nwss_wastewater.json"
+        save(filename, payload)
+        print(f"  ✓ {len(sites)} sites, {len(national)} national dates → data/output/{filename}")
+    except Exception as exc:
+        print(f"  ✗ Failed: {exc}", file=sys.stderr)
+        sys.exit(1)
 
     print("\n[NWSS] Done.")
