@@ -1,0 +1,1 @@
+"""MOSAIC FastAPI REST backend."""

@@ -1,0 +1,162 @@
+"""
+KL-Divergence Genomic Anomaly Scoring — MOSAIC Layer 2c
+
+Computes Jensen-Shannon Divergence between the current 14-day lineage
+frequency distribution and a 90-day rolling baseline, then calibrates
+the score against an empirical null distribution to produce a soft
+alarm probability p_t^gen.
+
+JSD is bounded in [0, log 2] and is defined even when frequencies are
+zero, avoiding the numerical instability of asymmetric KL on sparse
+distributions.
+
+Key output (eq. 11):
+    p_t^gen = P(A ≥ A_t | null) = 1 - F_null(A_t)
+
+where A_t = JSD(p_t || q_t^base) is the genomic anomaly score at time t.
+
+Ref: MOSAIC paper §5.3 (Layer 2c — KL-Divergence Genomic Anomaly Scoring)
+"""
+
+from __future__ import annotations
+
+import logging
+from dataclasses import dataclass
+
+import numpy as np
+from scipy import stats
+
+from mosaic.ingest.nextstrain import LineageSnapshot, snapshots_to_matrix
+
+logger = logging.getLogger(__name__)
+
+
+@dataclass
+class GenomicAnomalyResult:
+    """Genomic anomaly scores for a single time point."""
+    date: object                    # datetime.date
+    jsd: float                      # Jensen-Shannon divergence A_t
+    alarm_prob: float               # p_t^gen = P(A ≥ A_t | null)
+    baseline_days: int              # actual number of days in rolling baseline
+    top_shifting_lineages: list[tuple[str, float]]  # (lineage, Δfreq) sorted by |Δ|
+
+
+def kl_divergence(p: np.ndarray, q: np.ndarray, eps: float = 1e-10) -> float:
+    """
+    KL divergence KL(P || Q) with epsilon smoothing for zero entries.
+    Returns nats (natural log base).
+    """
+    p = np.asarray(p, dtype=float)
+    q = np.asarray(q, dtype=float)
+    q = np.where(q < eps, eps, q)
+    mask = p > 0
+    return float(np.sum(p[mask] * np.log(p[mask] / q[mask])))
+
+
+def js_divergence(p: np.ndarray, q: np.ndarray) -> float:
+    """
+    Jensen-Shannon Divergence JSD(P || Q).
+    Symmetric, bounded [0, log 2], defined for sparse distributions.
+    eq. (10) in MOSAIC paper.
+    """
+    p = np.asarray(p, dtype=float)
+    q = np.asarray(q, dtype=float)
+    m = (p + q) / 2
+    return 0.5 * kl_divergence(p, m) + 0.5 * kl_divergence(q, m)
+
+
+def compute_genomic_anomaly_scores(
+    snapshots: list[LineageSnapshot],
+    baseline_days: int = 90,
+    window_days: int = 14,
+    null_period_fraction: float = 0.25,
+) -> list[GenomicAnomalyResult]:
+    """
+    Compute genomic anomaly scores for a time series of lineage snapshots.
+
+    Args:
+        snapshots:             Ordered list of lineage frequency snapshots
+        baseline_days:         Rolling baseline window (paper: 90 days)
+        window_days:           Current observation window (paper: 14 days)
+        null_period_fraction:  Fraction of series used to estimate null JSD distribution
+
+    Returns:
+        List of GenomicAnomalyResult, one per snapshot after the warm-up period
+    """
+    if len(snapshots) < 2:
+        return []
+
+    dates, lineages, matrix = snapshots_to_matrix(snapshots)
+    T, K = matrix.shape
+    logger.info("Computing genomic anomaly scores: %d timepoints, %d lineages", T, K)
+
+    # Estimate null JSD distribution from early inter-outbreak period
+    null_period = max(5, int(T * null_period_fraction))
+    null_jsds: list[float] = []
+
+    results: list[GenomicAnomalyResult] = []
+
+    for t in range(1, T):
+        current_freq = matrix[t]
+        # Normalise
+        total = current_freq.sum()
+        if total > 0:
+            current_freq = current_freq / total
+        else:
+            current_freq = np.ones(K) / K
+
+        # Rolling baseline: mean of snapshots in [t-baseline_days, t-1]
+        # Approximate by index since we don't always have exact day counts
+        baseline_start = max(0, t - baseline_days)
+        baseline_matrix = matrix[baseline_start:t]
+        if len(baseline_matrix) == 0:
+            continue
+
+        baseline_freq = baseline_matrix.mean(axis=0)
+        btotal = baseline_freq.sum()
+        if btotal > 0:
+            baseline_freq = baseline_freq / btotal
+        else:
+            baseline_freq = np.ones(K) / K
+
+        jsd = js_divergence(current_freq, baseline_freq)
+
+        # Accumulate null distribution
+        if t <= null_period:
+            null_jsds.append(jsd)
+
+        # P(A ≥ jsd | null) = 1 - F_null(jsd)
+        if len(null_jsds) >= 5:
+            # Empirical CDF of null distribution
+            null_arr = np.array(null_jsds)
+            # Fit exponential null model (JSD values are non-negative, roughly exponential)
+            try:
+                loc, scale = stats.expon.fit(null_arr, floc=0)
+                alarm_prob = float(stats.expon.sf(jsd, loc=loc, scale=scale))
+            except Exception:
+                alarm_prob = float(np.mean(null_arr >= jsd))
+        else:
+            # Insufficient null samples — use conservative alarm prob
+            alarm_prob = min(float(jsd / np.log(2)), 1.0)
+
+        alarm_prob = float(np.clip(alarm_prob, 0.0, 1.0))
+
+        # Top shifting lineages: |Δfreq| from previous snapshot
+        prev_freq = matrix[t - 1]
+        ptotal = prev_freq.sum()
+        if ptotal > 0:
+            prev_freq = prev_freq / ptotal
+        deltas = [(lineages[i], float(current_freq[i] - prev_freq[i])) for i in range(K)]
+        deltas.sort(key=lambda x: abs(x[1]), reverse=True)
+
+        results.append(
+            GenomicAnomalyResult(
+                date=dates[t],
+                jsd=jsd,
+                alarm_prob=alarm_prob,
+                baseline_days=t - baseline_start,
+                top_shifting_lineages=deltas[:5],
+            )
+        )
+
+    return results
