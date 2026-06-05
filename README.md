@@ -6,9 +6,6 @@
 
 > **A multi-modal Bayesian disease intelligence system that fuses wastewater, genomic, and news surveillance streams into calibrated posterior estimates of R_t and outbreak probability P(R_t > 1).**
 
-Submitted to **Track 2: Pandemic Early Warning** — AIxBio Hackathon 2026  
-Apart Research / BlueDot Impact / Cambridge Biosecurity Hub
-
 ---
 
 ## The Problem
