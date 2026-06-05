@@ -1,0 +1,90 @@
+version: "3.9"
+
+services:
+  # ── PostgreSQL time-series store ────────────────────────────────────────────
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: mosaic
+      POSTGRES_PASSWORD: mosaic
+      POSTGRES_DB: mosaic
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mosaic"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Ollama LLM server (Llama 3.3 70B) ───────────────────────────────────────
+  # Remove this service if using an external OpenAI-compatible API
+  ollama:
+    image: ollama/ollama:latest
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    # CPU fallback (no GPU): remove the deploy section above
+
+  # ── MOSAIC Python backend (FastAPI) ─────────────────────────────────────────
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://mosaic:mosaic@db:5432/mosaic
+      OLLAMA_BASE_URL: http://ollama:11434
+      OLLAMA_MODEL: llama3.3:70b
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./data:/app/data
+      - ./mosaic:/app/mosaic
+
+  # ── Next.js dashboard ────────────────────────────────────────────────────────
+  web:
+    build:
+      context: ./apps/web
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      NEXT_PUBLIC_MOSAIC_API_URL: http://localhost:8000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+
+  # ── Jupyter notebooks ────────────────────────────────────────────────────────
+  jupyter:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    command: jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root --NotebookApp.token=''
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./notebooks:/app/notebooks
+      - ./data:/app/data
+      - ./mosaic:/app/mosaic
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+  ollama_data:

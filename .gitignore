@@ -1,0 +1,59 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+.venv/
+venv/
+env/
+.env
+*.env.local
+
+# Node
+node_modules/
+.next/
+out/
+.vercel/
+*.tsbuildinfo
+next-env.d.ts
+
+# Data (large files)
+data/historical/**/*.csv
+data/historical/**/*.parquet
+data/historical/**/*.h5
+!data/historical/**/README.md
+
+# Model artifacts
+*.pkl
+*.joblib
+*.pt
+*.safetensors
+mosaic_state.db
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Logs
+*.log
+logs/
+
+# Docker
+.docker/
+
+# Secrets
+*.pem
+*.key
+secrets/
