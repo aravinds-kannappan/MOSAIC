@@ -203,54 +203,39 @@ if __name__ == "__main__":
 
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
 
-    # Discover available NWSS files
-    if args.pathogens:
-        pathogens = args.pathogens
-    else:
-        pathogens = [
-            f.replace("nwss_", "").replace(".json", "")
-            for f in list_files()
-            if f.startswith("nwss_")
-        ]
-
-    if not pathogens:
-        print("  ✗ No nwss_*.json files found — run: python -m mosaic.ingest.nwss")
+    data = load("nwss_wastewater.json")
+    if not data:
+        print("  ✗ No nwss_wastewater.json found — run: python -m mosaic.ingest.nwss")
         sys.exit(1)
 
-    print(f"[BEAST] Processing {len(pathogens)} pathogen(s): {pathogens}")
+    national = data.get("national", [])
+    if not national:
+        print("  ✗ No national aggregate — skipping")
+        sys.exit(1)
 
-    all_results = {}
-    for pathogen in pathogens:
-        data = load(f"nwss_{pathogen.replace(' ', '_').replace('/', '_')}.json")
-        if not data:
-            print(f"  ✗ No data for {pathogen} — skipping")
-            continue
+    print(f"[BEAST] Processing wastewater data with {len(national)} time-points")
 
-        national = data.get("national", [])
-        if not national:
-            print(f"  ✗ No national aggregate for {pathogen} — skipping")
-            continue
+    dates = [d.get("date") for d in national]
+    conc = [d.get("detect_prop_national", 0) for d in national]
 
-        dates = [d.get("date") for d in national]
-        conc = [d.get("detect_prop_national", 0) for d in national]
+    if len(dates) < 5:
+        print("  ✗ Not enough data points for BEAST analysis")
+        sys.exit(1)
 
-        if len(dates) < 5:
-            continue
+    result = run_beast(
+        [datetime.fromisoformat(d).date() for d in dates if d],
+        np.array(conc),
+    )
+    latest_cp = float(result.change_point_prob[-1]) if len(result.change_point_prob) > 0 else 0
 
-        result = run_beast(
-            [datetime.fromisoformat(d).date() for d in dates if d],
-            np.array(conc),
-        )
-        latest_cp = float(result.change_point_prob[-1]) if len(result.change_point_prob) > 0 else 0
+    all_results = {
+        "dates": [str(d) for d in result.dates],
+        "change_point_prob": result.change_point_prob.tolist(),
+        "trend": result.trend.tolist(),
+        "latest_alarm_prob": latest_cp,
+        "n_changepoints_mean": result.n_changepoints_mean,
+    }
+    print(f"  Latest change-point alarm: {latest_cp:.3f}  ({len(result.dates)} weeks)")
 
-        all_results[pathogen] = {
-            "dates": [str(d) for d in result.dates],
-            "change_point_prob": result.change_point_prob.tolist(),
-            "trend": result.trend.tolist(),
-            "latest_alarm_prob": latest_cp,
-            "n_changepoints_mean": result.n_changepoints_mean,
-        }
-        print(f"  {pathogen:25s}  latest alarm: {latest_cp:.3f}  ({len(result.dates)} weeks)")
-
-    save("wastewater_alarms.json", {"alarms": all_results, "run_at": datetime.utcnow().isoformat()})
-    print(f"\n[BEAST] Saved {len(all_results)} pathogen alarm series → data/output/wastewater_alarms.json")
+    save("wastewater_alarms.json", {"national": all_results, "run_at": datetime.utcnow().isoformat()})
+    print(f"\n[BEAST] Saved wastewater alarm series → data/output/wastewater_alarms.json")

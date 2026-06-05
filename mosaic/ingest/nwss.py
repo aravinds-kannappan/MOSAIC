@@ -92,9 +92,25 @@ def fetch_nwss(
         resp.raise_for_status()
         raw = resp.json()
 
-    if not raw:
-        logger.warning("NWSS returned empty response for pathogen=%s", pathogen)
-        return pd.DataFrame()
+    logger.info("NWSS response: %d records", len(raw) if isinstance(raw, list) else 0)
+
+    if not raw or (isinstance(raw, list) and len(raw) == 0):
+        # Try simpler query without date filter to test connectivity
+        logger.warning("NWSS returned empty for date_end >= '%s', trying without date filter", cutoff)
+        try:
+            fallback_params = {
+                "$limit": str(limit),
+                "$order": "date_end DESC",
+            }
+            resp2 = client.get(NWSS_ENDPOINT, params=fallback_params, headers=headers)
+            raw = resp2.json()
+            logger.info("Fallback query: %d records", len(raw) if isinstance(raw, list) else 0)
+            if not raw:
+                logger.warning("NWSS API appears to be empty or unavailable")
+                return pd.DataFrame()
+        except Exception as e:
+            logger.error("Fallback query failed: %s", e)
+            return pd.DataFrame()
 
     df = pd.DataFrame(raw)
     logger.info("NWSS: received %d rows", len(df))
