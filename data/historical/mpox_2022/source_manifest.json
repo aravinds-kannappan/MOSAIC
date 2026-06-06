@@ -1,0 +1,32 @@
+{
+  "fetched_at": "2026-06-06T21:15:23.174511+00:00",
+  "files": {
+    "nextstrain_tip_frequencies.json": {
+      "n_snapshots": 0
+    },
+    "nwss.json": {
+      "records": 0
+    },
+    "who_don.json": {
+      "records": 8
+    }
+  },
+  "label": "Mpox USA emergence",
+  "nextstrain_slug": "mpox",
+  "notes": "NWSS mpox coverage is sparse and may be absent in early 2022; fetches still preserve real API responses.",
+  "nwss_pathogen": "mpox",
+  "pathogen": "mpox",
+  "slug": "mpox_2022",
+  "sources": {
+    "nextstrain": "https://nextstrain.org/charon/getDataset?prefix=mpox/clade-iib",
+    "nwss": "https://data.cdc.gov/resource/2ew6-ywp6.json",
+    "who_don": "https://cms.who.int/api/hubs/diseaseoutbreaknews"
+  },
+  "who_don_date": "2022-05-23",
+  "who_keywords": [
+    "mpox",
+    "monkeypox"
+  ],
+  "window_end": "2022-07-15",
+  "window_start": "2022-04-15"
+}

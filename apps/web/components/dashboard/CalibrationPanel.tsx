@@ -58,7 +58,7 @@ export function CalibrationPanel() {
           <p className="font-medium mb-1">Calibration data not yet available</p>
           <p className="text-muted-foreground">{data?.message ?? "Run the Python pipeline to compute calibration metrics."}</p>
           <code className="block mt-2 bg-muted/50 rounded px-2 py-1 text-[10px] font-mono text-sky-300">
-            python -m mosaic.fusion.calibration --validate
+            python -m mosaic_core.fusion.calibration --validate
           </code>
         </div>
 

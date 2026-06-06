@@ -22,7 +22,7 @@ export const revalidate = 900; // 15-minute cache — ProMED updates ~hourly
 
 const PROMED_RSS = "https://promedmail.org/feed/";
 const WHO_DON_API =
-  "https://www.who.int/api/hubs/cms/en/NewsTypes/DONs?sf_culture=en&$top=50";
+  "https://cms.who.int/api/hubs/diseaseoutbreaknews?$top=50";
 
 interface ExtractedEvent {
   id: string;

@@ -77,10 +77,10 @@ dev = [
 ]
 
 [project.scripts]
-mosaic-ingest = "mosaic.cli:ingest"
-mosaic-detect = "mosaic.cli:detect"
-mosaic-fuse = "mosaic.cli:fuse"
-mosaic-serve = "mosaic.cli:serve"
+mosaic-ingest = "mosaic_core.cli:ingest"
+mosaic-detect = "mosaic_core.cli:detect"
+mosaic-fuse = "mosaic_core.cli:fuse"
+mosaic-serve = "mosaic_core.cli:serve"
 
 [tool.ruff]
 line-length = 100

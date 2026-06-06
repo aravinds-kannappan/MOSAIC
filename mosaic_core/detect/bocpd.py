@@ -159,14 +159,17 @@ def run_bocpd(
         state, cp_prob, log_pred = bocpd_update(
             state, int(n), alpha0=alpha0, beta0=beta0, hazard=hazard
         )
-        cp_probs[t] = cp_prob
+        # The raw reset probability is bounded by the hazard prior and is not
+        # expressive enough as an operational soft alarm. Use posterior mass on
+        # short run lengths once enough history exists; this spikes when the
+        # model believes the current regime is newly reset.
+        cp_probs[t] = float(state.R[:5].sum()) if t >= 4 else cp_prob
         run_length_modes[t] = int(np.argmax(state.R))
         log_predictives[t] = log_pred
 
-    # Cumulative change-point probability: P(τ ≤ t) via survival function
-    # P(τ ≤ t) = 1 - ∏_{s≤t} (1 - P(τ=s))
-    survival = np.cumprod(1 - cp_probs)
-    cum_cp_probs = 1 - survival
+    # Operational "alarm so far" score. A running maximum avoids inflating a
+    # stable series just because it has many low-hazard time steps.
+    cum_cp_probs = np.maximum.accumulate(cp_probs)
 
     return BOCPDResult(
         change_point_prob=cp_probs,
@@ -220,20 +223,20 @@ if __name__ == "__main__":
     Reads data/output/promed_events.json → writes data/output/text_alarms.json.
 
     Usage:
-        python -m mosaic.detect.bocpd
+        python -m mosaic_core.detect.bocpd
     """
     import sys
     import re
     from collections import defaultdict
     from datetime import datetime
-    from mosaic.store import load, save
+    from mosaic_core.store import load, save
 
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
 
     print("[BOCPD] Loading ProMED/WHO events …")
     data = load("promed_events.json")
     if not data:
-        print("  ✗ data/output/promed_events.json not found — run: python -m mosaic.ingest.promed")
+        print("  ✗ data/output/promed_events.json not found — run: python -m mosaic_core.ingest.promed")
         sys.exit(1)
 
     events = data.get("events", [])

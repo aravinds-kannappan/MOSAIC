@@ -5,12 +5,12 @@ from datetime import date, timedelta
 import numpy as np
 import pytest
 
-from mosaic.detect.kl_anomaly import (
+from mosaic_core.detect.kl_anomaly import (
     js_divergence,
     kl_divergence,
     compute_genomic_anomaly_scores,
 )
-from mosaic.ingest.nextstrain import LineageSnapshot
+from mosaic_core.ingest.nextstrain import LineageSnapshot
 
 
 def test_kl_divergence_identical_distributions():

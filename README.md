@@ -58,8 +58,13 @@ Public APIs (live, no auth required)
 
 1. Fork this repository
 2. Import to [vercel.com/new](https://vercel.com/new)
-3. Set **Root Directory** → `apps/web`
-4. Deploy — the dashboard calls CDC NWSS, Nextstrain, ProMED, and WHO DON **live**
+3. Either leave **Root Directory** at the repository root or set it to `apps/web`
+4. Deploy — both Vercel configurations point at the Next.js dashboard correctly
+
+The dashboard calls CDC NWSS, Nextstrain, ProMED, and WHO DON **live**. If the
+Python backend is deployed separately, set `MOSAIC_API_URL` in Vercel to enable
+the full NumPyro fusion API; otherwise the app uses the TypeScript BOCPD, JSD,
+and EpiEstim fallback.
 
 ### Option B — Full Stack with Docker
 
@@ -85,15 +90,15 @@ pip install jax[cpu] jaxlib
 pip install -e ".[dev]"
 
 # Fetch + detect on each stream
-python -m mosaic.ingest.nwss           # CDC wastewater
-python -m mosaic.ingest.nextstrain     # Nextstrain lineages
-python -m mosaic.ingest.promed         # ProMED RSS + WHO DON
+python -m mosaic_core.ingest.nwss           # CDC wastewater
+python -m mosaic_core.ingest.nextstrain     # Nextstrain lineages
+python -m mosaic_core.ingest.promed         # ProMED RSS + WHO DON
 
-python -m mosaic.detect.bocpd          # BOCPD on text counts
-python -m mosaic.detect.kl_anomaly     # JSD genomic anomaly
+python -m mosaic_core.detect.bocpd          # BOCPD on text counts
+python -m mosaic_core.detect.kl_anomaly     # JSD genomic anomaly
 
 # Start API
-uvicorn mosaic.api.main:app --reload --port 8000
+uvicorn mosaic_core.api.main:app --reload --port 8000
 ```
 
 ---
@@ -105,11 +110,11 @@ All public, no authentication required:
 | Source | Endpoint | Cadence |
 |--------|----------|---------|
 | CDC NWSS wastewater | `data.cdc.gov/resource/2ew6-ywp6.json` | Weekly |
-| Nextstrain SARS-CoV-2 | `data.nextstrain.org/files/ncov/open/global/6m/tip-frequencies.json` | Continuous |
-| Nextstrain H5N1 | `data.nextstrain.org/files/workflows/avian-flu/h5n1/ha/tip-frequencies.json` | Continuous |
-| Nextstrain Mpox | `data.nextstrain.org/files/workflows/mpox/clade-iib/tip-frequencies.json` | Continuous |
+| Nextstrain SARS-CoV-2 | `nextstrain.org/charon/getDataset?prefix=ncov/open/global/6m` | Continuous |
+| Nextstrain H5N1 | `nextstrain.org/charon/getDataset?prefix=avian-flu/h5n1/ha` | Continuous |
+| Nextstrain seasonal flu | `nextstrain.org/charon/getDataset?prefix=seasonal-flu/...` | Continuous |
 | ProMED-mail RSS | `promedmail.org/feed/` | ~5–20 posts/day |
-| WHO Disease Outbreak News | `who.int/api/hubs/cms/en/NewsTypes/DONs` | As published |
+| WHO Disease Outbreak News | `cms.who.int/api/hubs/diseaseoutbreaknews` | As published |
 
 ---
 
@@ -176,20 +181,31 @@ MOSAIC is validated on 4 historical outbreaks (§8). Expected lead times vs WHO 
 | H5N1 cattle USA | 2024-03-25 | 8–15 days |
 
 ```bash
-python -m mosaic.fusion.calibration --validate --outbreak all
+python -m mosaic_core.fusion.calibration --validate --outbreak all
 ```
+
+Populate the retrospective source cache with real public data:
+
+```bash
+python scripts/fetch_historical.py --outbreak all
+python scripts/fetch_current_data.py
+```
+
+This writes provenance manifests plus raw WHO DON and CDC NWSS responses and
+compact Nextstrain-derived lineage snapshots. Empty response arrays are retained
+as real source responses and are not replaced with synthetic data.
 
 ---
 
 ## Repository Structure
 
 ```
-mosaic/
+MOSAIC/
 ├── apps/web/                   # Next.js 14 dashboard (→ Vercel)
 │   ├── app/api/v1/             # Server-side routes: nwss, nextstrain, promed, alerts, signals
 │   ├── components/dashboard/   # WorldMap · SignalExplorer · AlertFeed · CalibrationPanel
 │   └── lib/                    # bocpd.ts · kl-divergence.ts · rt-estimation.ts
-├── mosaic/                     # Python package
+├── mosaic_core/                # Python backend package
 │   ├── ingest/                 # promed.py · nwss.py · nextstrain.py
 │   ├── extract/                # llm_extractor.py · schema.py (EpiEvent Pydantic)
 │   ├── detect/                 # bocpd.py · beast_wrapper.py · kl_anomaly.py
@@ -218,6 +234,9 @@ Workflows:
 - **ci.yml** — lint + type-check + pytest + Next.js build on every PR
 - **data-refresh.yml** — daily 06:00 UTC data refresh + Vercel revalidation trigger
 
+The workflows live under `.github/workflows/`. Copies are also kept in
+`github-workflows/` for users who need to push them with the helper script.
+
 ---
 
 ## Contributing
@@ -225,7 +244,7 @@ Workflows:
 See [CONTRIBUTING.md](CONTRIBUTING.md). Key areas:
 
 - **New pathogens** — add serial interval in `rt-estimation.ts` and Nextstrain URL in `nextstrain.py`
-- **New data sources** — implement `mosaic/ingest/<source>.py`
+- **New data sources** — implement `mosaic_core/ingest/<source>.py`
 - **Multilingual extraction** — fine-tune LLM extractor on Arabic/Mandarin/Swahili ProMED archives
 - **METAGENE-1 integration** — k-mer anomaly detection for truly novel pathogens
 

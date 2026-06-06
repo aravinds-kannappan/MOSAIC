@@ -26,7 +26,7 @@ from dataclasses import dataclass
 import numpy as np
 from scipy import stats
 
-from mosaic.ingest.nextstrain import LineageSnapshot, snapshots_to_matrix
+from mosaic_core.ingest.nextstrain import LineageSnapshot, snapshots_to_matrix
 
 logger = logging.getLogger(__name__)
 
@@ -168,13 +168,13 @@ if __name__ == "__main__":
     Reads data/output/nextstrain_{pathogen}.json → writes data/output/genomic_alarms.json.
 
     Usage:
-        python -m mosaic.detect.kl_anomaly
-        python -m mosaic.detect.kl_anomaly --pathogens sars-cov-2 h5n1
+        python -m mosaic_core.detect.kl_anomaly
+        python -m mosaic_core.detect.kl_anomaly --pathogens sars-cov-2 h5n1
     """
     import argparse
     import sys
     from datetime import datetime, date
-    from mosaic.store import load, save, list_files
+    from mosaic_core.store import load, save, list_files
 
     parser = argparse.ArgumentParser(description="Compute KL/JSD genomic anomaly scores")
     parser.add_argument("--pathogens", nargs="+", default=None,
@@ -194,12 +194,12 @@ if __name__ == "__main__":
         ]
 
     if not pathogens:
-        print("  ✗ No nextstrain_*.json files found — run: python -m mosaic.ingest.nextstrain")
+        print("  ✗ No nextstrain_*.json files found — run: python -m mosaic_core.ingest.nextstrain")
         sys.exit(1)
 
     print(f"[KL-anomaly] Processing {len(pathogens)} pathogen(s): {pathogens}")
 
-    from mosaic.ingest.nextstrain import LineageSnapshot
+    from mosaic_core.ingest.nextstrain import LineageSnapshot
 
     all_results = {}
     for pathogen in pathogens:

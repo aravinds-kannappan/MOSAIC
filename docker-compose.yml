@@ -54,7 +54,7 @@ services:
         condition: service_healthy
     volumes:
       - ./data:/app/data
-      - ./mosaic:/app/mosaic
+      - ./mosaic_core:/app/mosaic_core
 
   # ── Next.js dashboard ────────────────────────────────────────────────────────
   web:
@@ -80,7 +80,7 @@ services:
     volumes:
       - ./notebooks:/app/notebooks
       - ./data:/app/data
-      - ./mosaic:/app/mosaic
+      - ./mosaic_core:/app/mosaic_core
     depends_on:
       db:
         condition: service_healthy

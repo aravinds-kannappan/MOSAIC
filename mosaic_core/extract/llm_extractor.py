@@ -26,12 +26,12 @@ from typing import Any
 
 import httpx
 
-from mosaic.extract.schema import (
+from mosaic_core.extract.schema import (
     EpiEvent,
     EXTRACTION_SYSTEM_PROMPT,
     FEW_SHOT_EXAMPLES,
 )
-from mosaic.ingest.promed import RawTextEvent
+from mosaic_core.ingest.promed import RawTextEvent
 
 logger = logging.getLogger(__name__)
 

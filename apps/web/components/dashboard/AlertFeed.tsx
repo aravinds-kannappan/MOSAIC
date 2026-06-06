@@ -151,7 +151,9 @@ export function AlertFeed() {
                   <td className="py-3 pr-4">
                     <div className="flex items-center gap-1.5">
                       {alert.novelty_flag && (
-                        <AlertTriangle className="h-3 w-3 text-amber-400 shrink-0" title="Novel etiology flag" />
+                        <span title="Novel etiology flag">
+                          <AlertTriangle className="h-3 w-3 text-amber-400 shrink-0" aria-hidden="true" />
+                        </span>
                       )}
                       <span className="font-medium text-foreground">{alert.pathogen}</span>
                     </div>

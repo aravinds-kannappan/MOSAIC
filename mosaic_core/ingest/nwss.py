@@ -13,7 +13,7 @@ from __future__ import annotations
 import logging
 import os
 from dataclasses import dataclass
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta, timezone
 from typing import Any
 
 import httpx
@@ -92,25 +92,22 @@ def fetch_nwss(
         resp.raise_for_status()
         raw = resp.json()
 
-    logger.info("NWSS response: %d records", len(raw) if isinstance(raw, list) else 0)
+        logger.info("NWSS response: %d records", len(raw) if isinstance(raw, list) else 0)
 
-    if not raw or (isinstance(raw, list) and len(raw) == 0):
-        # Try simpler query without date filter to test connectivity
-        logger.warning("NWSS returned empty for date_end >= '%s', trying without date filter", cutoff)
-        try:
+        if not raw or (isinstance(raw, list) and len(raw) == 0):
+            # Try a simpler query without date filtering to distinguish no data from API failure.
+            logger.warning("NWSS returned empty for date_end >= '%s', trying without date filter", cutoff)
             fallback_params = {
                 "$limit": str(limit),
                 "$order": "date_end DESC",
             }
             resp2 = client.get(NWSS_ENDPOINT, params=fallback_params, headers=headers)
+            resp2.raise_for_status()
             raw = resp2.json()
             logger.info("Fallback query: %d records", len(raw) if isinstance(raw, list) else 0)
             if not raw:
                 logger.warning("NWSS API appears to be empty or unavailable")
                 return pd.DataFrame()
-        except Exception as e:
-            logger.error("Fallback query failed: %s", e)
-            return pd.DataFrame()
 
     df = pd.DataFrame(raw)
     logger.info("NWSS: received %d rows", len(df))
@@ -184,12 +181,12 @@ if __name__ == "__main__":
     We fetch once and aggregate nationally.
 
     Usage:
-        python -m mosaic.ingest.nwss
-        python -m mosaic.ingest.nwss --days 180 --state CA
+        python -m mosaic_core.ingest.nwss
+        python -m mosaic_core.ingest.nwss --days 180 --state CA
     """
     import argparse
     import sys
-    from mosaic.store import save
+    from mosaic_core.store import save
 
     parser = argparse.ArgumentParser(description="Fetch CDC NWSS wastewater data")
     parser.add_argument("--days", type=int, default=365, help="Days of history")

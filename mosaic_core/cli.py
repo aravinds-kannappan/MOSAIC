@@ -2,15 +2,15 @@
 MOSAIC command-line interface — orchestrates the full pipeline.
 
 Run the complete data fetch + detection pipeline in one command:
-    python -m mosaic.cli run-all
+    python -m mosaic_core.cli run-all
 
 Or individual steps:
-    python -m mosaic.cli ingest-nwss
-    python -m mosaic.cli ingest-nextstrain
-    python -m mosaic.cli ingest-promed
-    python -m mosaic.cli detect-bocpd
-    python -m mosaic.cli detect-beast
-    python -m mosaic.cli detect-kl-anomaly
+    python -m mosaic_core.cli ingest-nwss
+    python -m mosaic_core.cli ingest-nextstrain
+    python -m mosaic_core.cli ingest-promed
+    python -m mosaic_core.cli detect-bocpd
+    python -m mosaic_core.cli detect-beast
+    python -m mosaic_core.cli detect-kl-anomaly
 """
 
 from __future__ import annotations
@@ -28,7 +28,7 @@ def run_ingest_nwss() -> bool:
     print("\n[1/6] CDC NWSS Wastewater…")
     try:
         import subprocess
-        result = subprocess.run([sys.executable, "-m", "mosaic.ingest.nwss"], check=False)
+        result = subprocess.run([sys.executable, "-m", "mosaic_core.ingest.nwss"], check=False)
         return result.returncode == 0
     except Exception as e:
         logger.error("NWSS ingest failed: %s", e)
@@ -40,7 +40,7 @@ def run_ingest_nextstrain() -> bool:
     print("\n[2/6] Nextstrain Genomics…")
     try:
         import subprocess
-        result = subprocess.run([sys.executable, "-m", "mosaic.ingest.nextstrain"], check=False)
+        result = subprocess.run([sys.executable, "-m", "mosaic_core.ingest.nextstrain"], check=False)
         return result.returncode == 0
     except Exception as e:
         logger.error("Nextstrain ingest failed: %s", e)
@@ -52,7 +52,7 @@ def run_ingest_promed() -> bool:
     print("\n[3/6] ProMED-mail RSS + WHO DON…")
     try:
         import subprocess
-        result = subprocess.run([sys.executable, "-m", "mosaic.ingest.promed"], check=False)
+        result = subprocess.run([sys.executable, "-m", "mosaic_core.ingest.promed"], check=False)
         return result.returncode == 0
     except Exception as e:
         logger.error("ProMED ingest failed: %s", e)
@@ -64,7 +64,7 @@ def run_detect_bocpd() -> bool:
     print("\n[4/6] BOCPD (text change-points)…")
     try:
         import subprocess
-        result = subprocess.run([sys.executable, "-m", "mosaic.detect.bocpd"], check=False)
+        result = subprocess.run([sys.executable, "-m", "mosaic_core.detect.bocpd"], check=False)
         return result.returncode == 0
     except Exception as e:
         logger.error("BOCPD detection failed: %s", e)
@@ -76,7 +76,7 @@ def run_detect_beast() -> bool:
     print("\n[5/6] BEAST (wastewater change-points)…")
     try:
         import subprocess
-        result = subprocess.run([sys.executable, "-m", "mosaic.detect.beast_wrapper"], check=False)
+        result = subprocess.run([sys.executable, "-m", "mosaic_core.detect.beast_wrapper"], check=False)
         return result.returncode == 0
     except Exception as e:
         logger.error("BEAST detection failed: %s", e)
@@ -88,7 +88,7 @@ def run_detect_kl_anomaly() -> bool:
     print("\n[6/6] KL-divergence (genomic anomalies)…")
     try:
         import subprocess
-        result = subprocess.run([sys.executable, "-m", "mosaic.detect.kl_anomaly"], check=False)
+        result = subprocess.run([sys.executable, "-m", "mosaic_core.detect.kl_anomaly"], check=False)
         return result.returncode == 0
     except Exception as e:
         logger.error("KL-anomaly detection failed: %s", e)
@@ -135,10 +135,10 @@ if __name__ == "__main__":
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  python -m mosaic.cli run-all                    # Full pipeline
-  python -m mosaic.cli ingest-nwss                # Just CDC NWSS fetch
-  python -m mosaic.cli ingest-nextstrain          # Just Nextstrain fetch
-  python -m mosaic.cli detect-bocpd               # Just BOCPD detection
+  python -m mosaic_core.cli run-all                    # Full pipeline
+  python -m mosaic_core.cli ingest-nwss                # Just CDC NWSS fetch
+  python -m mosaic_core.cli ingest-nextstrain          # Just Nextstrain fetch
+  python -m mosaic_core.cli detect-bocpd               # Just BOCPD detection
         """,
     )
 

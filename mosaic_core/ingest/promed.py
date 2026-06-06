@@ -3,7 +3,7 @@ ProMED-mail RSS + WHO Disease Outbreak News ingestion client.
 
 Data sources:
   - ProMED RSS:  https://promedmail.org/feed/            (no auth)
-  - WHO DON API: https://www.who.int/api/hubs/cms/en/NewsTypes/DONs  (no auth)
+  - WHO DON API: https://cms.who.int/api/hubs/diseaseoutbreaknews  (no auth)
 
 Ref: MOSAIC paper §4.1 (Layer 1 — LLM Signal Extractor sources)
 """
@@ -22,8 +22,8 @@ logger = logging.getLogger(__name__)
 
 PROMED_RSS_URL = "https://promedmail.org/feed/"
 WHO_DON_API_URL = (
-    "https://www.who.int/api/hubs/cms/en/NewsTypes/DONs"
-    "?sf_culture=en&$top=100"
+    "https://cms.who.int/api/hubs/diseaseoutbreaknews"
+    "?$top=100"
 )
 
 
@@ -93,7 +93,7 @@ def fetch_who_don(timeout: float = 30.0) -> list[RawTextEvent]:
         # WHO CMS API field names (may vary by version)
         title = item.get("Title") or item.get("title") or ""
         body = item.get("Summary") or item.get("summary") or title
-        url_path = item.get("Url") or item.get("url") or ""
+        url_path = item.get("ItemDefaultUrl") or item.get("Url") or item.get("url") or ""
         url = f"https://www.who.int{url_path}" if url_path.startswith("/") else url_path
 
         pub_str = item.get("PublicationDateAndTime") or item.get("DatePublished") or ""
@@ -154,12 +154,12 @@ if __name__ == "__main__":
     Fetch ProMED RSS + WHO DON events and save to data/output/promed_events.json.
 
     Usage:
-        python -m mosaic.ingest.promed
-        python -m mosaic.ingest.promed --no-who   # ProMED only
+        python -m mosaic_core.ingest.promed
+        python -m mosaic_core.ingest.promed --no-who   # ProMED only
     """
     import argparse
     import sys
-    from mosaic.store import save
+    from mosaic_core.store import save
 
     parser = argparse.ArgumentParser(description="Fetch ProMED RSS and WHO DON events")
     parser.add_argument("--no-promed", action="store_true", help="Skip ProMED RSS")

@@ -1,0 +1,33 @@
+{
+  "fetched_at": "2026-06-06T21:15:21.377391+00:00",
+  "files": {
+    "nextstrain_tip_frequencies.json": {
+      "n_snapshots": 156
+    },
+    "nwss.json": {
+      "records": 0
+    },
+    "who_don.json": {
+      "records": 0
+    }
+  },
+  "label": "SARS-CoV-2 Omicron emergence",
+  "nextstrain_slug": "sars-cov-2",
+  "notes": "Nextstrain public 6-month tip frequencies are current-only; store provenance for replay code to select available pivots.",
+  "nwss_pathogen": "SARS-CoV-2",
+  "pathogen": "SARS-CoV-2",
+  "slug": "omicron_2021",
+  "sources": {
+    "nextstrain": "https://nextstrain.org/charon/getDataset?prefix=ncov/open/global/6m",
+    "nwss": "https://data.cdc.gov/resource/2ew6-ywp6.json",
+    "who_don": "https://cms.who.int/api/hubs/diseaseoutbreaknews"
+  },
+  "who_don_date": "2021-11-26",
+  "who_keywords": [
+    "omicron",
+    "B.1.1.529",
+    "SARS-CoV-2"
+  ],
+  "window_end": "2021-12-31",
+  "window_start": "2021-10-01"
+}

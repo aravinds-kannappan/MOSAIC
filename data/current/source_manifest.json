@@ -1,0 +1,30 @@
+{
+  "fetched_at": "2026-06-06T21:23:20.764383+00:00",
+  "files": {
+    "nextstrain_lineage_snapshots.json": {
+      "h5n1": {
+        "n_lineages": 1,
+        "n_snapshots": 64
+      },
+      "influenza-h1n1": {
+        "n_lineages": 8,
+        "n_snapshots": 117
+      },
+      "influenza-h3n2": {
+        "n_lineages": 17,
+        "n_snapshots": 113
+      },
+      "sars-cov-2": {
+        "n_lineages": 664,
+        "n_snapshots": 156
+      }
+    },
+    "nwss_latest.json": {
+      "records": 5000
+    },
+    "who_don_latest.json": {
+      "records": 100
+    }
+  },
+  "note": "Current public data cache; no synthetic records."
+}

@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from mosaic.fusion.calibration import (
+from mosaic_core.fusion.calibration import (
     reliability_diagram,
     crps,
     weighted_interval_score,

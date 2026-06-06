@@ -1,0 +1,33 @@
+{
+  "fetched_at": "2026-06-06T21:15:27.476865+00:00",
+  "files": {
+    "nextstrain_tip_frequencies.json": {
+      "n_snapshots": 64
+    },
+    "nwss.json": {
+      "records": 0
+    },
+    "who_don.json": {
+      "records": 14
+    }
+  },
+  "label": "H5N1 cattle USA",
+  "nextstrain_slug": "h5n1",
+  "notes": "Uses public A/H5 Nextstrain frequencies and CDC NWSS H5 rows when available.",
+  "nwss_pathogen": "H5",
+  "pathogen": "H5N1",
+  "slug": "h5n1_2024",
+  "sources": {
+    "nextstrain": "https://nextstrain.org/charon/getDataset?prefix=avian-flu/h5n1/ha",
+    "nwss": "https://data.cdc.gov/resource/2ew6-ywp6.json",
+    "who_don": "https://cms.who.int/api/hubs/diseaseoutbreaknews"
+  },
+  "who_don_date": "2024-03-25",
+  "who_keywords": [
+    "H5N1",
+    "avian influenza",
+    "cattle"
+  ],
+  "window_end": "2024-05-31",
+  "window_start": "2024-02-01"
+}

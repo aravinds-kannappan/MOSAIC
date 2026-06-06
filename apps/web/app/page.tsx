@@ -6,7 +6,7 @@ import { Header } from "@/components/dashboard/Header";
 import { AlertFeed } from "@/components/dashboard/AlertFeed";
 import { SignalExplorer } from "@/components/dashboard/SignalExplorer";
 import { CalibrationPanel } from "@/components/dashboard/CalibrationPanel";
-import { Activity, Map, LineChart, Table2, BarChart3, Info } from "lucide-react";
+import { Activity, Map as MapIcon, LineChart, Table2, BarChart3, Info } from "lucide-react";
 import type { MapDataPoint } from "@/lib/types";
 
 // WorldMap uses react-simple-maps (SVG/D3) — must be client-only
@@ -16,7 +16,11 @@ const WorldMap = dynamic(
 );
 
 interface AlertsMeta {
-  streamStatus?: Record<string, "ok" | "error" | "loading">;
+  streamStatus?: {
+    text: "ok" | "error" | "loading";
+    wastewater: "ok" | "error" | "loading";
+    genomic: "ok" | "error" | "loading";
+  };
   fetchedAt?: string;
 }
 
@@ -73,7 +77,7 @@ export default function DashboardPage() {
   }, [loadMapData]);
 
   const tabs = [
-    { id: "map", label: "World Map", icon: Map },
+    { id: "map", label: "World Map", icon: MapIcon },
     { id: "signals", label: "Signal Explorer", icon: LineChart },
     { id: "alerts", label: "Alert Feed", icon: Table2 },
     { id: "calibration", label: "Calibration", icon: BarChart3 },
@@ -82,7 +86,7 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Header
-        streamStatus={alertsMeta.streamStatus as AlertsMeta["streamStatus"]}
+        streamStatus={alertsMeta.streamStatus}
         lastUpdated={alertsMeta.fetchedAt}
         onRefresh={handleRefresh}
         isRefreshing={isRefreshing}

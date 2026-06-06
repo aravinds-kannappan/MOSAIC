@@ -4,8 +4,8 @@ from datetime import date, timezone, datetime
 
 import pytest
 
-from mosaic.extract.schema import EpiEvent
-from mosaic.ingest.promed import _strip_html
+from mosaic_core.extract.schema import EpiEvent
+from mosaic_core.ingest.promed import _strip_html
 
 
 def test_epi_event_quality_weight_range():

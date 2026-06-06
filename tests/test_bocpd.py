@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from mosaic.detect.bocpd import run_bocpd, bocpd_update, BOCPDState
+from mosaic_core.detect.bocpd import run_bocpd, bocpd_update, BOCPDState
 
 
 def test_bocpd_returns_correct_shape():

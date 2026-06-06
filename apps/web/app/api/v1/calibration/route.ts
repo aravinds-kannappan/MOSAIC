@@ -22,7 +22,7 @@ export const revalidate = 86400; // Calibration data updates daily
 
 /** Retrospective validation results from the Python pipeline.
  *  These are real computed values from running MOSAIC on historical data.
- *  Update this file by running: python -m mosaic.fusion.calibration --validate
+ *  Update this file by running: python -m mosaic_core.fusion.calibration --validate
  */
 const VALIDATION_RESULTS_PATH = process.env.CALIBRATION_RESULTS_PATH ?? null;
 
@@ -67,7 +67,7 @@ export async function GET() {
     status: "pending",
     message:
       "Run retrospective validation to populate calibration data: " +
-      "`python -m mosaic.fusion.calibration --validate` or deploy the Python backend.",
+      "`python -m mosaic_core.fusion.calibration --validate` or deploy the Python backend.",
     validation_outbreaks: [
       { name: "SARS-CoV-2 Omicron", date: "2021-11-26", who_don: "2021-11-26" },
       { name: "Mpox USA", date: "2022-05-23", who_don: "2022-05-23" },

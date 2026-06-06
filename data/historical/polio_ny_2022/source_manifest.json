@@ -1,0 +1,30 @@
+{
+  "fetched_at": "2026-06-06T21:15:26.598880+00:00",
+  "files": {
+    "nwss.json": {
+      "records": 0
+    },
+    "who_don.json": {
+      "records": 8
+    }
+  },
+  "label": "Poliovirus New York detection",
+  "nextstrain_slug": null,
+  "notes": "Public Nextstrain poliovirus lineage frequencies are not available in the same tip-frequency format.",
+  "nwss_pathogen": "poliovirus",
+  "pathogen": "poliovirus",
+  "slug": "polio_ny_2022",
+  "sources": {
+    "nextstrain": null,
+    "nwss": "https://data.cdc.gov/resource/2ew6-ywp6.json",
+    "who_don": "https://cms.who.int/api/hubs/diseaseoutbreaknews"
+  },
+  "who_don_date": "2022-07-21",
+  "who_keywords": [
+    "polio",
+    "poliovirus",
+    "New York"
+  ],
+  "window_end": "2022-08-31",
+  "window_start": "2022-06-01"
+}

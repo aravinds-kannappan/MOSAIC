@@ -5,11 +5,10 @@ Fetches lineage frequency distributions from the Nextstrain open data API.
 Data is updated continuously as new sequences are deposited.
 
 Data sources:
-  - SARS-CoV-2: https://data.nextstrain.org/files/ncov/open/global/6m/tip-frequencies.json
-  - H5N1:       https://data.nextstrain.org/files/workflows/avian-flu/h5n1/ha/tip-frequencies.json
-  - Mpox:       https://data.nextstrain.org/files/workflows/mpox/clade-iib/tip-frequencies.json
-  - Flu H3N2:   https://data.nextstrain.org/files/workflows/seasonal-flu/h3n2/ha/2y/tip-frequencies.json
-  - Flu H1N1:   https://data.nextstrain.org/files/workflows/seasonal-flu/h1n1pdm/ha/2y/tip-frequencies.json
+  - SARS-CoV-2: https://nextstrain.org/charon/getDataset?prefix=ncov/open/global/6m
+  - H5N1:       https://nextstrain.org/charon/getDataset?prefix=avian-flu/h5n1/ha
+  - Flu H3N2:   https://nextstrain.org/charon/getDataset?prefix=seasonal-flu/h3n2/ha/2y
+  - Flu H1N1:   https://nextstrain.org/charon/getDataset?prefix=seasonal-flu/h1n1pdm/ha/2y
 
 Ref: MOSAIC paper §5.3 (Layer 2c — KL-Divergence Genomic Anomaly Scoring)
      Hadfield et al. (2018) Bioinformatics 34(23), 4121–4123
@@ -61,13 +60,9 @@ def fetch_nextstrain_frequencies(
     Fetch tip-frequency JSON from Nextstrain and return a list of
     LineageSnapshot objects, one per pivot timepoint.
 
-    Nextstrain tip-frequencies.json format:
-    {
-      "pivots": [2021.5, 2021.6, ...],    # decimal years
-      "generated_by": {...},
-      "<clade_name>": [f_1, f_2, ...],    # frequency at each pivot
-      ...
-    }
+    Nextstrain Charon dataset format provides an Auspice tree. We extract tip
+    dates and clade labels, then aggregate them into rolling 14-day lineage
+    frequency snapshots for the JSD anomaly detector.
     """
     pathogen = pathogen.lower()
     url = NEXTSTRAIN_DATASETS.get(pathogen)
@@ -180,13 +175,13 @@ if __name__ == "__main__":
     Fetch Nextstrain lineage frequency data and save to data/output/.
 
     Usage:
-        python -m mosaic.ingest.nextstrain
-        python -m mosaic.ingest.nextstrain --pathogens sars-cov-2 h5n1 mpox
+        python -m mosaic_core.ingest.nextstrain
+        python -m mosaic_core.ingest.nextstrain --pathogens sars-cov-2 h5n1 mpox
     """
     import argparse
     import sys
     from datetime import datetime, timezone
-    from mosaic.store import save
+    from mosaic_core.store import save
 
     parser = argparse.ArgumentParser(description="Fetch Nextstrain lineage frequencies")
     parser.add_argument("--pathogens", nargs="+",

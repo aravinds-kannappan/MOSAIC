@@ -119,7 +119,7 @@ def _run_bocpd_fallback(dates, concentrations: np.ndarray) -> BEASTResult:
     Python-native Gaussian-Normal conjugate BOCPD as BEAST fallback.
     Uses Normal-Normal update: C_t | μ,σ² ~ N(μ, σ²), μ ~ N(μ_0, τ_0²).
     """
-    from mosaic.detect.bocpd import bocpd_update, BOCPDState
+    from mosaic_core.detect.bocpd import bocpd_update, BOCPDState
     import numpy as np
 
     T = len(concentrations)
@@ -131,7 +131,7 @@ def _run_bocpd_fallback(dates, concentrations: np.ndarray) -> BEASTResult:
         scaled = np.zeros(T, dtype=int)
 
     # Reuse Poisson-Gamma BOCPD as approximation
-    from mosaic.detect.bocpd import run_bocpd, BOCPDResult
+    from mosaic_core.detect.bocpd import run_bocpd, BOCPDResult
     bocpd_result: BOCPDResult = run_bocpd(scaled.tolist(), mean_run_length=12)
 
     # Detrend: simple linear regression for trend component
@@ -188,13 +188,13 @@ if __name__ == "__main__":
     Reads data/output/nwss_*.json → writes data/output/wastewater_alarms.json.
 
     Usage:
-        python -m mosaic.detect.beast_wrapper
-        python -m mosaic.detect.beast_wrapper --pathogen SARS-CoV-2
+        python -m mosaic_core.detect.beast_wrapper
+        python -m mosaic_core.detect.beast_wrapper --pathogen SARS-CoV-2
     """
     import argparse
     import sys
     from datetime import datetime
-    from mosaic.store import load, save, list_files
+    from mosaic_core.store import load, save, list_files
 
     parser = argparse.ArgumentParser(description="Run BEAST change-point detection on wastewater")
     parser.add_argument("--pathogens", nargs="+", default=None,
@@ -205,7 +205,7 @@ if __name__ == "__main__":
 
     data = load("nwss_wastewater.json")
     if not data:
-        print("  ✗ No nwss_wastewater.json found — run: python -m mosaic.ingest.nwss")
+        print("  ✗ No nwss_wastewater.json found — run: python -m mosaic_core.ingest.nwss")
         sys.exit(1)
 
     national = data.get("national", [])

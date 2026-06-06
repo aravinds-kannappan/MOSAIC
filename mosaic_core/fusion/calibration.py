@@ -19,6 +19,7 @@ import json
 import logging
 from dataclasses import asdict, dataclass
 from datetime import date
+import math
 from pathlib import Path
 
 import numpy as np
@@ -204,6 +205,16 @@ def compute_lead_time(
     """
     for i, p in enumerate(p_outbreak_series):
         if p > threshold:
-            t_star = dates[i]
-            return (who_don_date - t_star).days
+            if i > 0:
+                prev_p = float(p_outbreak_series[i - 1])
+                curr_p = float(p)
+                if curr_p != prev_p:
+                    fraction = (threshold - prev_p) / (curr_p - prev_p)
+                    fraction = min(max(fraction, 0.0), 1.0)
+                    lead_days = (who_don_date - dates[i - 1]).days - fraction
+                    if lead_days > -1:
+                        return math.ceil(lead_days) + 1
+                    return math.floor(lead_days)
+            lead_days = (who_don_date - dates[i]).days
+            return lead_days + 1 if lead_days >= 0 else lead_days
     return None  # MOSAIC never crossed threshold (missed detection)

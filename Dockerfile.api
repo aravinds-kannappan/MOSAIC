@@ -10,9 +10,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY pyproject.toml .
 RUN pip install --no-cache-dir -e ".[dev]"
 
-COPY mosaic/ ./mosaic/
+COPY mosaic_core/ ./mosaic_core/
 COPY data/ ./data/
 
 EXPOSE 8000
 
-CMD ["uvicorn", "mosaic.api.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+CMD ["uvicorn", "mosaic_core.api.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]

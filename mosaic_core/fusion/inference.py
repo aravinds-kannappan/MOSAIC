@@ -28,7 +28,7 @@ import numpyro.distributions as dist
 from jax import random
 from numpyro.infer import MCMC, NUTS, SVI, Trace_ELBO, autoguide
 
-from mosaic.fusion.model import mosaic_model
+from mosaic_core.fusion.model import mosaic_model
 
 logger = logging.getLogger(__name__)
 

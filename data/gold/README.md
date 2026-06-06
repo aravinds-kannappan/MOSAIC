@@ -34,8 +34,8 @@ Download instructions:
 ## Running the benchmark
 Once the corpus files are in place:
 ```bash
-python -m mosaic.extract.benchmark --corpus consoli
-python -m mosaic.extract.benchmark --corpus eventepi
+python -m mosaic_core.extract.benchmark --corpus consoli
+python -m mosaic_core.extract.benchmark --corpus eventepi
 ```
 
 This produces F1, ECE, and H_count metrics per field as described in the paper.

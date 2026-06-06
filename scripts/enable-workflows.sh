@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
-# Enable GitHub Actions workflows (requires 'workflow' scope on your GitHub token).
-# Run once after cloning:
-#   gh auth refresh -h github.com -s workflow
-#   bash scripts/enable-workflows.sh
+# Enable GitHub Actions workflows in repositories where workflows were not
+# committed under .github/workflows yet.
 
 set -e
 
 REPO="aravinds-kannappan/MOSAIC"
+WORKFLOW_DIR=".github/workflows"
 
 push_workflow() {
   local file="$1"
   local name=$(basename "$file")
-  local b64=$(python3 -c "import base64,sys; print(base64.b64encode(open('$file','rb').read()).decode())")
+  local b64
+  b64=$(python3 -c "import base64; print(base64.b64encode(open('$file','rb').read()).decode())")
 
   # Check if file exists to get SHA
   local sha
@@ -32,7 +32,12 @@ push_workflow() {
   echo "  ✓ Pushed .github/workflows/$name"
 }
 
+if [ ! -d "$WORKFLOW_DIR" ]; then
+  echo "Missing $WORKFLOW_DIR; copy github-workflows/ there first."
+  exit 1
+fi
+
 echo "Pushing GitHub Actions workflows..."
-push_workflow ".github/workflows/ci.yml"
-push_workflow ".github/workflows/data-refresh.yml"
+push_workflow "$WORKFLOW_DIR/ci.yml"
+push_workflow "$WORKFLOW_DIR/data-refresh.yml"
 echo "Done — GitHub Actions are now enabled."

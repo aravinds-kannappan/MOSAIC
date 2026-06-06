@@ -25,7 +25,6 @@ jobs:
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          # Install without GPU JAX for CI speed
           pip install jax[cpu] jaxlib
           pip install -e ".[dev]"
 
@@ -73,5 +72,4 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          # Disable external API calls during build
-          NEXT_PUBLIC_MOSAIC_API_URL: ""
+          MOSAIC_API_URL: ""

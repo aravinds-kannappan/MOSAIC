@@ -17,7 +17,7 @@ Endpoints:
   GET /docs                         — OpenAPI documentation
 
 Run locally:
-  uvicorn mosaic.api.main:app --reload --port 8000
+  uvicorn mosaic_core.api.main:app --reload --port 8000
 """
 
 from __future__ import annotations
@@ -32,12 +32,12 @@ from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from mosaic.ingest.nwss import fetch_nwss, aggregate_national
-from mosaic.ingest.nextstrain import fetch_nextstrain_frequencies
-from mosaic.ingest.promed import stream_all_sources
-from mosaic.detect.bocpd import run_bocpd, events_to_daily_counts
-from mosaic.detect.kl_anomaly import compute_genomic_anomaly_scores
-from mosaic.detect.beast_wrapper import run_beast, nwss_df_to_beast_input
+from mosaic_core.ingest.nwss import fetch_nwss, aggregate_national
+from mosaic_core.ingest.nextstrain import fetch_nextstrain_frequencies
+from mosaic_core.ingest.promed import stream_all_sources
+from mosaic_core.detect.bocpd import run_bocpd, events_to_daily_counts
+from mosaic_core.detect.kl_anomaly import compute_genomic_anomaly_scores
+from mosaic_core.detect.beast_wrapper import run_beast, nwss_df_to_beast_input
 
 logger = logging.getLogger(__name__)
 
@@ -229,7 +229,7 @@ async def get_calibration():
         return json.loads(calib_path.read_text())
     return {
         "status": "pending",
-        "message": "Run: python -m mosaic.fusion.calibration --validate",
+        "message": "Run: python -m mosaic_core.fusion.calibration --validate",
         "bins": [],
         "ece": -1,
         "sharpness": -1,
