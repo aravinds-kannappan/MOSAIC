@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useRef, useState } from "react";
 import {
  ComposableMap,
  Geographies,
@@ -9,7 +9,7 @@ import {
 } from "react-simple-maps";
 import { scaleLinear } from "d3-scale";
 import type { MapDataPoint } from "@/lib/types";
-import { formatProbability } from "@/lib/utils";
+import { formatProbability, alertLevelColor, alertLevelDotColor } from "@/lib/utils";
 
 const GEO_URL = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
 
@@ -37,6 +37,16 @@ const NUMERIC_TO_A2: Record<string, string> = {
  "858": "UY", "600": "PY", "068": "BO", "604": "PE", "218": "EC",
  "170": "CO", "862": "VE", "328": "GY", "740": "SR", "032": "AR",
  "152": "CL",
+ // Additional outbreak-relevant countries
+ "140": "CF", "728": "SS", "232": "ER", "262": "DJ", "266": "GA",
+ "226": "GQ", "624": "GW", "204": "BJ", "768": "TG", "270": "GM",
+ "478": "MR", "450": "MG", "108": "BI", "748": "SZ", "426": "LS",
+ "178": "CG", "324": "GN", "430": "LR", "120": "CM", "148": "TD",
+ "376": "IL", "462": "MV", "496": "MN", "408": "KP", "626": "TL",
+ "242": "FJ", "192": "CU", "332": "HT", "214": "DO", "388": "JM",
+ "340": "HN", "320": "GT", "558": "NI", "188": "CR", "591": "PA",
+ "222": "SV", "300": "GR", "372": "IE", "688": "RS", "398": "KZ",
+ "860": "UZ", "705": "SI",
 };
 
 interface WorldMapProps {
@@ -55,8 +65,23 @@ export function WorldMap({ data, onCountryClick, selectedCountry }: WorldMapProp
   [data]
  );
 
+ const containerRef = useRef<HTMLDivElement>(null);
+ const [popover, setPopover] = useState<{ x: number; y: number; point: MapDataPoint } | null>(null);
+
+ const handleGeoClick = (evt: React.MouseEvent, point: MapDataPoint | null) => {
+  onCountryClick?.(point ?? null);
+  const rect = containerRef.current?.getBoundingClientRect();
+  if (point && rect) {
+   const x = Math.min(Math.max(evt.clientX - rect.left, 12), rect.width - 220);
+   const y = Math.min(Math.max(evt.clientY - rect.top, 12), rect.height - 140);
+   setPopover({ x, y, point });
+  } else {
+   setPopover(null);
+  }
+ };
+
  return (
-  <div className="relative w-full overflow-hidden rounded-lg bg-[#0d1117]">
+  <div ref={containerRef} className="relative w-full overflow-hidden rounded-lg bg-[#0d1117]">
    {/* Legend */}
    <div className="absolute bottom-3 left-3 z-10 rounded-md bg-background/80 backdrop-blur-sm p-2.5 text-xs">
     <p className="text-muted-foreground mb-1.5 font-medium">P(R_t &gt; 1)</p>
@@ -98,7 +123,7 @@ export function WorldMap({ data, onCountryClick, selectedCountry }: WorldMapProp
          <Geography
           key={geo.rsmKey}
           geography={geo}
-          onClick={() => onCountryClick?.(point ?? null)}
+          onClick={(evt) => handleGeoClick(evt, point ?? null)}
           style={{
            default: {
             fill: point ? colorScale(point.p_outbreak) : "#1e293b",
@@ -132,6 +157,52 @@ export function WorldMap({ data, onCountryClick, selectedCountry }: WorldMapProp
      </Geographies>
     </ZoomableGroup>
    </ComposableMap>
+
+   {/* Click popover with detail */}
+   {popover && (
+    <div
+     className="absolute z-20 w-[210px] rounded-lg border border-primary/40 bg-background/95 backdrop-blur-sm p-3 text-xs shadow-xl"
+     style={{ left: popover.x, top: popover.y }}
+    >
+     <div className="flex items-start justify-between gap-2 mb-1.5">
+      <span className="font-semibold text-foreground">{popover.point.country}</span>
+      <button
+       onClick={() => setPopover(null)}
+       className="text-muted-foreground hover:text-foreground -mt-0.5"
+       aria-label="Close"
+      >
+       ×
+      </button>
+     </div>
+     <div className="flex items-center justify-between mb-1.5">
+      <span
+       className="text-xl font-semibold font-mono"
+       style={{
+        color:
+         popover.point.p_outbreak >= 0.7 ? "#ef4444" : popover.point.p_outbreak >= 0.4 ? "#f59e0b" : "#22c55e",
+       }}
+      >
+       {formatProbability(popover.point.p_outbreak)}
+      </span>
+      <span
+       className={`inline-flex items-center gap-1 rounded-full px-1.5 py-0.5 text-[9px] font-medium border ${alertLevelColor(popover.point.alert_level)}`}
+      >
+       <span className={`h-1 w-1 rounded-full ${alertLevelDotColor(popover.point.alert_level)}`} />
+       {popover.point.alert_level}
+      </span>
+     </div>
+     <p className="text-[10px] text-muted-foreground">P(R<sub>t</sub> &gt; 1) of an active outbreak</p>
+     <div className="mt-1.5 border-t border-border/40 pt-1.5">
+      <p className="text-[9px] uppercase tracking-wider text-muted-foreground mb-0.5">
+       Pathogens ({popover.point.pathogens.length})
+      </p>
+      <p className="text-[11px] text-foreground leading-snug">
+       {popover.point.pathogens.join(", ") || "—"}
+      </p>
+     </div>
+     <p className="mt-1.5 text-[9px] text-primary/80">Full per-stream breakdown below ↓</p>
+    </div>
+   )}
   </div>
  );
 }

@@ -345,8 +345,8 @@ export async function fetchGenomic(pathogen: string): Promise<GenomicResult> {
 /* ------------------------------------------------------------------ */
 
 const WHO_DON_API =
-  "https://cms.who.int/api/hubs/diseaseoutbreaknews?$top=60&$orderby=PublicationDateAndTime%20desc";
-const PROMED_API = "https://promedmail.org/api/posts?limit=40&sort=-publishedAt";
+  "https://cms.who.int/api/hubs/diseaseoutbreaknews?$top=100&$orderby=PublicationDateAndTime%20desc";
+const PROMED_API = "https://promedmail.org/api/posts?limit=60&sort=-publishedAt";
 
 export interface ExtractedEvent {
   id: string;

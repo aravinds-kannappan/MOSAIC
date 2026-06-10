@@ -23,6 +23,22 @@ interface CalibrationResponse extends CalibrationData {
  horizon_days?: number;
  method?: string;
  meta?: { method?: string; ground_truth?: string; note?: string };
+ learned?: LearnedFusion;
+}
+
+interface MethodMetrics {
+ ece: number;
+ brier: number;
+ auc: number;
+ n: number;
+ bins?: Array<{ bin_center: number; predicted_prob: number; observed_freq: number; count: number }>;
+}
+interface LearnedFusion {
+ platt: { bias: number; slope: number; raw: MethodMetrics; recalibrated: MethodMetrics };
+ fusion: {
+  bias: number; w_text: number; w_wastewater: number; w_genomic: number;
+  noisy_or: MethodMetrics; learned: MethodMetrics; n: number;
+ };
 }
 
 const ReliabilityTooltip = ({
@@ -171,6 +187,54 @@ export function CalibrationPanel() {
     indicates well-calibrated posteriors. The full multi-stream NumPyro NUTS calibration is
     produced by the Python backend.
    </p>
+
+   {/* Learned recalibration & fusion comparison */}
+   {data.learned && (
+    <div className="rounded-lg border border-border/50 bg-muted/10 p-3">
+     <p className="text-xs font-medium text-foreground mb-1">Learned recalibration &amp; fusion</p>
+     <p className="text-[10px] text-muted-foreground mb-2">
+      Logistic models fit by 5-fold cross-validation (metrics are out-of-fold). A Platt recalibration
+      sharpens the wastewater P(R<sub>t</sub>&gt;1); a learned logistic fusion of the three stream
+      signals beats the hand-tuned noisy-or on the {data.learned.fusion.n}-point SARS-CoV-2 set.
+     </p>
+     <div className="overflow-x-auto">
+      <table className="w-full text-[11px]">
+       <thead>
+        <tr className="text-[9px] uppercase tracking-wider text-muted-foreground border-b border-border/50">
+         <th className="text-left py-1 pr-3">Method</th>
+         <th className="text-right py-1 pr-3">ECE</th>
+         <th className="text-right py-1 pr-3">Brier</th>
+         <th className="text-right py-1 pr-3">AUROC</th>
+         <th className="text-right py-1">n</th>
+        </tr>
+       </thead>
+       <tbody className="font-mono">
+        {[
+         { label: "EpiEstim (raw)", m: data.learned.platt.raw },
+         { label: "Platt-recalibrated", m: data.learned.platt.recalibrated, good: true },
+         { label: "Noisy-or fusion", m: data.learned.fusion.noisy_or },
+         { label: "Learned fusion", m: data.learned.fusion.learned, good: true },
+        ].map((r) => (
+         <tr key={r.label} className="border-b border-border/20">
+          <td className={`py-1 pr-3 font-sans ${r.good ? "text-emerald-400" : "text-foreground"}`}>{r.label}</td>
+          <td className="py-1 pr-3 text-right">{r.m.ece.toFixed(3)}</td>
+          <td className="py-1 pr-3 text-right">{r.m.brier.toFixed(3)}</td>
+          <td className="py-1 pr-3 text-right">{r.m.auc.toFixed(3)}</td>
+          <td className="py-1 text-right text-muted-foreground">{r.m.n.toLocaleString()}</td>
+         </tr>
+        ))}
+       </tbody>
+      </table>
+     </div>
+     <p className="mt-2 text-[10px] text-muted-foreground">
+      Learned fusion weights:{" "}
+      <span className="font-mono text-emerald-400">wastewater {data.learned.fusion.w_wastewater.toFixed(2)}</span>,{" "}
+      <span className="font-mono text-violet-400">genomic {data.learned.fusion.w_genomic.toFixed(2)}</span>,{" "}
+      <span className="font-mono text-sky-400">text {data.learned.fusion.w_text.toFixed(2)}</span>. Wastewater
+      P(R<sub>t</sub>&gt;1) is the dominant predictor of realised growth, as expected.
+     </p>
+    </div>
+   )}
 
    {/* Validation outbreaks */}
    {Array.isArray((data as { validation_outbreaks?: unknown[] }).validation_outbreaks) && (

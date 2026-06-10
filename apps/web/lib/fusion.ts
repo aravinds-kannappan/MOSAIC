@@ -14,6 +14,8 @@ import {
   type ExtractedEvent,
 } from "@/lib/streams";
 import { resolveCountries } from "@/lib/countries";
+import { estimateRt, SERIAL_INTERVALS } from "@/lib/rt-estimation";
+import learnedFusion from "@/data/learned_fusion.json";
 import type { ActiveAlert, AlertLevel } from "@/lib/types";
 
 const MAX_SERIES_DAYS = 400;
@@ -31,6 +33,18 @@ function fuseStreamProbs(streams: Array<{ p: number; present: boolean }>): numbe
   if (present.length === 0) return 0;
   const w = 1 / present.length;
   return 1 - present.reduce((acc, s) => acc * (1 - w * s.p), 1);
+}
+
+/**
+ * Learned logistic fusion of the three stream signals, with weights fit by
+ * cross-validation on realised growth (see paper/make_learned_fusion.py). Used
+ * for the multi-stream SARS-CoV-2 cell where the wastewater feature is the
+ * EpiEstim P(R_t>1); other cells fall back to the noisy-or above.
+ */
+const LW = learnedFusion.fusion;
+function learnedFuse(aText: number, wwPRt1: number, aGen: number): number {
+  const z = LW.bias + LW.w_text * aText + LW.w_wastewater * wwPRt1 + LW.w_genomic * aGen;
+  return 1 / (1 + Math.exp(-Math.max(-30, Math.min(30, z))));
 }
 
 /** Dense daily count series (zero-filled) ending at `now`. */
@@ -97,8 +111,17 @@ export async function computeAlerts(): Promise<AlertsPayload> {
   }
 
   const wastewaterAlarms: Record<string, number> = {};
+  let wwPRt1 = 0; // wastewater EpiEstim P(R_t>1), the learned-fusion wastewater feature
   if (wwRes.status === "fulfilled" && wwRes.value.sites.length > 0) {
-    wastewaterAlarms["SARS-CoV-2"] = wwRes.value.sites[0].changePointProb ?? 0;
+    const site = wwRes.value.sites[0];
+    wastewaterAlarms["SARS-CoV-2"] = site.changePointProb ?? 0;
+    const series = site.timeSeries ?? [];
+    if (series.length > 30) {
+      const dates = series.map((r) => r.date);
+      const counts = series.map((r) => Math.round(Math.max(0, r.percentile)));
+      const rt = estimateRt(dates, counts, SERIAL_INTERVALS["SARS-CoV-2"]);
+      wwPRt1 = rt.length ? rt[rt.length - 1].pOutbreak : 0;
+    }
   }
 
   const genomicAlarms: Record<string, number> = {};
@@ -114,6 +137,7 @@ export async function computeAlerts(): Promise<AlertsPayload> {
 
   const events: ExtractedEvent[] = textRes.status === "fulfilled" ? textRes.value.events : [];
   const alerts: ActiveAlert[] = [];
+  let usedLearned = false;
 
   for (const pathogen of allPathogens) {
     const hasText = pathogen in textAlarms;
@@ -124,11 +148,18 @@ export async function computeAlerts(): Promise<AlertsPayload> {
     const pWw = wastewaterAlarms[pathogen] ?? 0;
     const pGen = genomicAlarms[pathogen] ?? 0;
 
-    const pFused = fuseStreamProbs([
-      { p: pText, present: hasText },
-      { p: pWw, present: hasWw },
-      { p: pGen, present: hasGen },
-    ]);
+    // Multi-stream cells (≥2 streams with data) use the learned logistic fusion
+    // with the wastewater P(R_t>1) feature; single-stream cells use noisy-or.
+    const nStreams = (hasText ? 1 : 0) + (hasWw ? 1 : 0) + (hasGen ? 1 : 0);
+    const useLearned = nStreams >= 2 && hasWw;
+    if (useLearned) usedLearned = true;
+    const pFused = useLearned
+      ? learnedFuse(pText, wwPRt1, pGen)
+      : fuseStreamProbs([
+          { p: pText, present: hasText },
+          { p: pWw, present: hasWw },
+          { p: pGen, present: hasGen },
+        ]);
     if (pFused < 0.05) continue;
 
     const rawContribs = {
@@ -220,8 +251,8 @@ export async function computeAlerts(): Promise<AlertsPayload> {
         wastewater: wwRes.status === "fulfilled" ? "ok" : "error",
         genomic: genRes.status === "fulfilled" ? "ok" : "error",
       },
-      fusionMethod: "lightweight-js",
-      note: "Deploy Python backend (MOSAIC_API_URL) for full NumPyro NUTS hierarchical fusion",
+      fusionMethod: usedLearned ? "learned-logistic" : "lightweight-js",
+      note: "Multi-stream cells use a learned logistic fusion; single-stream cells use noisy-or. Deploy MOSAIC_API_URL for full NumPyro NUTS fusion.",
       fetchedAt: new Date().toISOString(),
     },
   };

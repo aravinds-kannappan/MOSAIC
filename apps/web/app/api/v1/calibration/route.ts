@@ -11,6 +11,7 @@
 
 import { NextResponse } from "next/server";
 import { computeCalibration } from "@/lib/calibration";
+import learnedFusion from "@/data/learned_fusion.json";
 
 export const dynamic = "force-dynamic";
 
@@ -31,6 +32,7 @@ export async function GET() {
     const result = await computeCalibration();
     return NextResponse.json({
       ...result,
+      learned: learnedFusion,
       validation_outbreaks: [
         { name: "SARS-CoV-2 Omicron", date: "2021-11-26", who_don: "2021-11-26" },
         { name: "Mpox USA", date: "2022-05-23", who_don: "2022-05-23" },

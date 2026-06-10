@@ -80,6 +80,7 @@ export function SignalExplorer() {
  const [loading, setLoading] = useState(false);
  const [error, setError] = useState<string | null>(null);
  const [countriesByPathogen, setCountriesByPathogen] = useState<Record<string, string[]>>({});
+ const [selectedLocation, setSelectedLocation] = useState<string>("United States");
 
  // Pull the live alerts once to learn which countries each pathogen is active in.
  useEffect(() => {
@@ -97,10 +98,13 @@ export function SignalExplorer() {
  }, []);
 
  const coverage =
-  countriesByPathogen[pathogen.toLowerCase()] ?? DEFAULT_COVERAGE[pathogen.toLowerCase()] ?? [];
- const locationLabel = coverage.length
-  ? coverage.slice(0, 4).join(", ") + (coverage.length > 4 ? ` +${coverage.length - 4}` : "")
-  : "United States";
+  countriesByPathogen[pathogen.toLowerCase()] ?? DEFAULT_COVERAGE[pathogen.toLowerCase()] ?? ["United States"];
+
+ // Keep the selected country valid for the current pathogen's coverage.
+ useEffect(() => {
+  setSelectedLocation((prev) => (coverage.includes(prev) ? prev : coverage[0]));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+ }, [pathogen, countriesByPathogen]);
 
  useEffect(() => {
   setLoading(true);
@@ -159,13 +163,19 @@ export function SignalExplorer() {
     </div>
 
     <div className="flex flex-col gap-1">
-     <label className="text-[10px] uppercase tracking-wider text-muted-foreground">Active in</label>
-     <div
-      className="flex h-8 items-center rounded-md border border-border bg-muted px-2.5 text-xs text-foreground max-w-[260px] truncate"
-      title={coverage.join(", ")}
+     <label className="text-[10px] uppercase tracking-wider text-muted-foreground">
+      Active in ({coverage.length})
+     </label>
+     <select
+      value={selectedLocation}
+      onChange={(e) => setSelectedLocation(e.target.value)}
+      className="h-8 rounded-md border border-border bg-muted px-2.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary max-w-[220px]"
+      title="Countries currently reporting this pathogen"
      >
-      {locationLabel}
-     </div>
+      {coverage.map((c) => (
+       <option key={c} value={c}>{c}</option>
+      ))}
+     </select>
     </div>
 
     <div className="flex flex-col gap-1">
