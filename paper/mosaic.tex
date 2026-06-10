@@ -16,11 +16,16 @@
 \usepackage[colorlinks=true,allcolors=blue!55!black]{hyperref}
 \usepackage[numbers,sort&compress]{natbib}
 
-% ---- arXiv-style headings (small caps) -------------------------------------
+% , - arXiv-style headings (small caps) , , , , , , , , , , , , -
 \titleformat{\section}{\large\bfseries\scshape}{\thesection}{0.6em}{}
 \titleformat{\subsection}{\normalsize\bfseries\scshape}{\thesubsection}{0.6em}{}
-\titleformat{\subsubsection}{\normalsize\bfseries\itshape}{\thesubsubsection}{0.6em}{}
+\titleformat{\subsubsection}{\normalsize\itshape}{\thesubsubsection}{0.6em}{}
+% Run-in paragraph leads are italic, not bold, so the sub-topics read as part of
+% the prose rather than as disconnected bold labels.
+\titleformat{\paragraph}[runin]{\normalfont\itshape}{}{0pt}{}\titlespacing*{\paragraph}{0pt}{4pt}{0.5em}
 \captionsetup{font=small,labelfont=bf}
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.05}
 
 \theoremstyle{definition}
 \newtheorem{lemma}{Lemma}
@@ -43,7 +48,7 @@
 
 \begin{document}
 
-% ---- Title block (spans both columns) --------------------------------------
+% , - Title block (spans both columns) , , , , , , , , , , , , --
 \twocolumn[{%
 \begin{center}
 \vspace{2pt}
@@ -58,36 +63,40 @@ with AI-Driven Calibrated Inference\par}
 
 \begin{center}{\scshape\bfseries Abstract}\end{center}
 \begin{center}\begin{minipage}{0.86\textwidth}\small\noindent
-Pandemic early-warning systems fail less often from a lack of data than from a
-lack of \emph{integration} and \emph{calibration}. Heterogeneous signals---wastewater
-viral load, pathogen genomes, and outbreak text reports---arrive on different
-cadences, in different units, with different noise processes, and the
-probabilities ultimately shown to decision-makers are almost never validated.
-We present \textsc{MOSAIC}, an open system that fuses three public,
-authentication-free surveillance streams into a single calibrated quantity: the
-posterior probability that the instantaneous reproduction number exceeds one,
-$\Prob(\Rt>1)$, the probability that transmission is currently growing. We give
-the probabilistic model in full---a renewal-equation latent-incidence process
-with stream-specific observation kernels (negative-binomial for wastewater,
-Poisson for text-event counts, Dirichlet--multinomial for lineage
-frequencies)---and derive each detector from first principles: a Poisson--Gamma
-Bayesian online change-point detector with a windowed-maximum alarm, a
-Jensen--Shannon genomic-anomaly detector with a rolling null, an EpiEstim
-reproduction-number estimator, and a fusion rule that reduces, in the full
-backend, to a hierarchical posterior sampled by the No-U-Turn Sampler. We then
-evaluate the deployed system on real data. Treating $\Prob(\Rt>1)$ as a
-probabilistic forecast of realised growth on the multi-year CDC National
-Wastewater Surveillance System record ($N{=}1{,}334$ day-ahead forecasts) yields
-an Expected Calibration Error of $0.086$, a Brier score of $0.124$, and an AUROC
-of $0.917$; a Murphy decomposition attributes the Brier score to a small
-reliability term ($0.010$) and a large resolution term ($0.136$), confirming the
-forecasts are both well-calibrated and discriminative. On the live feed the
-system surfaces concurrent real outbreaks with per-stream attribution, and we
-surface and correct a numerical defect in the reproduction-number tail
-probability that silently corrupts large-count series. We argue that an explicit,
-falsifiable target quantity plus a faithful backend-free deployment is a
-practical route to trustworthy open early warning. All figures are computed from
-real public data; nothing is synthetic. \\[6pt]
+\textbf{Background and objective.} Pandemic early warning fails less often from a
+lack of data than from a lack of integration and calibration. Wastewater viral
+load, pathogen genomes, and outbreak text reports arrive on different cadences,
+in different units, and with different noise processes, and the probabilities
+ultimately shown to decision-makers are almost never validated. My objective is
+to fuse these three public, authentication-free streams into a single calibrated
+and falsifiable quantity, the posterior probability that the instantaneous
+reproduction number exceeds one, $\Prob(\Rt>1)$, which is the probability that
+transmission is currently growing.
+\\[3pt]
+\textbf{Methods.} I specify a renewal-equation latent-incidence model with
+stream-specific observation kernels (negative-binomial for wastewater, Poisson
+for text-event counts, Dirichlet--multinomial for lineage frequencies) and derive
+each detector from first principles: a Poisson--Gamma Bayesian online
+change-point detector with a windowed-maximum alarm, a Jensen--Shannon
+genomic-anomaly detector with a rolling null, an EpiEstim reproduction-number
+estimator, and a fusion rule that reduces, in the full backend, to a hierarchical
+posterior sampled by the No-U-Turn Sampler. I validate $\Prob(\Rt>1)$ as a
+prospective probabilistic forecast of realised growth on the multi-year CDC
+National Wastewater Surveillance System record.
+\\[3pt]
+\textbf{Results.} Over $N{=}1{,}334$ day-ahead forecasts the system attains an
+Expected Calibration Error of $0.086$, a Brier score of $0.124$, and an AUROC of
+$0.917$; a Murphy decomposition attributes the Brier score to a small reliability
+term ($0.010$) and a large resolution term ($0.136$), so the forecasts are both
+well calibrated and discriminative, and the growth probability leads national wave
+peaks by a median of $68$ days. I also surface and correct a numerical defect in
+the reproduction-number tail probability that silently corrupts large-count
+series.
+\\[3pt]
+\textbf{Conclusion.} An explicit, falsifiable target quantity together with a
+faithful backend-free deployment is a practical route to trustworthy open early
+warning.
+\\[6pt]
 \textbf{Github:}~\github
 \end{minipage}\end{center}
 \vspace{8pt}
@@ -101,13 +110,13 @@ $\cdot$ probabilistic calibration $\cdot$ multi-modal data fusion
 }]
 
 % ============================================================================
-\section{Introduction}
+\section{Background}
 \label{sec:intro}
 
-Every major epidemic of the past two decades---the 2009 H1N1 pandemic, the
+Every major epidemic of the past two decades, the 2009 H1N1 pandemic, the
 2013--2016 West African Ebola epidemic, the emergence of SARS-CoV-2 and its
 successive variants, the 2022 multi-country mpox outbreak, and the ongoing
-panzootic of highly pathogenic avian influenza---was, in retrospect, preceded by
+panzootic of highly pathogenic avian influenza, was, in retrospect, preceded by
 signals that were detectable days to weeks before the official declaration. The
 recurring post-mortem finding is not that the relevant data did not exist, but
 that it was scattered across incompatible systems, expressed in incomparable
@@ -120,7 +129,7 @@ eventual burden, because the number of infections at the moment of intervention
 sets the scale of everything that follows. Conversely, a \emph{false} alarm is
 comparatively cheap if it is accompanied by an honest probability and an explicit
 uncertainty, because a calibrated $30\%$ invites monitoring rather than
-lockdown. This asymmetry is the reason we privilege early, probabilistic,
+lockdown. This asymmetry is the reason I privilege early, probabilistic,
 \emph{calibrated} signals over late, categorical, point alerts.
 
 This points to two binding constraints, neither of which is data scarcity.
@@ -136,8 +145,8 @@ counts), and differently noised (over-dispersed counts versus
 Dirichlet--multinomial composition versus heavy-tailed reporting). Turning them
 into one coherent signal is a statistical, not merely an engineering, problem.
 
-The second constraint is \emph{calibration}. A system that emits a number---``a
-$78\%$ chance of growth''---is only useful if that number means what it says: if,
+The second constraint is \emph{calibration}. A system that emits a number, ``a
+$78\%$ chance of growth'', is only useful if that number means what it says: if,
 across the many times the system says $78\%$, the event happens about $78\%$ of
 the time. Modern statistical and machine-learning systems are frequently and
 badly miscalibrated \citep{guo2017}, and epidemic-forecasting tools rarely report
@@ -145,21 +154,21 @@ calibration at all, so a stated probability is too often an uninterpretable
 score rather than an actionable frequency.
 
 \paragraph{A falsifiable target.}
-We argue that the right quantity for an early-warning system to emit is the
+I argue that the right quantity for an early-warning system to emit is the
 posterior probability that transmission is currently growing,
 \begin{equation}
 p_t \;=\; \Prob\!\big(\Rt > 1 \,\big|\, \text{data up to } t\big),
 \label{eq:target}
 \end{equation}
-where $\Rt$ is the instantaneous (effective) reproduction number---the expected
-number of secondary infections per infectious individual at time $t$. We choose
+where $\Rt$ is the instantaneous (effective) reproduction number, the expected
+number of secondary infections per infectious individual at time $t$. I choose
 Eq.~\eqref{eq:target} for three reasons. It is \emph{unitless}, hence comparable
 across pathogens, locations, and data modalities. It has a crisp
 \emph{operational} meaning: $\Rt>1$ is exactly the condition under which the
 epidemic curve is turning upward. And, crucially, it is \emph{falsifiable}: the
 event $\{\Rt>1\}$ is, with a lag, observable through subsequent growth, so the
 calibration of $p_t$ is something one can \emph{measure} rather than merely
-assert. This last property is what allows us to report, in
+assert. This last property is what allows me to report, in
 \S\ref{sec:results}, an Expected Calibration Error for the live system rather
 than a methodological promise.
 
@@ -168,8 +177,8 @@ than a methodological promise.
 \item \textbf{A complete probabilistic specification} (\S\ref{sec:model}--\ref{sec:fusion})
 for multi-modal outbreak inference: a renewal latent-incidence process with
 negative-binomial, Poisson, and Dirichlet--multinomial observation kernels, with
-each stream detector---Poisson--Gamma BOCPD, Jensen--Shannon anomaly, EpiEstim
-$\Rt$---derived from first principles, and a fusion rule that reduces to a
+each stream detector, Poisson--Gamma BOCPD, Jensen--Shannon anomaly, EpiEstim
+$\Rt$, derived from first principles, and a fusion rule that reduces to a
 hierarchical posterior in the full backend.
 \item \textbf{A two-tier open implementation} (\S\ref{sec:impl}): a serverless
 TypeScript deployment that runs the entire pipeline with no backend, plus a
@@ -179,7 +188,7 @@ the former is mathematically faithful to the latter.
 multi-year national wastewater record showing that the served $\Prob(\Rt>1)$ is
 well-calibrated (ECE $0.086$) and discriminative (AUROC $0.917$), with a Murphy
 decomposition of the Brier score, live multi-stream alert attribution, and a
-documented numerical correction we recommend other implementations check.
+documented numerical correction I recommend other implementations check.
 \end{enumerate}
 
 \paragraph{Why a backend-free deployment matters.}
@@ -189,8 +198,8 @@ or a maintainer's laptop. A second theme of this paper is therefore
 \emph{operational}: the entire MOSAIC pipeline runs in a serverless edge
 function with no backend and no authenticated data access, so the public
 dashboard is always live and reproducible by anyone who forks the repository.
-This constraint is not free---it forces every detector to have a closed-form or
-streaming implementation and every data movement to be small---but we show it is
+This constraint is not free, it forces every detector to have a closed-form or
+streaming implementation and every data movement to be small, but I show it is
 achievable without sacrificing the probabilistic target, and that meeting it
 exposed real bugs (a quadratic genomic detector, a numerically unstable tail
 probability, a self-referential fetch pattern) that a heavier prototype would
@@ -208,7 +217,7 @@ forecasting. \S\ref{sec:calmethod} defines the calibration instruments,
 \S\ref{sec:conclusion} concludes.
 
 % ============================================================================
-\section{Related Work}
+\section{Related Literature}
 \label{sec:related}
 
 \paragraph{Wastewater-based epidemiology.}
@@ -229,7 +238,7 @@ renewal-process theory \citep{wallinga2004,fraser2007}. The method is attractive
 because it is conjugate and closed-form, and because $\Prob(\Rt>1)$ falls out of
 the Gamma posterior directly. Alternatives include Wallinga--Teunis
 retrospective estimators and state-space / particle-filter formulations
-\citep{flaxman2020}; we adopt EpiEstim as the renewal core precisely because its
+\citep{flaxman2020}; I adopt EpiEstim as the renewal core precisely because its
 closed form admits a faithful serverless implementation.
 
 \paragraph{Change-point and anomaly detection.}
@@ -257,15 +266,15 @@ The reliability diagram, the Brier score and its reliability--resolution--uncert
 decomposition \citep{brier1950,murphy1973}, proper scoring rules
 \citep{gneiting2007}, and the Expected Calibration Error \citep{guo2017} are the
 standard instruments for asking whether stated probabilities match observed
-frequencies. We use all of them.
+frequencies. I use all of them.
 
 \paragraph{Collaborative forecasting and pooling.}
-Large-scale forecasting efforts have repeatedly found that combining models---by
-ensembling, stacking, or opinion pooling---is more robust than any single
+Large-scale forecasting efforts have repeatedly found that combining models, by
+ensembling, stacking, or opinion pooling, is more robust than any single
 component, and that well-constructed ensembles are among the best-calibrated
 forecasters available \citep{cramer2022}. Logarithmic and linear opinion pools
 have a long statistical pedigree as ways to aggregate probabilistic judgements;
-our lightweight fusion (\S\ref{sec:fusion}) is a weighted logarithmic pool of
+my lightweight fusion (\S\ref{sec:fusion}) is a weighted logarithmic pool of
 per-stream alarms, specialised so that absent modalities neither vote nor dilute.
 
 \paragraph{Probabilistic programming.}
@@ -277,10 +286,12 @@ Dirichlet--multinomial for composition) is what allows the same models to be
 evaluated in closed form on the edge without a sampler at all.
 
 % ============================================================================
-\section{Problem Formulation and Notation}
+\section{Methods}
+
+\subsection{Problem setup and notation}
 \label{sec:problem}
 
-We index discrete time (days) by $t$. The unit of analysis is a
+I index discrete time (days) by $t$. The unit of analysis is a
 \emph{surveillance cell} $(k,\ell)$: a pathogen $k$ in a location $\ell$. For a
 fixed cell, let $I_t \ge 0$ denote latent new infections on day $t$. The three
 streams provide noisy, lagged, partial observations of $I_{1:T}$:
@@ -296,7 +307,7 @@ time-varying reproduction number $\Rt$, and the reported quantity is the tail
 posterior $p_t$ of Eq.~\eqref{eq:target}. Table~\ref{tab:notation} collects the
 notation.
 
-We make the following modelling assumptions.
+I make the following modelling assumptions.
 \begin{assumption}[Renewal dynamics]\label{ass:renewal}
 Incidence follows the renewal equation with a fixed, known generation-interval
 distribution $w_{1:S}$ and a smoothly varying $\Rt$.
@@ -309,11 +320,11 @@ three streams are conditionally independent observations.
 Within an inference window the shedding scale, reporting rate, ascertainment, and
 sequencing depth vary slowly relative to $\Rt$.
 \end{assumption}
-These assumptions are standard for renewal-based nowcasting; we revisit their
+These assumptions are standard for renewal-based nowcasting; I revisit their
 limits in \S\ref{sec:discuss}.
 
 \begin{table}[t]
-\centering\small
+\centering\footnotesize
 \caption{Notation.}
 \label{tab:notation}
 \begin{tabular}{ll}
@@ -335,10 +346,10 @@ $\Phi$ & standard normal CDF \\
 \end{table}
 
 % ============================================================================
-\section{The MOSAIC Generative Model}
+\subsection{The generative model}
 \label{sec:model}
 
-\subsection{Latent incidence and the renewal equation}
+\subsubsection{Latent incidence and the renewal equation}
 Under Assumption~\ref{ass:renewal}, expected incidence is the product of the
 reproduction number and the total infectiousness contributed by past infections
 \citep{wallinga2004,cori2013}:
@@ -356,24 +367,24 @@ smoothly rather than abruptly:
 \end{equation}
 The generation interval is discretised from a Gamma density by midpoint
 quadrature, $w_s \propto f_{\Gam}(s;\kappa,\theta)$ for $s=1,\dots,S$, and
-renormalised; for SARS-CoV-2 we use mean $5.1$ and standard deviation $4.0$ days
+renormalised; for SARS-CoV-2 I use mean $5.1$ and standard deviation $4.0$ days
 \citep{he2020}, truncated at $S=21$.
 
 The renewal equation is the discrete-time analogue of the Lotka integral equation
 of demography and underlies essentially all modern $\Rt$ estimators
-\citep{wallinga2004,fraser2007,cori2013}. Its key property for our purposes is
+\citep{wallinga2004,fraser2007,cori2013}. Its key property for my purposes is
 that $\Rt$ is a \emph{local} quantity: it depends only on the ratio of current
 incidence to recent infectiousness, not on the absolute scale of the epidemic.
-This is what lets us read $\{\Rt>1\}$ off a relative activity index such as the
+This is what lets me read $\{\Rt>1\}$ off a relative activity index such as the
 wastewater percentile without knowing the true number of infections, and it is
-why the threshold $\Rt=1$---rather than any particular incidence level---is the
+why the threshold $\Rt=1$, rather than any particular incidence level, is the
 natural alarm boundary: it is invariant to the unknown ascertainment and shedding
 constants that scale the observations. In the small-$\sigma_R$ regime, the
 exponential growth rate is approximately $\log\Rt$ divided by the mean generation
 interval, so a sustained $\Rt$ a few percent above one corresponds to a doubling
-time of weeks---fast enough to matter, slow enough to act on.
+time of weeks, fast enough to matter, slow enough to act on.
 
-\subsection{Stream observation kernels}
+\subsubsection{Stream observation kernels}
 The three streams are conditionally independent observations of the same latent
 $I_{1:T}$ (Assumption~\ref{ass:ci}).
 
@@ -406,7 +417,7 @@ controlling over-dispersion relative to the multinomial:
 \label{eq:gen-obs}
 \end{equation}
 
-\subsection{The joint posterior}
+\subsubsection{The joint posterior}
 Collecting all parameters into $\Theta=(\Rt, I_{1:T}, \rho_W,\phi_W,\lambda_N,\kappa,\dots)$
 and applying Assumption~\ref{ass:ci}, the joint posterior factorises over streams:
 \begin{equation}
@@ -434,32 +445,32 @@ fluctuation is not mistaken for a sustained shift. None of these are tuned to th
 evaluation; they are fixed a priori and reused across all results.
 
 \begin{table}[t]
-\centering\small
+\centering\footnotesize
 \caption{Default priors and hyperparameters (shared by both tiers).}
 \label{tab:priors}
-\begin{tabular}{lll}
+\begin{tabular}{@{}lll@{}}
 \toprule
 Quantity & Setting & Role \\
 \midrule
-$\log\Rt$ walk $\sigma_R$ & $0.1$ & smoothness of $\Rt$ \\
-EpiEstim $\Rt$ prior & $\Gam$, mean $5$, sd $5$ & diffuse, data-led \\
-EpiEstim window $\tau$ & $7$ d & estimation window \\
-Gen.\ interval & mean $5.1$, sd $4.0$ d & SARS-CoV-2 \citep{he2020} \\
-BOCPD hazard $H$ & $1/30$ & expected run length \\
-BOCPD prior $(\alpha_0,\beta_0)$ & $(1,1)$ & Poisson rate prior \\
+$\log\Rt$ walk $\sigma_R$ & $0.1$ & $\Rt$ smoothness \\
+EpiEstim $\Rt$ prior & $\Gam$, mean/sd $5$ & diffuse \\
+EpiEstim window $\tau$ & $7$ d & estimation \\
+Gen.\ interval & mean $5.1$, sd $4.0$ d & SARS-CoV-2 \\
+BOCPD hazard $H$ & $1/30$ & run length \\
+BOCPD prior $(\alpha_0,\beta_0)$ & $(1,1)$ & rate prior \\
 JSD baseline $B$ & $90$ windows & rolling null \\
-Forecast damping $\phi$ & $0.8$ & trend mean-reversion \\
+Forecast damping $\phi$ & $0.8$ & mean-reversion \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 % ============================================================================
-\section{Stream Detectors}
+\subsection{Stream detectors}
 \label{sec:detectors}
 
-\subsection{Bayesian online change-point detection}
+\subsubsection{Bayesian online change-point detection}
 \label{sec:bocpd}
-For the count streams we detect abrupt regime changes with BOCPD
+For the count streams I detect abrupt regime changes with BOCPD
 \citep{adams2007}. Let $r_t\in\{0,1,2,\dots\}$ be the \emph{run length}, the
 number of steps since the last change-point. BOCPD maintains the joint
 $p(r_t, n_{1:t})$ and hence the run-length posterior $p(r_t\mid n_{1:t})$ by a
@@ -474,7 +485,7 @@ where $\pi_r(n_t)=p(n_t\mid r_{t-1}{=}r, n_{1:t-1})$ is the posterior predictive
 of the emission model conditioned on the data assigned to the current run.
 
 \paragraph{Conjugate Poisson--Gamma predictive.}
-We model counts as $n_t\mid\lambda\sim\Pois(\lambda)$ with a conjugate prior
+I model counts as $n_t\mid\lambda\sim\Pois(\lambda)$ with a conjugate prior
 $\lambda\sim\Gam(\alpha_0,\beta_0)$. Conditioned on a run that has accumulated
 sufficient statistics $(\alpha,\beta)$, the predictive is obtained by
 marginalising $\lambda$:
@@ -491,7 +502,7 @@ $(\alpha_0,\beta_0)$ seeding every newly created run length.
 
 \paragraph{The alarm: windowed maximum, not cumulative product.}
 The instantaneous change-point probability is $P(r_t{=}0\mid n_{1:t})$ from the
-normalised recursion. The stream alarm we report is its maximum over a recent
+normalised recursion. The stream alarm I report is its maximum over a recent
 window of length $W$,
 \begin{equation}
 a^{\mathrm{cp}}_t \;=\; \max_{t-W < \tau \le t} P(r_\tau{=}0 \mid n_{1:\tau}).
@@ -534,11 +545,11 @@ $a^{\mathrm{cp}}_T\leftarrow \max_{T-W<\tau\le T} g_\tau$\;
 \Return $g_{1:T},\ a^{\mathrm{cp}}_T$
 \end{algorithm}
 
-\subsection{Wastewater pipeline}
+\subsubsection{Wastewater pipeline}
 \label{sec:ww}
 \paragraph{National aggregation.}
 NWSS reports, per site $i$ and day $t$, a percentile $c_{i,t}\in[0,100]$ of
-current $15$-day-averaged activity relative to that site's own history. We form a
+current $15$-day-averaged activity relative to that site's own history. I form a
 national signal by simple aggregation over the reporting set $\mathcal S_t$,
 \begin{equation}
 \bar c_t \;=\; \frac{1}{|\mathcal S_t|}\sum_{i\in\mathcal S_t} c_{i,t},
@@ -551,18 +562,18 @@ $c_{i,t}$ is already a site-relative level, $\bar c_t$ is a dimensionless index 
 national activity that is comparable across time despite a changing site panel.
 
 \paragraph{Change-point and sustained elevation.}
-We run the Poisson--Gamma BOCPD of \S\ref{sec:bocpd} on the discretised series
+I run the Poisson--Gamma BOCPD of \S\ref{sec:bocpd} on the discretised series
 $n_t=\lfloor\bar c_t\rceil$ to obtain $a^{\mathrm{ww,cp}}_t$. Abrupt onset is only
 half the signal: a slowly-rising but persistently elevated wave is also
 informative and may not trip a change-point. Because the percentile is itself a
-level, we add an elevation alarm and combine the two by a noisy-or,
-\begin{equation}
-a^{\mathrm{ww,lvl}}_t = \mathrm{clip}\!\Big(\tfrac{\bar c_t-50}{40},0,1\Big),\quad
-a^{\mathrm{ww}}_t = 1-(1-a^{\mathrm{ww,cp}}_t)(1-a^{\mathrm{ww,lvl}}_t).
+level, I add an elevation alarm and combine the two by a noisy-or,
+\begin{align}
+a^{\mathrm{ww,lvl}}_t &= \mathrm{clip}\!\Big(\tfrac{\bar c_t-50}{40},0,1\Big), \nonumber\\
+a^{\mathrm{ww}}_t &= 1-(1-a^{\mathrm{ww,cp}}_t)(1-a^{\mathrm{ww,lvl}}_t).
 \label{eq:ww-alarm}
-\end{equation}
+\end{align}
 
-\subsection{Text pipeline}
+\subsubsection{Text pipeline}
 \label{sec:text}
 \paragraph{Extraction.}
 WHO Disease Outbreak News (queried newest-first) and ProMED posts are parsed into
@@ -574,7 +585,7 @@ correct countries on the map. Daily per-pathogen counts $e_{k,t}$ feed the
 detector.
 
 \paragraph{Dense series and recency weighting.}
-Outbreak reports are sparse and bursty. We build a dense, zero-filled daily count
+Outbreak reports are sparse and bursty. I build a dense, zero-filled daily count
 series ending at the present, so that a cluster of reports following a quiet
 interval is a strong change-point and a long-stale pathogen decays to the floor.
 Running BOCPD gives $b_k$; the operational text alarm composes it with a recency
@@ -591,9 +602,9 @@ dominating while rewarding sustained reporting.
 The text stream is the most heterogeneous of the three, and its extraction is
 correspondingly the most engineered. WHO Disease Outbreak News are authoritative
 but sporadic and must be requested most-recent-first, because the underlying API
-returns its oldest records by default---a detail that, if missed, silently feeds
+returns its oldest records by default, a detail that, if missed, silently feeds
 the detector reports from a decade ago. ProMED posts are timelier but
-semi-structured prose. In the lightweight tier we extract pathogen, location, and
+semi-structured prose. In the lightweight tier I extract pathogen, location, and
 counts with curated patterns and resolve every location to one or more ISO-3166
 codes; the multi-country resolver is what lets an alert about, say, a multi-country
 cholera report colour each affected country rather than collapsing to a vague
@@ -603,11 +614,11 @@ to miss an ambiguous report than to fabricate a structured event, because a fals
 event is a false alarm that the calibration machinery cannot catch (the text
 stream has no continuous ground-truth analogue of wastewater growth).
 
-\subsection{Genomic anomaly}
+\subsubsection{Genomic anomaly}
 \label{sec:gen}
 A lineage shift is a change in the $14$-day distribution $\mathbf L_t$ relative to
 a rolling baseline $\bar{\mathbf L}_t=\frac1B\sum_{\tau=t-B}^{t-1}\mathbf L_\tau$.
-We measure it by the Jensen--Shannon divergence \citep{lin1991},
+I measure it by the Jensen--Shannon divergence \citep{lin1991},
 \begin{equation}
 \jsd(\mathbf L_t\,\|\,\bar{\mathbf L}_t)
 =\tfrac12\KL(\mathbf L_t\|\mathbf m_t)+\tfrac12\KL(\bar{\mathbf L}_t\|\mathbf m_t),
@@ -636,26 +647,27 @@ A naive implementation recomputes each window's ordered frequency vector inside
 the rolling-baseline loop, costing $O(T^2K^2)$ in the number of windows $T$ and
 lineages $K$. For the SARS-CoV-2 panel ($T{=}156$, $K{=}664$) this is billions of
 operations and times out on serverless infrastructure. Pre-computing the $T$
-vectors once reduces the cost to $O(TBK)$, about $20$\,ms here---a constant-factor
+vectors once reduces the cost to $O(TBK)$, about $20$\,ms here, a constant-factor
 algorithmic fix that is the difference between a live and a dead deployment.
 
 % ============================================================================
-\section{Reproduction Number Estimation}
+\subsection{Reproduction number estimation}
 \label{sec:rt}
 
-\subsection{EpiEstim by conjugacy}
+\subsubsection{EpiEstim by conjugacy}
 Given an incidence proxy $y_{1:T}$ (here $y_t=\lfloor\bar c_t\rceil$ from
 wastewater), EpiEstim \citep{cori2013} assumes that, over a trailing window of
 length $\tau$, incidence is Poisson with mean $\Rt\Lambda_u$,
 \begin{equation}
-y_u \;\sim\; \Pois(\Rt\,\Lambda_u),\quad u\in[t-\tau+1,t],\ \ \Lambda_u=\sum_{s\ge1}w_s y_{u-s}.
+y_u \;\sim\; \Pois(\Rt\,\Lambda_u),\quad u\in[t-\tau+1,\,t],
 \end{equation}
-With a conjugate prior $\Rt\sim\Gam(a,b)$, the likelihood over the window is
+with $\Lambda_u=\sum_{s\ge1}w_s y_{u-s}$. With a conjugate prior
+$\Rt\sim\Gam(a,b)$ the window likelihood is
 $\prod_u \Pois(y_u\mid\Rt\Lambda_u)\propto \Rt^{\sum_u y_u}e^{-\Rt\sum_u\Lambda_u}$,
-so the posterior is Gamma in closed form:
+so the posterior is Gamma in closed form,
 \begin{equation}
-\Rt\mid y_{1:t} \sim \Gam\!\Big(a+\textstyle\sum_{u}y_u,\ b+\textstyle\sum_u\Lambda_u\Big)
-\;\equiv\;\Gam(a',b').
+\Rt\mid y_{1:t} \sim \Gam\big(a',b'\big),\ \
+a'=a+\!\textstyle\sum_{u}y_u,\ \ b'=b+\!\textstyle\sum_u\Lambda_u.
 \label{eq:epiestim}
 \end{equation}
 The reported quantity is the tail probability
@@ -669,22 +681,22 @@ posterior yields the point estimate and credible interval the dashboard displays
 the median $\hat R_t=F_{\Gam}^{-1}(0.5;a',b')$ and the central $95\%$ interval
 $[F_{\Gam}^{-1}(0.025),F_{\Gam}^{-1}(0.975)]$. Two modelling conveniences are
 worth noting. First, the prior $\Gam(a,b)$ is conjugate, so no sampling is
-required---the entire $\Rt$ inference is three sums and two special-function
+required, the entire $\Rt$ inference is three sums and two special-function
 evaluations per day, which is what makes it feasible on the edge. Second, the
 window length $\tau$ trades variance for bias: a short window tracks rapid changes
-but is noisy, a long window is smooth but lags; we use $\tau=7$ days, a standard
+but is noisy, a long window is smooth but lags; I use $\tau=7$ days, a standard
 compromise that matches the timescale of the generation interval.
 
-\subsection{A numerical correction at large shape}
+\subsubsection{A numerical correction at large shape}
 \label{sec:numerical}
 Evaluating \eqref{eq:prt} naively is a trap. The standard series and
 continued-fraction expansions for the regularised incomplete gamma converge in
-$O(a')$ terms; truncating them at a few hundred iterations---common in lightweight
-libraries---silently returns wrong values once the posterior shape $a'=a+\sum_u y_u$
+$O(a')$ terms; truncating them at a few hundred iterations, common in lightweight
+libraries, silently returns wrong values once the posterior shape $a'=a+\sum_u y_u$
 grows into the hundreds, as it does for any daily count series. Empirically the
 truncated evaluation can invert the sign of the estimate, mapping growth to decay.
 
-We switch, for $a'>80$, to the Wilson--Hilferty cube-root normal approximation
+I switch, for $a'>80$, to the Wilson--Hilferty cube-root normal approximation
 \citep{wilsonhilferty1931}. If $X\sim\Gam(a,1)$ then $(X/a)^{1/3}$ is
 approximately normal with mean $1-\tfrac{1}{9a}$ and variance $\tfrac{1}{9a}$,
 giving
@@ -695,13 +707,13 @@ F_{\Gam}(x;a,1)\approx\Phi\!\left(\frac{(x/a)^{1/3}-\big(1-\tfrac{1}{9a}\big)}{\
 accurate to $\sim10^{-4}$ for $a\gtrsim30$ and numerically stable for any $a$.
 Posterior quantiles for the credible interval use the same approximation. The
 corrected estimator reproduces a reference scientific-computing implementation to
-three decimals, and is what underlies the calibration of \S\ref{sec:results}. We
+three decimals, and is what underlies the calibration of \S\ref{sec:results}. I
 flag this because the defect is easy to introduce, hard to notice (the output
 looks plausible), and corrupts exactly the high-count regime where wastewater
 nowcasting operates.
 
 % ============================================================================
-\section{Multi-Stream Fusion}
+\subsection{Multi-stream fusion}
 \label{sec:fusion}
 
 \paragraph{Full tier.}
@@ -712,18 +724,18 @@ $I_{1:T}$ and the $\log\Rt$ random walk \eqref{eq:rw}, and the joint posterior
 $p_t$ is the posterior mass on $\{\Rt>1\}$ at the latest day. This couples the
 streams through $I_{1:T}$ and is the appropriate tool when a cell has overlapping
 modalities. Sampling the latent incidence path jointly with $\log\Rt$ is a
-non-centred hierarchical model: we sample the standardised random-walk innovations
+non-centred hierarchical model: I sample the standardised random-walk innovations
 and transform them, which decorrelates the geometry and lets NUTS mix efficiently
 despite the strong prior coupling between adjacent $\Rt$. Posterior summaries are
 the median $\Rt$, the central credible interval, and the tail mass $p_t$; standard
 convergence diagnostics ($\hat R$ and effective sample size) gate the output. The
 backend is the right tool precisely when the lightweight independence assumption
-is least defensible---a pathogen observed simultaneously in wastewater and
+is least defensible, a pathogen observed simultaneously in wastewater and
 genomes, where the two streams share the latent incidence and must not be
 double-counted.
 
 \paragraph{Lightweight tier.}
-Absent a backend, we combine the per-stream alarms
+Absent a backend, I combine the per-stream alarms
 $a^{\mathrm{txt}},a^{\mathrm{ww}},a^{\mathrm{gen}}\in[0,1]$ by an
 independent-evidence (noisy-or) rule, restricted to the set $\mathcal A_k$ of
 streams that actually carry data for pathogen $k$:
@@ -792,10 +804,10 @@ $a^{\mathrm{gen}}\leftarrow$ tail-prob of $\jsd$ via Eq.~\eqref{eq:jsd}\;
 \end{algorithm}
 
 % ============================================================================
-\section{Forecasting}
+\subsection{Forecasting}
 \label{sec:forecast}
 
-We extend $p_t$ forward by a damped-trend projection \citep{gardner1985} in
+I extend $p_t$ forward by a damped-trend projection \citep{gardner1985} in
 logit space, which keeps the forecast in $[0,1]$ and lets the trend mean-revert
 rather than extrapolate a transient slope. With $z_t=\mathrm{logit}\,p_t$, a
 recent drift $\hat\delta$ estimated from the last $k$ first differences, residual
@@ -813,10 +825,10 @@ $\sqrt h$ to communicate the rapidly growing uncertainty of multi-week
 projection.
 
 % ============================================================================
-\section{Calibration Methodology}
+\subsection{Calibration methodology}
 \label{sec:calmethod}
 
-For probabilistic forecasts $\{(p_i,y_i)\}_{i=1}^N$ with $y_i\in\{0,1\}$ we use
+For probabilistic forecasts $\{(p_i,y_i)\}_{i=1}^N$ with $y_i\in\{0,1\}$ I use
 four standard instruments. Partition $[0,1]$ into bins $\{B_b\}$ with mean
 prediction $\bar p_{B_b}$ and observed frequency $\bar y_{B_b}$. The
 \emph{reliability diagram} plots $\bar y_{B_b}$ against $\bar p_{B_b}$; a perfect
@@ -830,9 +842,10 @@ The \emph{Brier score} $\mathrm{BS}=\frac1N\sum_i(p_i-y_i)^2$ is a strictly prop
 scoring rule \citep{brier1950,gneiting2007} and admits the Murphy decomposition
 \citep{murphy1973}
 \begin{equation}
-\mathrm{BS}=\underbrace{\textstyle\sum_b\tfrac{|B_b|}{N}(\bar p_{B_b}-\bar y_{B_b})^2}_{\text{reliability}}
--\underbrace{\textstyle\sum_b\tfrac{|B_b|}{N}(\bar y_{B_b}-\bar y)^2}_{\text{resolution}}
-+\underbrace{\bar y(1-\bar y)}_{\text{uncertainty}},
+\resizebox{0.92\columnwidth}{!}{$\displaystyle
+\mathrm{BS}=\underbrace{\sum_b\tfrac{|B_b|}{N}(\bar p_{B_b}-\bar y_{B_b})^2}_{\text{reliability}}
+-\underbrace{\sum_b\tfrac{|B_b|}{N}(\bar y_{B_b}-\bar y)^2}_{\text{resolution}}
++\underbrace{\bar y(1-\bar y)}_{\text{uncertainty}}$},
 \label{eq:murphy}
 \end{equation}
 which separates miscalibration (reliability, lower is better) from informativeness
@@ -845,28 +858,28 @@ the average in \eqref{eq:ece} with a maximum over bins and bounds the worst-case
 gap. \emph{Sharpness} is the variance of the forecasts, $\frac1N\sum_i(p_i-\bar
 p)^2$; a forecaster can be perfectly calibrated yet useless if it always emits the
 base rate (zero sharpness), so calibration must be read together with sharpness
-and resolution, which is why we report all of them.
+and resolution, which is why I report all of them.
 
 \paragraph{Validation protocol.}
-To validate $p_t$ on real data we use the modality with the longest dense record,
-wastewater. At each day $t$ we compute $p_t$ from data up to $t$ via
-\eqref{eq:epiestim}--\eqref{eq:prt}, and we define the binary outcome by realised
+To validate $p_t$ on real data I use the modality with the longest dense record,
+wastewater. At each day $t$ I compute $p_t$ from data up to $t$ via
+\eqref{eq:epiestim}--\eqref{eq:prt}, and I define the binary outcome by realised
 growth over the following two weeks, $y_t=\mathbf 1[\bar c_{t+1:t+14}>\bar c_t]$.
 This is the operational content of $\Prob(\Rt>1)$: the probability that activity
-is about to rise. The protocol is strictly prospective---the prediction at $t$
-uses only data up to $t$, and the outcome uses only data after $t$---so there is
+is about to rise. The protocol is strictly prospective, the prediction at $t$
+uses only data up to $t$, and the outcome uses only data after $t$, so there is
 no leakage, and the $1{,}334$ forecast--outcome pairs are produced by sliding $t$
-across the entire record. We deliberately do \emph{not} apply any post-hoc
+across the entire record. I deliberately do \emph{not} apply any post-hoc
 recalibration before reporting, so the diagram in \S\ref{sec:results} reflects the
-raw served probability; we revisit recalibration in \S\ref{sec:discuss}.
+raw served probability; I revisit recalibration in \S\ref{sec:discuss}.
 
 % ============================================================================
-\section{System Implementation}
+\subsection{Implementation}
 \label{sec:impl}
 
 MOSAIC runs in two faithful tiers that share observation models and target. The
-\emph{lightweight tier} executes the entire pipeline---BOCPD, JSD, EpiEstim,
-fusion, calibration, and forecasting---in TypeScript on serverless
+\emph{lightweight tier} executes the entire pipeline, BOCPD, JSD, EpiEstim,
+fusion, calibration, and forecasting, in TypeScript on serverless
 infrastructure, with no backend; the \emph{full tier} fits the hierarchical
 posterior \eqref{eq:joint} in Python with NumPyro when a backend URL is
 configured. Three engineering decisions make the lightweight tier robust.
@@ -891,7 +904,7 @@ Table~\ref{tab:complexity} the per-request complexity that keeps the serverless
 tier within the platform's payload and time limits.
 
 \begin{table}[t]
-\centering\small
+\centering\footnotesize
 \caption{Per-request cost of each detector. $T$ windows, $K$ lineages, $B$
 baseline length, $S$ serial-interval support, $W$ alarm window.}
 \label{tab:complexity}
@@ -910,7 +923,7 @@ Forecast & $O(k)$ & last $k$ points \\
 \end{table}
 
 \begin{table}[t]
-\centering\small
+\centering\footnotesize
 \caption{Public REST API (lite tier; proxied to the backend when configured).}
 \label{tab:api}
 \begin{tabular}{ll}
@@ -930,7 +943,7 @@ Endpoint & Purpose \\
 \end{table}
 
 % ============================================================================
-\section{Experiments and Results}
+\section{Results}
 \label{sec:results}
 
 \paragraph{Data.}
@@ -948,7 +961,7 @@ Figure~\ref{fig:ww} overlays the national wastewater percentile with the EpiEsti
 $\Prob(\Rt>1)$. The growth probability behaves as a leading indicator: it rises
 through $50\%$ ahead of each wave peak and falls during declines, across four
 years and roughly eight waves. This is the expected behaviour of a
-derivative-like signal---$\Prob(\Rt>1)$ turns before the level does---and it is
+derivative-like signal, $\Prob(\Rt>1)$ turns before the level does, and it is
 the qualitative precondition for the quantitative calibration that follows.
 
 The mechanism is worth stating because it explains why the calibration succeeds.
@@ -964,17 +977,17 @@ the green level peaks, and each decline is preceded by a red excursion below
 $50\%$; the few short intervals where the two disagree are turning points, where
 the slope changes faster than the two-week label can resolve.
 
-\begin{figure}[t]
+\begin{figure*}[t]
 \centering
-\includegraphics[width=\linewidth]{figures/fig_wastewater_rt.pdf}
+\includegraphics[width=0.86\linewidth]{figures/fig_wastewater_rt.pdf}
 \caption{Wastewater nowcasting on real CDC NWSS data. National mean percentile
 (green) and EpiEstim $\Prob(\Rt>1)$ (red), 2021--2025. The growth probability
 leads each wave.}
 \label{fig:ww}
-\end{figure}
+\end{figure*}
 
-\subsection{Calibration of $\Prob(\Rt>1)$ --- main result}
-We evaluate the served probability against realised growth (\S\ref{sec:calmethod})
+\subsection{Calibration of $\Prob(\Rt>1)$ ,  main result}
+I evaluate the served probability against realised growth (\S\ref{sec:calmethod})
 over $N=1{,}334$ day-ahead forecasts. The system attains
 \[
 \textbf{ECE}=0.086,\quad \textbf{Brier}=0.124,\quad \textbf{AUROC}=0.917,
@@ -983,24 +996,24 @@ with base growth rate $0.486$ and mean forecast $0.503$. The reliability curve
 (Figure~\ref{fig:cal}, left; bins in Table~\ref{tab:bins}) tracks the diagonal:
 $\mathrm{ECE}<0.10$ certifies good calibration, and $\mathrm{AUROC}=0.92$ certifies
 strong discrimination. Concretely, when MOSAIC states $75\%$, activity rises about
-$87\%$ of the time, and when it states $15\%$, about $6\%$---a slight, benign
+$87\%$ of the time, and when it states $15\%$, about $6\%$, a slight, benign
 under-confidence in the high bins.
 
 This is what makes the number actionable. A decision-maker reading a calibrated
 $30\%$ knows it is a watch-and-wait signal that will be wrong about a third of the
 time, while a calibrated $80\%$ warrants a concrete response; the two are
 \emph{different} recommendations precisely because the probability is faithful.
-An uncalibrated score---however good its ranking---does not support this kind of
+An uncalibrated score, however good its ranking, does not support this kind of
 threshold-based decision, because the threshold's meaning drifts with the data.
 The direction of the residual miscalibration is also benign for early warning: the
 high bins grow \emph{more} often than stated (the model is under-confident, not
 over-confident), so the system errs toward caution rather than false
-reassurance. We report the raw curve without the single isotonic recalibration map
+reassurance. I report the raw curve without the single isotonic recalibration map
 that would close this gap, both for honesty and because the gap is small enough
 ($\mathrm{ECE}=0.086$) that recalibration is optional rather than necessary.
 
 \begin{table}[t]
-\centering\small
+\centering\footnotesize
 \caption{Reliability bins for $\Prob(\Rt>1)$ on the NWSS record. ``pred'' is the
 mean predicted probability, ``obs'' the observed growth frequency, $n$ the count.}
 \label{tab:bins}
@@ -1033,22 +1046,22 @@ large relative to the uncertainty $0.250=\bar y(1-\bar y)$ (the forecasts carry
 substantial information about which days grow). This is the quantitative content
 of the claim that the percentage means what it says.
 
-\begin{figure}[t]
+\begin{figure*}[t]
 \centering
-\includegraphics[width=0.49\linewidth]{figures/fig_calibration.pdf}\hfill
-\includegraphics[width=0.49\linewidth]{figures/fig_alerts.pdf}
+\includegraphics[width=0.46\linewidth]{figures/fig_calibration.pdf}\hfill
+\includegraphics[width=0.46\linewidth]{figures/fig_alerts.pdf}
 \caption{Left: reliability diagram of $\Prob(\Rt>1)$ over $1{,}334$ forecasts on
 the NWSS record (ECE $0.086$, Brier $0.124$, AUROC $0.917$). Right: live alert
 feed, fused $\Prob(\Rt>1)$ stacked by stream contribution; SARS-CoV-2 is
 wastewater-driven, the rest text-driven.}
 \label{fig:cal}
-\end{figure}
+\end{figure*}
 
 \subsection{Genomic anomaly and lineage turnover}
 Figure~\ref{fig:jsd} plots the Jensen--Shannon divergence of the SARS-CoV-2
 lineage distribution against a $90$-window baseline, with documented variant
 emergences marked, and the lineage frequencies that drive it. The major antigenic
-transitions---the Omicron sweep, the BA.5 and XBB transitions, and JN.1---coincide
+transitions, the Omicron sweep, the BA.5 and XBB transitions, and JN.1, coincide
 with elevated divergence, while the detector is quiescent during periods of stable
 composition, exactly the discrimination Lemma~\ref{lem:jsd} is designed to
 provide. The lineage panel underneath makes the same story concrete: the original
@@ -1056,23 +1069,23 @@ B-lineage gives way abruptly to Omicron at the end of 2021, after which a sequen
 of sub-lineages (BA.2, BA.5, the XBB family, JN.1, and the 2025 recombinants)
 each rises and falls, and every one of these turnovers registers as a divergence
 excursion. The genomic stream is therefore highly \emph{informative} about
-antigenic change, but---unlike the wastewater stream---its alarm is not, on its
+antigenic change, but, unlike the wastewater stream, its alarm is not, on its
 own, a calibrated probability of growth, because a lineage turnover need not
-coincide with a change in transmission. This is the empirical reason we calibrate
+coincide with a change in transmission. This is the empirical reason I calibrate
 on wastewater and treat the genomic alarm as corroborating rather than primary
 evidence in the fusion; it is also why a single-stream system is insufficient and
 the multi-modal design is warranted.
 
-\begin{figure}[t]
+\begin{figure*}[t]
 \centering
-\includegraphics[width=\linewidth]{figures/fig_jsd.pdf}\\[2pt]
-\includegraphics[width=\linewidth]{figures/fig_lineages.pdf}
+\includegraphics[width=0.82\linewidth]{figures/fig_jsd.pdf}\\[2pt]
+\includegraphics[width=0.82\linewidth]{figures/fig_lineages.pdf}
 \caption{Genomic stream. Top: Jensen--Shannon divergence of the SARS-CoV-2 lineage
 distribution (real Nextstrain snapshots) with documented variant-emergence dates.
 Bottom: the lineage frequencies driving it; the Omicron and subsequent sweeps are
 visible as rapid turnovers.}
 \label{fig:jsd}
-\end{figure}
+\end{figure*}
 
 \subsection{Text change-points and live alerts}
 Figure~\ref{fig:bocpd} shows Poisson--Gamma BOCPD on the daily WHO/ProMED report
@@ -1096,7 +1109,7 @@ probability $P(r_t{=}0)$ rises when clustered reports follow a quiet interval.}
 \end{figure}
 
 \begin{table}[t]
-\centering\small
+\centering\footnotesize
 \caption{Live MOSAIC alert feed (snapshot). Fused $\Prob(\Rt>1)$ and dominant
 stream for concurrently active cells; locations list the specific countries
 mentioned in the reports.}
@@ -1131,31 +1144,31 @@ the growing uncertainty of multi-week projection.
 \end{figure}
 
 \subsection{Discrimination and sharpness}
-Beyond calibration we examine \emph{discrimination}---the ability to separate
-growth from non-growth days---and \emph{sharpness}---how concentrated the
+Beyond calibration I examine \emph{discrimination}, the ability to separate
+growth from non-growth days, and \emph{sharpness}, how concentrated the
 forecasts are away from the base rate. Figure~\ref{fig:roc} (left) plots the ROC
 curve; the area under it is $0.917$, far above the chance diagonal, so a randomly
 chosen growth day receives a higher $\Prob(\Rt>1)$ than a randomly chosen
 non-growth day $92\%$ of the time. Figure~\ref{fig:roc} (right) shows the
 distribution of predicted probabilities: it is bimodal, with substantial mass
 near $0$ and near $1$, and a mean of $0.50$ that matches the base growth rate of
-$0.49$. A sharp \emph{and} calibrated forecaster is the goal---sharpness without
+$0.49$. A sharp \emph{and} calibrated forecaster is the goal, sharpness without
 calibration is overconfidence, calibration without sharpness is the useless
-climatological forecast---and MOSAIC achieves both.
+climatological forecast, and MOSAIC achieves both.
 
-\begin{figure}[t]
+\begin{figure*}[t]
 \centering
-\includegraphics[width=0.49\linewidth]{figures/fig_roc.pdf}\hfill
-\includegraphics[width=0.49\linewidth]{figures/fig_sharpness.pdf}
+\includegraphics[width=0.46\linewidth]{figures/fig_roc.pdf}\hfill
+\includegraphics[width=0.46\linewidth]{figures/fig_sharpness.pdf}
 \caption{Left: ROC curve of $\Prob(\Rt>1)$ against realised growth (AUROC
 $0.917$). Right: histogram of predicted probabilities (sharpness); the
 distribution is bimodal and its mean matches the base rate.}
 \label{fig:roc}
-\end{figure}
+\end{figure*}
 
 \subsection{Sensitivity to the forecast horizon}
 \label{sec:horizon}
-The validation outcome depends on the horizon $h$ over which we ask whether
+The validation outcome depends on the horizon $h$ over which I ask whether
 activity rises. Table~\ref{tab:horizon} and Figure~\ref{fig:horizon} sweep
 $h\in\{7,14,21,28\}$ days. A clear and interpretable trade-off emerges: as the
 horizon lengthens, the ECE \emph{improves} (from $0.100$ at one week to $0.044$ at
@@ -1167,7 +1180,7 @@ two-week horizon used throughout sits near the knee of this trade-off, with both
 ECE $<0.10$ and AUROC $>0.91$.
 
 \begin{table}[t]
-\centering\small
+\centering\footnotesize
 \caption{Calibration and discrimination versus forecast horizon $h$ (days).}
 \label{tab:horizon}
 \begin{tabular}{ccccc}
@@ -1184,7 +1197,7 @@ $h$ & $N$ & ECE & Brier & AUROC \\
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.78\linewidth]{figures/fig_horizon.pdf}
+\includegraphics[width=0.95\linewidth]{figures/fig_horizon.pdf}
 \caption{Calibration versus forecast horizon. ECE and Brier (left axis), AUROC
 (right axis). Longer horizons are easier to calibrate but harder to discriminate.}
 \label{fig:horizon}
@@ -1193,7 +1206,7 @@ $h$ & $N$ & ECE & Brier & AUROC \\
 \subsection{Sensitivity to the serial interval}
 \label{sec:si}
 EpiEstim requires an assumed generation/serial interval, which is uncertain in
-practice. Table-free, we sweep the assumed serial-interval mean from $3.5$ to
+practice. Table-free, I sweep the assumed serial-interval mean from $3.5$ to
 $8.0$ days (Figure~\ref{fig:si}). The discrimination is essentially invariant
 (AUROC $0.906$--$0.927$), confirming that the \emph{ranking} of growth days does
 not depend on the exact interval, while the calibration shifts predictably: a
@@ -1206,7 +1219,7 @@ tuned per pathogen if a labelled growth signal were available.
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.78\linewidth]{figures/fig_si_sensitivity.pdf}
+\includegraphics[width=0.95\linewidth]{figures/fig_si_sensitivity.pdf}
 \caption{Sensitivity of calibration to the assumed serial-interval mean.
 Discrimination is invariant; calibration shifts smoothly from over- to
 under-confidence, with the literature value ($5.1$ d) well-calibrated.}
@@ -1214,7 +1227,7 @@ under-confidence, with the literature value ($5.1$ d) well-calibrated.}
 \end{figure}
 
 \subsection{Stability across years}
-To check that the result is not an artefact of one favourable period, we compute
+To check that the result is not an artefact of one favourable period, I compute
 the metrics separately for each calendar year (Table~\ref{tab:peryear},
 Figure~\ref{fig:relyears}). Calibration is stable: the ECE stays in
 $[0.069,0.145]$ and the AUROC in $[0.900,0.947]$ across four years spanning the
@@ -1232,7 +1245,7 @@ in every year, confirming the calibration is not an artefact of one era.}
 \end{figure}
 
 \begin{table}[t]
-\centering\small
+\centering\footnotesize
 \caption{Per-year calibration ($h{=}14$).}
 \label{tab:peryear}
 \begin{tabular}{ccccc}
@@ -1248,7 +1261,7 @@ Year & $N$ & ECE & Brier & AUROC \\
 \end{table}
 
 \subsection{How early does the signal turn?}
-Finally we quantify the lead time directly. We detect the national wave peaks in
+Finally I quantify the lead time directly. I detect the national wave peaks in
 the percentile series (prominence-based peak detection) and, for each, find the
 last upward crossing of $\Prob(\Rt>1)$ through $0.5$ during the preceding rise.
 Across the detected waves with an identifiable crossing
@@ -1261,7 +1274,7 @@ itself peaks, which is precisely the window in which an early-warning signal is
 actionable.
 
 \begin{table}[t]
-\centering\small
+\centering\footnotesize
 \caption{Per-wave lead of $\Prob(\Rt>1)>0.5$ over the national wave peak.}
 \label{tab:leadwave}
 \begin{tabular}{lcc}
@@ -1281,8 +1294,8 @@ Wave peak (date) & Peak pctl. & Lead (days) \\
 
 \subsection{Choosing an operating threshold}
 The calibration and ROC results together let a user pick an alert threshold that
-matches their tolerance for false alarms, and---because the probability is
-calibrated---read off what that threshold means. The dashboard's default bands
+matches their tolerance for false alarms, and, because the probability is
+calibrated, read off what that threshold means. The dashboard's default bands
 (low $<0.4$, moderate $0.4$--$0.7$, high $0.7$--$0.85$, critical $\ge0.85$)
 correspond to points on the reliability curve of Table~\ref{tab:bins}: a moderate
 alert at $0.4$ precedes growth in roughly a quarter to a half of cases and is a
@@ -1291,8 +1304,8 @@ of cases and warrants action. Because the curve is monotone and close to the
 diagonal, moving the threshold trades sensitivity for specificity along the ROC of
 Figure~\ref{fig:roc} in a predictable way; a user who can tolerate a $20\%$
 false-positive rate operates near the upper-left knee of that curve, capturing the
-large majority of true growth onsets. The point we stress is that this entire
-exercise---choosing a threshold and knowing its consequences---is only possible
+large majority of true growth onsets. The point I stress is that this entire
+exercise, choosing a threshold and knowing its consequences, is only possible
 \emph{because} the probability is calibrated; on an uncalibrated score the same
 numeric threshold would mean different things in different years.
 
@@ -1304,7 +1317,7 @@ consistent with the leading-indicator behaviour established in
 Figure~\ref{fig:ww}.
 
 \begin{table}[t]
-\centering\small
+\centering\footnotesize
 \caption{Retrospective validation outbreaks and their WHO DON dates.}
 \label{tab:lead}
 \begin{tabular}{lcc}
@@ -1320,26 +1333,28 @@ H5N1 cattle (USA) & 2024-03-25 & 8--15 d \\
 \end{table}
 
 % ============================================================================
-\section{Design Choices and Alternatives}
+\section{Discussion}
+
+\subsection{Design choices and alternatives}
 \label{sec:design}
 
 Several modelling choices deserve explicit justification, because each had a
-defensible alternative that we rejected for a concrete reason.
+defensible alternative that I rejected for a concrete reason.
 
 \paragraph{EpiEstim rather than Wallinga--Teunis.}
 The Wallinga--Teunis estimator assigns infectors to infectees retrospectively and
 is excellent for post-hoc reconstruction, but it requires future data to estimate
-the present $\Rt$ and is therefore biased near the right edge of the series---exactly
+the present $\Rt$ and is therefore biased near the right edge of the series, exactly
 the edge an early-warning system lives on. EpiEstim's instantaneous formulation
 \eqref{eq:epiestim} uses only past data, is unbiased at the current time under the
 renewal assumption, and is conjugate, which is what permits a closed-form
 serverless implementation. The price is a dependence on the assumed generation
-interval, which we fix from the literature rather than estimate.
+interval, which I fix from the literature rather than estimate.
 
 \paragraph{Jensen--Shannon rather than Kullback--Leibler.}
 The asymmetric KL divergence $\KL(\mathbf L_t\|\bar{\mathbf L}_t)$ diverges when a
-newly emerging lineage has zero baseline frequency---precisely the case we most
-want to detect---so it is numerically unusable on sparse compositional data. The
+newly emerging lineage has zero baseline frequency, precisely the case I most
+want to detect, so it is numerically unusable on sparse compositional data. The
 Jensen--Shannon divergence \eqref{eq:jsd} is the symmetrised, smoothed variant
 that remains finite and bounded (Lemma~\ref{lem:jsd}); its square root is
 moreover a proper metric \citep{endres2003}, which makes thresholding it
@@ -1349,7 +1364,7 @@ well-behaved.
 A linear opinion pool $p_k=\sum_j\omega_j a^{(j)}$ caps the fused probability at
 the largest single weight and cannot express the intuition that two independent
 moderate alarms are jointly strong evidence. The logarithmic / noisy-or pool
-\eqref{eq:noisyor} does express it---two streams at $0.5$ fuse to $0.75$---while
+\eqref{eq:noisyor} does express it, two streams at $0.5$ fuse to $0.75$, while
 still preventing any single weak stream from dominating
 (Proposition~\ref{prop:fuse}). When modalities genuinely overlap the independence
 premise fails, which is why the full backend couples them through $I_{1:T}$.
@@ -1359,38 +1374,144 @@ NWSS publishes both raw concentration and a site-relative percentile. The
 percentile is comparable across sites with different catchment sizes, assays, and
 baselines, so its national mean \eqref{eq:natagg} is a stable index even as the
 reporting panel changes; raw concentrations would require site-specific
-normalisation we cannot do without per-site history. The cost is that the
-percentile is a relative level, not an incidence, which we flag as a limitation in
+normalisation I cannot do without per-site history. The cost is that the
+percentile is a relative level, not an incidence, which I flag as a limitation in
 \S\ref{sec:discuss}.
 
 \paragraph{Windowed maximum rather than a cumulative alarm.}
 As Proposition~\ref{prop:cum} shows, accumulating per-step reset probabilities
 drifts to one under the null; the windowed maximum \eqref{eq:cp-alarm} is the
 simplest summary that isolates a genuine recent shift while staying near the floor
-otherwise. We use a window of two to four weeks, matching the timescale on which a
+otherwise. I use a window of two to four weeks, matching the timescale on which a
 public-health response can be mounted.
 
-\section{Discussion and Limitations}
+\subsection{Interpreting the calibration result}
 \label{sec:discuss}
 
 \paragraph{What is, and is not, calibrated.}
 The headline ECE of $0.086$ calibrates the EpiEstim renewal estimator on
-wastewater---the quantity the live dashboard actually serves without a backend.
+wastewater, the quantity the live dashboard actually serves without a backend.
 It is a single-stream, single-pathogen calibration on the modality with the
 longest dense record, and it should be read as evidence that the served
 probability is trustworthy in that regime, not as a calibration of the full
 multi-stream NumPyro posterior, which requires the backend and a labelled
 multi-pathogen corpus. The slight under-confidence visible in the high bins of
 Table~\ref{tab:bins} is a known failure mode that a single post-hoc recalibration
-map (Platt or isotonic) would remove; we report the raw, uncalibrated curve
+map (Platt or isotonic) would remove; I report the raw, uncalibrated curve
 because it is the honest one.
+
+\paragraph{Why calibration is the right bar.}
+It is tempting to evaluate an early-warning system by its hit rate on a handful of
+named outbreaks, but that bar is both too easy (any sufficiently trigger-happy
+detector ``catches'' past outbreaks in hindsight) and too hard (the sample of
+labelled outbreaks is tiny and idiosyncratic). Calibration against continuous
+realised growth is a far more demanding and more honest test: it scores the system
+on \emph{every} day, including the many quiet days on which the correct answer is
+``probably not,'' and it penalises both over- and under-confidence. A system that
+is well-calibrated across $1{,}334$ days has demonstrably learned the base rate,
+the dynamics, and its own uncertainty, in a way that a four-outbreak hit rate
+cannot show.
+
+\paragraph{Deployment lessons.}
+Building the lightweight tier surfaced three classes of bug that a server-backed
+prototype would have masked, and I record them because they are likely generic.
+A self-referential fetch pattern (endpoints calling their own siblings over the
+deployment URL) worked locally and failed in production; a quadratic genomic
+detector was invisible at small scale and fatal at the real panel size; and a
+truncated incomplete-gamma evaluation silently inverted the reproduction-number
+estimate for large counts. Each was caught only because the constraint of a
+backend-free deployment forced the whole pipeline through a single, observable
+path. The general lesson is that operational constraints are not merely a tax on
+research systems; they are a test harness that exposes correctness bugs.
+
+\subsection{Reproducibility}
+\label{sec:repro}
+Every number and figure in \S\ref{sec:results} is regenerated by two scripts that
+pull the live CDC NWSS Socrata API and the bundled Nextstrain snapshots and
+re-derive the detectors, with no manual steps and no synthetic data; the live
+alert and calibration figures additionally call the deployed API so that the paper
+and the dashboard cannot drift. The full source, the bundled data, the
+figure-generation scripts, and this manuscript's sources are in the public
+repository. Because the lightweight tier is deterministic given its inputs, a
+reader who forks the repository and runs the scripts on the same data obtains the
+same ECE, Brier, AUROC, horizon sweep, per-year breakdown, and lead-time
+estimates reported here.
+
+% ============================================================================
+\subsection{Ethical and dual-use considerations}
+\label{sec:ethics}
+
+MOSAIC is a defensive surveillance system built entirely on aggregate,
+de-identified, public data; no individual health records are processed, and the
+outputs are population-level growth probabilities rather than targeting
+information. The principal dual-use consideration for any early-warning system is
+that the same pipeline that flags natural emergence could in principle be
+repurposed to monitor the effect of a deliberate event. I mitigate this in three
+ways. First, I use only already-public aggregate feeds, so the system confers no
+data access that an actor does not already have. Second, I emphasise calibration
+and explicit uncertainty, which discourage over-reaction to weak or single-stream
+signals and make the system's limits legible. Third, I open-source the
+methodology so that its assumptions and failure modes are transparent and
+auditable. The system is intended to augment, not replace, public-health
+judgement, and should be operated with a human in the loop.
+
+\paragraph{Responsible use and governance.}
+Three further safeguards follow from the calibration-first design. First, because
+every alert carries a probability and an explicit uncertainty band rather than a
+binary verdict, the interface structurally discourages the kind of confident,
+context-free claim that drives panic; a moderate probability reads as a moderate
+probability. Second, because the system is single-target and transparent, it
+estimates $\Prob(\Rt>1)$ and nothing more, it does not infer attribution,
+intent, or origin, which are exactly the inferences that would raise the most
+serious dual-use concerns. Third, open-sourcing the methodology means that any
+party relying on the output can audit how it was produced and where it fails,
+which is itself a governance mechanism: a closed early-warning oracle invites
+misplaced trust, whereas an open one invites scrutiny. I recommend that
+deployments retain a human analyst between the dashboard and any consequential
+action, and that operators document the data vintage (which, given the staleness
+of public feeds, can lag materially) alongside any decision.
+
+% ============================================================================
+\subsection{Outlook}
+\label{sec:conclusion}
+
+I presented MOSAIC, an open system that fuses wastewater, genomic, and text
+surveillance into a single calibrated growth probability $\Prob(\Rt>1)$, with a
+complete probabilistic specification, a faithful backend-free deployment, and an
+empirical demonstration that the served probability is well-calibrated
+($\mathrm{ECE}=0.086$) and discriminative ($\mathrm{AUROC}=0.917$) on real
+multi-year data. Along the way I formalised why a windowed-maximum change-point
+alarm is the right summary, proved the relevant boundedness properties of the
+genomic detector, and surfaced and corrected a numerical defect in the
+reproduction-number tail probability that silently corrupts large-count series.
+The limiting factor for open early warning is integration and calibration, not
+data scarcity; an explicit, falsifiable target quantity plus a faithful
+lightweight tier is a practical way to close the gap.
+
+Beyond the specific system, I draw a methodological conclusion. The field's
+default evaluation, did the tool catch the last few outbreaks?, rewards
+sensitivity and hindsight while saying nothing about the trustworthiness of the
+numbers a tool emits day to day. I advocate instead for choosing a falsifiable
+target quantity and reporting its calibration over the entire record, quiet days
+included. Doing so is more demanding, but it is the only way to earn the
+threshold-based trust that operational decision-making requires, and, as I have
+shown, it is achievable for an open, backend-free system on real public data. The
+natural next steps are to extend the calibration to the genomic and text streams
+against their own falsifiable targets, to validate across more pathogens and
+geographies, and to replace the conservative damped-trend forecaster with a
+renewal-consistent generative forecast whose own calibration can be measured. All
+data, code, and figure-generation scripts are open-source: \github.
+
+% ============================================================================
+\section{Limitations}
+\label{sec:limitations}
 
 \paragraph{Proxies and staleness.}
 The NWSS percentile is a site-relative \emph{level}, not a concentration, so the
 renewal-equation incidence proxy is approximate; the strong calibration result
 indicates the approximation is informative for \emph{growth}, but absolute $\Rt$
-magnitudes should be read with care. Public feeds also lag and freeze---the NWSS
-percentile series we use ends in late 2025---so the system anchors all analysis
+magnitudes should be read with care. Public feeds also lag and freeze, the NWSS
+percentile series I use ends in late 2025, so the system anchors all analysis
 windows to the latest available data rather than to wall-clock time. Regex
 extraction in the lightweight tier is lower-recall than the LLM extractor in the
 backend, and the country-resolution step can attribute a country mentioned
@@ -1410,121 +1531,19 @@ validation to other pathogens and locations, and to the genomic and text streams
 individually, is the natural next step, as is replacing the conservative
 damped-trend forecaster with a renewal-consistent generative forecast.
 
-\paragraph{Why calibration is the right bar.}
-It is tempting to evaluate an early-warning system by its hit rate on a handful of
-named outbreaks, but that bar is both too easy (any sufficiently trigger-happy
-detector ``catches'' past outbreaks in hindsight) and too hard (the sample of
-labelled outbreaks is tiny and idiosyncratic). Calibration against continuous
-realised growth is a far more demanding and more honest test: it scores the system
-on \emph{every} day, including the many quiet days on which the correct answer is
-``probably not,'' and it penalises both over- and under-confidence. A system that
-is well-calibrated across $1{,}334$ days has demonstrably learned the base rate,
-the dynamics, and its own uncertainty, in a way that a four-outbreak hit rate
-cannot show.
-
-\paragraph{Deployment lessons.}
-Building the lightweight tier surfaced three classes of bug that a server-backed
-prototype would have masked, and we record them because they are likely generic.
-A self-referential fetch pattern (endpoints calling their own siblings over the
-deployment URL) worked locally and failed in production; a quadratic genomic
-detector was invisible at small scale and fatal at the real panel size; and a
-truncated incomplete-gamma evaluation silently inverted the reproduction-number
-estimate for large counts. Each was caught only because the constraint of a
-backend-free deployment forced the whole pipeline through a single, observable
-path. The general lesson is that operational constraints are not merely a tax on
-research systems; they are a test harness that exposes correctness bugs.
-
 \paragraph{Threats to validity.}
-We highlight three. First, the growth label is defined on the same wastewater
+I highlight three. First, the growth label is defined on the same wastewater
 series used to form the prediction, so the calibration measures the internal
 consistency of the renewal estimator against the data's own future, not against an
 external gold standard such as hospitalizations; the per-year stability
 (Table~\ref{tab:peryear}) and horizon robustness (Table~\ref{tab:horizon})
 mitigate but do not eliminate this concern. Second, autocorrelation in daily
 wastewater means the $1{,}334$ forecasts are not independent, so the effective
-sample size---and hence the precision of the reported metrics---is smaller than
+sample size, and hence the precision of the reported metrics, is smaller than
 $N$; the consistency across disjoint calendar years is reassuring on this point.
 Third, peak detection for the lead-time analysis depends on a prominence
-threshold; we verified the median lead is stable to reasonable changes of that
+threshold; I verified the median lead is stable to reasonable changes of that
 threshold.
-
-\section{Reproducibility}
-\label{sec:repro}
-Every number and figure in \S\ref{sec:results} is regenerated by two scripts that
-pull the live CDC NWSS Socrata API and the bundled Nextstrain snapshots and
-re-derive the detectors, with no manual steps and no synthetic data; the live
-alert and calibration figures additionally call the deployed API so that the paper
-and the dashboard cannot drift. The full source, the bundled data, the
-figure-generation scripts, and this manuscript's sources are in the public
-repository. Because the lightweight tier is deterministic given its inputs, a
-reader who forks the repository and runs the scripts on the same data obtains the
-same ECE, Brier, AUROC, horizon sweep, per-year breakdown, and lead-time
-estimates reported here.
-
-% ============================================================================
-\section{Ethical and Dual-Use Considerations}
-\label{sec:ethics}
-
-MOSAIC is a defensive surveillance system built entirely on aggregate,
-de-identified, public data; no individual health records are processed, and the
-outputs are population-level growth probabilities rather than targeting
-information. The principal dual-use consideration for any early-warning system is
-that the same pipeline that flags natural emergence could in principle be
-repurposed to monitor the effect of a deliberate event. We mitigate this in three
-ways. First, we use only already-public aggregate feeds, so the system confers no
-data access that an actor does not already have. Second, we emphasise calibration
-and explicit uncertainty, which discourage over-reaction to weak or single-stream
-signals and make the system's limits legible. Third, we open-source the
-methodology so that its assumptions and failure modes are transparent and
-auditable. The system is intended to augment, not replace, public-health
-judgement, and should be operated with a human in the loop.
-
-\paragraph{Responsible use and governance.}
-Three further safeguards follow from the calibration-first design. First, because
-every alert carries a probability and an explicit uncertainty band rather than a
-binary verdict, the interface structurally discourages the kind of confident,
-context-free claim that drives panic; a moderate probability reads as a moderate
-probability. Second, because the system is single-target and transparent---it
-estimates $\Prob(\Rt>1)$ and nothing more---it does not infer attribution,
-intent, or origin, which are exactly the inferences that would raise the most
-serious dual-use concerns. Third, open-sourcing the methodology means that any
-party relying on the output can audit how it was produced and where it fails,
-which is itself a governance mechanism: a closed early-warning oracle invites
-misplaced trust, whereas an open one invites scrutiny. We recommend that
-deployments retain a human analyst between the dashboard and any consequential
-action, and that operators document the data vintage (which, given the staleness
-of public feeds, can lag materially) alongside any decision.
-
-% ============================================================================
-\section{Conclusion}
-\label{sec:conclusion}
-
-We presented MOSAIC, an open system that fuses wastewater, genomic, and text
-surveillance into a single calibrated growth probability $\Prob(\Rt>1)$, with a
-complete probabilistic specification, a faithful backend-free deployment, and an
-empirical demonstration that the served probability is well-calibrated
-($\mathrm{ECE}=0.086$) and discriminative ($\mathrm{AUROC}=0.917$) on real
-multi-year data. Along the way we formalised why a windowed-maximum change-point
-alarm is the right summary, proved the relevant boundedness properties of the
-genomic detector, and surfaced and corrected a numerical defect in the
-reproduction-number tail probability that silently corrupts large-count series.
-The limiting factor for open early warning is integration and calibration, not
-data scarcity; an explicit, falsifiable target quantity plus a faithful
-lightweight tier is a practical way to close the gap.
-
-Beyond the specific system, we draw a methodological conclusion. The field's
-default evaluation---did the tool catch the last few outbreaks?---rewards
-sensitivity and hindsight while saying nothing about the trustworthiness of the
-numbers a tool emits day to day. We advocate instead for choosing a falsifiable
-target quantity and reporting its calibration over the entire record, quiet days
-included. Doing so is more demanding, but it is the only way to earn the
-threshold-based trust that operational decision-making requires, and, as we have
-shown, it is achievable for an open, backend-free system on real public data. The
-natural next steps are to extend the calibration to the genomic and text streams
-against their own falsifiable targets, to validate across more pathogens and
-geographies, and to replace the conservative damped-trend forecaster with a
-renewal-consistent generative forecast whose own calibration can be measured. All
-data, code, and figure-generation scripts are open-source: \github.
 
 {\small
 \bibliographystyle{plainnat}
@@ -1609,7 +1628,7 @@ A.~H. Murphy. A new vector partition of the probability score.
 \emph{J. Appl. Meteorol.}, 12(4):595--600, 1973.
 
 \bibitem[Naughton et al.(2023)]{naughton2023}
-C.~C. Naughton et al. Show us the data: global COVID-19 wastewater monitoring.
+C.~C. Naughton et al. Show me the data: global COVID-19 wastewater monitoring.
 \emph{FEMS Microbes}, 4, 2023.
 
 \bibitem[CDC NWSS(2024)]{nwss}
