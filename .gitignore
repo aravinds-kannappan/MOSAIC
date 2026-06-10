@@ -57,3 +57,6 @@ logs/
 *.pem
 *.key
 secrets/
+
+# Paper build environment
+.paper-venv/

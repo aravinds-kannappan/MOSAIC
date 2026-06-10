@@ -26,10 +26,77 @@ interface StreamEntry {
   pGenomic: number;
 }
 
+interface ForecastPoint {
+  date: string;
+  p_outbreak: number;
+  p_outbreak_lower: number;
+  p_outbreak_upper: number;
+  forecast: true;
+}
+
+const median = (arr: number[]): number => {
+  if (arr.length === 0) return 0;
+  const s = [...arr].sort((a, b) => a - b);
+  const m = Math.floor(s.length / 2);
+  return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
+};
+
+const logit = (p: number) => {
+  const c = Math.min(Math.max(p, 0.01), 0.99);
+  return Math.log(c / (1 - c));
+};
+const invLogit = (z: number) => 1 / (1 + Math.exp(-z));
+
+/**
+ * Damped-trend forecast of the fused P(R_t>1) in logit space.
+ *
+ * The recent drift is extrapolated with geometric damping (Gardner & McKenzie
+ * 1985) so the projection mean-reverts rather than running away, and the 95%
+ * band widens as √h with the residual volatility of recent first differences.
+ */
+function forecastSeries(
+  points: Array<{ date: string; p: number }>,
+  horizon: number,
+  stepDays: number
+): ForecastPoint[] {
+  if (points.length < 4) return [];
+  const k = Math.min(8, points.length);
+  const recent = points.slice(-k).map((d) => logit(d.p));
+  const diffs: number[] = [];
+  for (let i = 1; i < recent.length; i++) diffs.push(recent[i] - recent[i - 1]);
+  const drift = diffs.reduce((a, b) => a + b, 0) / diffs.length;
+  const resid = diffs.map((d) => d - drift);
+  const sd = Math.sqrt(
+    Math.max(resid.reduce((a, b) => a + b * b, 0) / Math.max(1, resid.length - 1), 0.02)
+  );
+
+  const last = recent[recent.length - 1];
+  const lastDay = Math.floor(new Date(`${points[points.length - 1].date}T00:00:00Z`).getTime() / DAY_MS);
+  const damp = 0.8;
+  const out: ForecastPoint[] = [];
+  let driftSum = 0;
+  for (let h = 1; h <= horizon; h++) {
+    driftSum += Math.pow(damp, h - 1);
+    const mean = last + drift * driftSum;
+    const se = sd * Math.sqrt(h);
+    const date = new Date((lastDay + h * stepDays) * DAY_MS).toISOString().split("T")[0];
+    out.push({
+      date,
+      p_outbreak: invLogit(mean),
+      p_outbreak_lower: invLogit(mean - 1.96 * se),
+      p_outbreak_upper: invLogit(mean + 1.96 * se),
+      forecast: true,
+    });
+  }
+  return out;
+}
+
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const pathogen = searchParams.get("pathogen") ?? "SARS-CoV-2";
   const location = searchParams.get("location") ?? "US";
+  const range = searchParams.get("range") ?? "recent"; // "recent" (1y) | "all"
+  const withForecast = searchParams.get("forecast") !== "0";
 
   // Proxy to Python backend for full inference
   const backendUrl = process.env.MOSAIC_API_URL;
@@ -117,10 +184,13 @@ export async function GET(req: NextRequest) {
   }
 
   const latestData = new Date(`${sortedDates[sortedDates.length - 1]}T00:00:00Z`);
+  const earliestData = new Date(`${sortedDates[0]}T00:00:00Z`);
   const dateTo = searchParams.get("dateTo") ? new Date(searchParams.get("dateTo")!) : latestData;
   const dateFrom = searchParams.get("dateFrom")
     ? new Date(searchParams.get("dateFrom")!)
-    : new Date(dateTo.getTime() - 365 * DAY_MS);
+    : range === "all"
+      ? earliestData
+      : new Date(dateTo.getTime() - 365 * DAY_MS);
 
   const filtered = sortedDates.filter((d) => {
     const dt = new Date(`${d}T00:00:00Z`);
@@ -160,14 +230,28 @@ export async function GET(req: NextRequest) {
     };
   });
 
+  // Forward forecast of the fused P(R_t>1), in the cadence of the recent points.
+  let forecast: ForecastPoint[] = [];
+  if (withForecast && signals.length >= 4) {
+    const recentPts = signals.slice(-12).map((s) => ({ date: s.date, p: s.p_outbreak }));
+    const days = recentPts.map((p) => Math.floor(new Date(`${p.date}T00:00:00Z`).getTime() / DAY_MS));
+    const gaps: number[] = [];
+    for (let i = 1; i < days.length; i++) gaps.push(days[i] - days[i - 1]);
+    const stepDays = Math.max(1, Math.round(median(gaps) || 14));
+    forecast = forecastSeries(recentPts, 6, stepDays);
+  }
+
   return NextResponse.json({
     pathogen,
     location,
     date_range: [dateFrom.toISOString().split("T")[0], dateTo.toISOString().split("T")[0]],
     signals,
+    forecast,
     meta: {
       pointCount: signals.length,
       latestDataDate: sortedDates[sortedDates.length - 1],
+      range,
+      forecastHorizon: forecast.length,
       fusionMethod: "lightweight-js",
       rtMethod: "EpiEstim-sliding-window",
       fetchedAt: new Date().toISOString(),

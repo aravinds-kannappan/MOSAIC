@@ -31,12 +31,20 @@ const LOCATIONS = [
   { value: "global", label: "Global" },
 ];
 
+interface ForecastPoint {
+  date: string;
+  p_outbreak: number;
+  p_outbreak_lower: number;
+  p_outbreak_upper: number;
+}
+
 interface SignalData {
   signals: OutbreakSignal[];
+  forecast?: ForecastPoint[];
   who_don_date?: string;
   mosaic_alert_date?: string;
   lead_time_days?: number;
-  meta?: { fusionMethod?: string };
+  meta?: { fusionMethod?: string; latestDataDate?: string; range?: string };
 }
 
 const CustomTooltip = ({ active, payload, label }: {
@@ -64,6 +72,7 @@ const CustomTooltip = ({ active, payload, label }: {
 export function SignalExplorer() {
   const [pathogen, setPathogen] = useState("SARS-CoV-2");
   const [location, setLocation] = useState("US");
+  const [range, setRange] = useState<"recent" | "all">("recent");
   const [data, setData] = useState<SignalData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -71,13 +80,13 @@ export function SignalExplorer() {
   useEffect(() => {
     setLoading(true);
     setError(null);
-    fetch(`/api/v1/signals?pathogen=${encodeURIComponent(pathogen)}&location=${location}`)
+    fetch(`/api/v1/signals?pathogen=${encodeURIComponent(pathogen)}&location=${location}&range=${range}`)
       .then((r) => r.json())
       .then((d) => { setData(d); setLoading(false); })
       .catch((e) => { setError(String(e)); setLoading(false); });
-  }, [pathogen, location]);
+  }, [pathogen, location, range]);
 
-  const chartData =
+  const historical =
     data?.signals.map((s) => ({
       date: s.date,
       "Fused P(Rt>1)": s.p_outbreak,
@@ -87,6 +96,25 @@ export function SignalExplorer() {
       "Wastewater alarm": s.p_wastewater,
       "Genomic alarm": s.p_genomic,
     })) ?? [];
+
+  const forecastPts =
+    data?.forecast?.map((f) => ({
+      date: f.date,
+      Forecast: f.p_outbreak,
+      fcLower: f.p_outbreak_lower,
+      fcUpper: f.p_outbreak_upper,
+    })) ?? [];
+
+  // Bridge the dashed forecast to the last observed point so the line is continuous.
+  if (historical.length && forecastPts.length) {
+    const last = historical[historical.length - 1] as Record<string, number | string>;
+    last.Forecast = last["Fused P(Rt>1)"];
+    last.fcLower = last["Fused P(Rt>1)"];
+    last.fcUpper = last["Fused P(Rt>1)"];
+  }
+
+  const forecastStart = forecastPts[0]?.date;
+  const chartData = [...historical, ...forecastPts];
 
   return (
     <div className="flex flex-col gap-4">
@@ -116,6 +144,25 @@ export function SignalExplorer() {
               <option key={l.value} value={l.value}>{l.label}</option>
             ))}
           </select>
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <label className="text-[10px] uppercase tracking-wider text-muted-foreground">Window</label>
+          <div className="flex h-8 rounded-md border border-border overflow-hidden">
+            {(["recent", "all"] as const).map((r) => (
+              <button
+                key={r}
+                onClick={() => setRange(r)}
+                className={`px-2.5 text-xs transition-colors ${
+                  range === r
+                    ? "bg-primary/20 text-foreground"
+                    : "bg-muted text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {r === "recent" ? "Recent (1y)" : "Full history"}
+              </button>
+            ))}
+          </div>
         </div>
 
         {data?.lead_time_days !== undefined && data.lead_time_days > 0 && (
@@ -195,6 +242,35 @@ export function SignalExplorer() {
                 label={{ value: "Alert threshold (0.80)", fill: "#f59e0b", fontSize: 10, position: "right" }}
               />
 
+              {/* Forecast region: band + dashed projection of the fused posterior */}
+              <Area
+                dataKey="fcUpper"
+                fill="#f59e0b"
+                stroke="none"
+                fillOpacity={0.1}
+                legendType="none"
+                name="Forecast 95% CI"
+                isAnimationActive={false}
+              />
+              <Area
+                dataKey="fcLower"
+                fill="#0b1220"
+                stroke="none"
+                fillOpacity={1}
+                legendType="none"
+                name="fc lower"
+                isAnimationActive={false}
+              />
+              {forecastStart && (
+                <ReferenceLine
+                  x={forecastStart}
+                  stroke="#f59e0b"
+                  strokeDasharray="2 2"
+                  strokeOpacity={0.6}
+                  label={{ value: "forecast →", fill: "#f59e0b", fontSize: 9, position: "insideTopRight" }}
+                />
+              )}
+
               {/* WHO DON reference line */}
               {data?.who_don_date && (
                 <ReferenceLine
@@ -240,6 +316,14 @@ export function SignalExplorer() {
                 stroke="#f87171"
                 strokeWidth={2.5}
                 dot={false}
+              />
+              <Line
+                dataKey="Forecast"
+                stroke="#f59e0b"
+                strokeWidth={2}
+                strokeDasharray="5 3"
+                dot={false}
+                connectNulls
               />
             </ComposedChart>
           </ResponsiveContainer>

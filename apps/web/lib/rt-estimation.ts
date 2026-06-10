@@ -121,12 +121,32 @@ function normalQuantile(p: number): number {
   }
 }
 
+/** Standard normal CDF via the Abramowitz-Stegun erf approximation. */
+function normalCdf(z: number): number {
+  const t = 1 / (1 + 0.2316419 * Math.abs(z));
+  const d = 0.3989422804014327 * Math.exp(-z * z / 2);
+  const p =
+    d * t * (0.319381530 + t * (-0.356563782 + t * (1.781477937 + t * (-1.821255978 + t * 1.330274429))));
+  return z >= 0 ? 1 - p : p;
+}
+
 /**
- * Incomplete gamma regularised function P(a, x) via series expansion.
+ * Incomplete gamma regularised function P(a, x).
  * Used to compute P(R_t > 1) = 1 - P(shape, rate * 1).
+ *
+ * For large shape `a` the series / continued-fraction expansions need far more
+ * than a few hundred terms to converge (and silently return garbage if capped),
+ * so we switch to the Wilson-Hilferty cube-root normal approximation, which is
+ * accurate to ~1e-4 for a ≳ 30 and numerically stable for any a.
  */
 function incompleteGammaP(a: number, x: number): number {
   if (x <= 0) return 0;
+  if (a > 80) {
+    // Wilson-Hilferty: (X/a)^(1/3) ~ N(1 - 1/(9a), 1/(9a)) for X ~ Gamma(a, 1)
+    const c = 1 / (9 * a);
+    const z = (Math.cbrt(x / a) - (1 - c)) / Math.sqrt(c);
+    return normalCdf(z);
+  }
   if (x >= a + 1) {
     // Continued fraction (Lentz)
     let f = 1e-30, c = 1e-30, d = 1 - (a + 1) / x;
