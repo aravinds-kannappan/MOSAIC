@@ -1,0 +1,42 @@
+{
+  "calibration": {
+    "ece": 0.08575068594115179,
+    "brier": 0.12388570424509043,
+    "auc": 0.916655607166556,
+    "n_observations": 1334,
+    "base_rate": 0.48650674662668664,
+    "sharpness": 0.5028785804835804
+  },
+  "alerts": [
+    {
+      "pathogen": "ebola",
+      "location": "DR Congo",
+      "p_outbreak": 0.4010356672995772,
+      "alert_level": "MODERATE"
+    },
+    {
+      "pathogen": "hantavirus",
+      "location": "United States",
+      "p_outbreak": 0.31731977750490603,
+      "alert_level": "LOW"
+    },
+    {
+      "pathogen": "SARS-CoV-2",
+      "location": "United States",
+      "p_outbreak": 0.19811984579575248,
+      "alert_level": "LOW"
+    },
+    {
+      "pathogen": "measles",
+      "location": "Bangladesh",
+      "p_outbreak": 0.0684652485889925,
+      "alert_level": "LOW"
+    },
+    {
+      "pathogen": "H5N1",
+      "location": "Italy",
+      "p_outbreak": 0.055050573574557116,
+      "alert_level": "LOW"
+    }
+  ]
+}

@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Activity, Github, BookOpen, RefreshCw } from "lucide-react";
+import Link from "next/link";
+import { Activity, Github, FlaskConical, RefreshCw } from "lucide-react";
 
 interface HeaderProps {
   lastUpdated?: string;
@@ -95,15 +96,13 @@ export function Header({ lastUpdated, streamStatus, onRefresh, isRefreshing }: H
               <span className="hidden sm:inline">GitHub</span>
             </a>
 
-            <a
-              href="https://github.com/aravinds-kannappan/MOSAIC/blob/main/README.md"
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href="/research"
               className="flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
             >
-              <BookOpen className="h-3.5 w-3.5" />
-              <span className="hidden sm:inline">Docs</span>
-            </a>
+              <FlaskConical className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Research</span>
+            </Link>
           </div>
         </div>
       </div>
