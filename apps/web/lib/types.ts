@@ -25,6 +25,8 @@ export interface ActiveAlert {
   pathogen: string;
   location: string;
   location_country: string;
+  /** All relevant countries for this alert (for the map + feed) */
+  countries?: Array<{ name: string; iso_a2: string }>;
   p_outbreak: number;
   r_t_median: number;
   r_t_ci_lower: number;

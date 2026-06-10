@@ -144,6 +144,17 @@ const ALIASES: Array<[string, Country]> = [
   ["slovakia", { iso_a2: "SK", name: "Slovakia" }],
 ];
 
+function boundaryMatch(hay: string, alias: string, from = 0): number {
+  let idx = hay.indexOf(alias, from);
+  while (idx !== -1) {
+    const before = idx === 0 ? " " : hay[idx - 1];
+    const after = idx + alias.length >= hay.length ? " " : hay[idx + alias.length];
+    if (!/[a-z]/.test(before) && !/[a-z]/.test(after)) return idx;
+    idx = hay.indexOf(alias, idx + 1);
+  }
+  return -1;
+}
+
 /**
  * Scan a text string for the first (longest-alias) country mention.
  * Returns the canonical country or null if none is found.
@@ -152,13 +163,40 @@ export function resolveCountry(text: string | null | undefined): Country | null 
   if (!text) return null;
   const hay = text.toLowerCase();
   for (const [alias, country] of ALIASES) {
-    // Word-boundary-ish match to avoid e.g. "guinea" inside "Guinea-Bissau"
-    const idx = hay.indexOf(alias);
-    if (idx === -1) continue;
-    const before = idx === 0 ? " " : hay[idx - 1];
-    const after = idx + alias.length >= hay.length ? " " : hay[idx + alias.length];
-    if (/[a-z]/.test(before) || /[a-z]/.test(after)) continue;
-    return country;
+    if (boundaryMatch(hay, alias) !== -1) return country;
   }
   return null;
+}
+
+/**
+ * Scan a text string for ALL distinct country mentions, in order of first
+ * appearance. Longer aliases are matched first and their character span is
+ * consumed so that a contained shorter alias (e.g. "Congo" inside "DR Congo")
+ * is not double-counted.
+ */
+export function resolveCountries(text: string | null | undefined): Country[] {
+  if (!text) return [];
+  const hay = text.toLowerCase();
+  const consumed = new Array<boolean>(hay.length).fill(false);
+  const found: Array<{ country: Country; at: number }> = [];
+  const seen = new Set<string>();
+
+  for (const [alias, country] of ALIASES) {
+    let from = 0;
+    let idx = boundaryMatch(hay, alias, from);
+    while (idx !== -1) {
+      let overlaps = false;
+      for (let i = idx; i < idx + alias.length; i++) if (consumed[i]) { overlaps = true; break; }
+      if (!overlaps) {
+        for (let i = idx; i < idx + alias.length; i++) consumed[i] = true;
+        if (!seen.has(country.iso_a2)) {
+          seen.add(country.iso_a2);
+          found.push({ country, at: idx });
+        }
+      }
+      from = idx + alias.length;
+      idx = boundaryMatch(hay, alias, from);
+    }
+  }
+  return found.sort((a, b) => a.at - b.at).map((f) => f.country);
 }

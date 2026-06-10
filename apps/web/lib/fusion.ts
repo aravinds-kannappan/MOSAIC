@@ -13,6 +13,7 @@ import {
   fetchText,
   type ExtractedEvent,
 } from "@/lib/streams";
+import { resolveCountries } from "@/lib/countries";
 import type { ActiveAlert, AlertLevel } from "@/lib/types";
 
 const MAX_SERIES_DAYS = 400;
@@ -137,42 +138,57 @@ export async function computeAlerts(): Promise<AlertsPayload> {
     };
     const contribTotal = rawContribs.text + rawContribs.ww + rawContribs.gen || 1;
 
-    let location = "Global";
-    let locationIso = "";
     const forPathogen = events.filter(
       (e) => e.extracted.pathogen?.toLowerCase() === pathogen.toLowerCase()
     );
-    const locCounts: Record<string, { count: number; iso: string }> = {};
+
+    // Aggregate ALL countries mentioned across this pathogen's reports, ranked
+    // by how often each is mentioned, so we can list specific countries rather
+    // than collapsing to a vague "Global".
+    const countryStats = new Map<string, { name: string; iso: string; count: number }>();
     for (const ev of forPathogen) {
-      if (ev.extracted.location && ev.extracted.locationIso) {
-        const key = ev.extracted.location;
-        locCounts[key] = {
-          count: (locCounts[key]?.count ?? 0) + 1,
-          iso: ev.extracted.locationIso,
-        };
+      for (const c of resolveCountries(`${ev.title} ${ev.description}`)) {
+        const cur = countryStats.get(c.iso_a2);
+        if (cur) cur.count += 1;
+        else countryStats.set(c.iso_a2, { name: c.name, iso: c.iso_a2, count: 1 });
       }
     }
-    const topLoc = Object.entries(locCounts).sort((a, b) => b[1].count - a[1].count)[0];
+    const rankedCountries = Array.from(countryStats.values()).sort((a, b) => b.count - a.count);
+
     const wastewaterDominant = hasWw && pWw >= pText;
+    let location: string;
+    let locationIso: string;
+    let countries: Array<{ name: string; iso_a2: string }>;
+
     if (wastewaterDominant) {
       location = "United States";
       locationIso = "US";
-    } else if (topLoc) {
-      location = topLoc[0];
-      locationIso = topLoc[1].iso;
+      countries = [{ name: "United States", iso_a2: "US" }];
+    } else if (rankedCountries.length > 0) {
+      countries = rankedCountries.map((c) => ({ name: c.name, iso_a2: c.iso }));
+      locationIso = rankedCountries[0].iso;
+      const names = rankedCountries.map((c) => c.name);
+      location =
+        names.length <= 3 ? names.join(", ") : `${names.slice(0, 3).join(", ")} +${names.length - 3}`;
     } else if (hasWw) {
       location = "United States";
       locationIso = "US";
+      countries = [{ name: "United States", iso_a2: "US" }];
+    } else {
+      location = "Multiple countries";
+      locationIso = "";
+      countries = [];
     }
 
     const promedPost = forPathogen.find((e) => e.link)?.link;
     const noveltyFlag = forPathogen.some((e) => e.extracted.noveltyFlag);
 
     alerts.push({
-      id: `${pathogen}-${locationIso || "global"}-${now}`,
+      id: `${pathogen}-${locationIso || "multi"}-${now}`,
       pathogen,
       location,
       location_country: locationIso,
+      countries,
       p_outbreak: pFused,
       r_t_median: 1 + pFused * 0.5,
       r_t_ci_lower: 1 + pFused * 0.1,

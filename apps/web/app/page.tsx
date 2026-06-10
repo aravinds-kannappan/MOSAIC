@@ -7,7 +7,7 @@ import { AlertFeed } from "@/components/dashboard/AlertFeed";
 import { SignalExplorer } from "@/components/dashboard/SignalExplorer";
 import { CalibrationPanel } from "@/components/dashboard/CalibrationPanel";
 import { TodayPulse } from "@/components/dashboard/TodayPulse";
-import { Activity, Map as MapIcon, LineChart, Table2, BarChart3, Info } from "lucide-react";
+import { Activity, Map as MapIcon, LineChart, Table2, BarChart3 } from "lucide-react";
 import type { MapDataPoint, ActiveAlert } from "@/lib/types";
 
 // WorldMap uses react-simple-maps (SVG/D3) — must be client-only
@@ -40,25 +40,33 @@ export default function DashboardPage() {
       setAlertsMeta(data.meta ?? {});
       setAlerts(data.alerts ?? []);
 
-      // Build map data from alerts
+      // Build map data: colour every country an alert touches, not just one.
       const byCountry = new Map<string, MapDataPoint>();
-      for (const alert of data.alerts ?? []) {
-        const iso = alert.location_country;
-        if (!iso) continue;
-        const existing = byCountry.get(iso);
-        if (!existing || alert.p_outbreak > existing.p_outbreak) {
-          byCountry.set(iso, {
-            country: alert.location,
-            iso_a2: alert.location_country,
-            iso_a3: "",
-            p_outbreak: alert.p_outbreak,
-            alert_level: alert.alert_level,
-            pathogens: [],
-          });
-        }
-        const point = byCountry.get(iso)!;
-        if (!point.pathogens.includes(alert.pathogen)) {
-          point.pathogens.push(alert.pathogen);
+      for (const alert of (data.alerts ?? []) as ActiveAlert[]) {
+        const cells =
+          alert.countries && alert.countries.length > 0
+            ? alert.countries
+            : alert.location_country
+              ? [{ name: alert.location, iso_a2: alert.location_country }]
+              : [];
+        for (const cell of cells) {
+          const iso = cell.iso_a2;
+          if (!iso) continue;
+          const existing = byCountry.get(iso);
+          if (!existing || alert.p_outbreak > existing.p_outbreak) {
+            byCountry.set(iso, {
+              country: cell.name,
+              iso_a2: iso,
+              iso_a3: "",
+              p_outbreak: alert.p_outbreak,
+              alert_level: alert.alert_level,
+              pathogens: existing?.pathogens ?? [],
+            });
+          }
+          const point = byCountry.get(iso)!;
+          if (!point.pathogens.includes(alert.pathogen)) {
+            point.pathogens.push(alert.pathogen);
+          }
         }
       }
       setMapData(Array.from(byCountry.values()));
@@ -135,18 +143,6 @@ export default function DashboardPage() {
           lastUpdated={alertsMeta.fetchedAt}
           onSelect={handleSelectAlert}
         />
-
-        {/* Methodology note */}
-        <div className="mb-5 flex items-start gap-2 text-[11px] text-muted-foreground">
-          <Info className="h-3.5 w-3.5 mt-0.5 shrink-0 text-sky-400" />
-          <span>
-            Outbreak probability is computed in-browser using BOCPD (Poisson-Gamma), JSD genomic
-            anomaly scoring, and EpiEstim R<sub>t</sub> estimation — all mathematically equivalent to
-            the paper&apos;s Python pipeline. Deploy{" "}
-            <code className="font-mono text-sky-400">MOSAIC_API_URL</code> for full NumPyro NUTS
-            hierarchical Bayesian fusion with calibrated MCMC posteriors.
-          </span>
-        </div>
 
         {/* Tab navigation */}
         <div className="mb-5 flex gap-1 border-b border-border">
@@ -247,9 +243,6 @@ export default function DashboardPage() {
           <a href="https://promedmail.org" className="hover:text-foreground transition-colors" target="_blank" rel="noopener noreferrer">ProMED</a>
           {" · "}
           <a href="https://www.who.int/emergencies/disease-outbreak-news" className="hover:text-foreground transition-colors" target="_blank" rel="noopener noreferrer">WHO DON</a>
-        </p>
-        <p className="mt-1">
-          AIxBio Hackathon 2026 · Apart Research / BlueDot Impact / Cambridge Biosecurity Hub
         </p>
       </footer>
     </div>
