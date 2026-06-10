@@ -9,16 +9,9 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import type { ActiveAlert, AlertLevel } from "@/lib/types";
+import { computeAlerts, alertLevel } from "@/lib/fusion";
 
-export const revalidate = 900;
-
-function alertLevel(p: number): AlertLevel {
-  if (p >= 0.85) return "CRITICAL";
-  if (p >= 0.70) return "HIGH";
-  if (p >= 0.40) return "MODERATE";
-  return "LOW";
-}
+export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -30,24 +23,17 @@ export async function GET(req: NextRequest) {
   if (backendUrl) {
     try {
       const res = await fetch(`${backendUrl}/api/v1/outbreak-probability?${searchParams.toString()}`, {
-        next: { revalidate: 900 },
+        signal: AbortSignal.timeout(10_000),
       });
       const data = await res.json();
       return NextResponse.json(data, { status: res.status });
     } catch {
-      // Fall through to the Vercel-safe live-data route.
+      // Fall through to the lightweight in-process fusion.
     }
   }
 
-  const baseUrl = process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
-    : new URL(req.url).origin;
-
-  const alertsRes = await fetch(`${baseUrl}/api/v1/alerts`, {
-    next: { revalidate: 900 },
-  });
-  const alertsData = await alertsRes.json();
-  const alerts = (alertsData.alerts ?? []) as ActiveAlert[];
+  const alertsData = await computeAlerts();
+  const alerts = alertsData.alerts;
 
   const matched =
     alerts.find(

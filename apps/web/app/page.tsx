@@ -6,8 +6,9 @@ import { Header } from "@/components/dashboard/Header";
 import { AlertFeed } from "@/components/dashboard/AlertFeed";
 import { SignalExplorer } from "@/components/dashboard/SignalExplorer";
 import { CalibrationPanel } from "@/components/dashboard/CalibrationPanel";
+import { TodayPulse } from "@/components/dashboard/TodayPulse";
 import { Activity, Map as MapIcon, LineChart, Table2, BarChart3, Info } from "lucide-react";
-import type { MapDataPoint } from "@/lib/types";
+import type { MapDataPoint, ActiveAlert } from "@/lib/types";
 
 // WorldMap uses react-simple-maps (SVG/D3) — must be client-only
 const WorldMap = dynamic(
@@ -26,6 +27,7 @@ interface AlertsMeta {
 
 export default function DashboardPage() {
   const [mapData, setMapData] = useState<MapDataPoint[]>([]);
+  const [alerts, setAlerts] = useState<ActiveAlert[]>([]);
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
   const [alertsMeta, setAlertsMeta] = useState<AlertsMeta>({});
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -36,6 +38,7 @@ export default function DashboardPage() {
       const res = await fetch("/api/v1/alerts");
       const data = await res.json();
       setAlertsMeta(data.meta ?? {});
+      setAlerts(data.alerts ?? []);
 
       // Build map data from alerts
       const byCountry = new Map<string, MapDataPoint>();
@@ -69,6 +72,15 @@ export default function DashboardPage() {
     await loadMapData();
     setIsRefreshing(false);
   }, [loadMapData]);
+
+  const handleSelectAlert = useCallback((alert: ActiveAlert) => {
+    if (alert.location_country) {
+      setSelectedCountry(alert.location_country);
+      setActiveTab("map");
+    } else {
+      setActiveTab("alerts");
+    }
+  }, []);
 
   useEffect(() => {
     loadMapData();
@@ -116,6 +128,13 @@ export default function DashboardPage() {
             </a>
           </div>
         </div>
+
+        {/* Today's Outbreak Pulse — landing summary of active signals */}
+        <TodayPulse
+          alerts={alerts}
+          lastUpdated={alertsMeta.fetchedAt}
+          onSelect={handleSelectAlert}
+        />
 
         {/* Methodology note */}
         <div className="mb-5 flex items-start gap-2 text-[11px] text-muted-foreground">
