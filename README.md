@@ -2,19 +2,121 @@
 
 [![CI](https://github.com/aravinds-kannappan/MOSAIC/actions/workflows/ci.yml/badge.svg)](https://github.com/aravinds-kannappan/MOSAIC/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Vercel](https://img.shields.io/badge/Deployed-Vercel-black)](https://mosaic-surveillance.vercel.app)
+[![Deploy](https://img.shields.io/badge/Deploy-Vercel-black)](https://vercel.com/new)
+[![Paper](https://img.shields.io/badge/Paper-PDF-red)](paper/mosaic.pdf)
 
-> **A multi-modal Bayesian disease intelligence system that fuses wastewater, genomic, and news surveillance streams into calibrated posterior estimates of R_t and outbreak probability P(R_t > 1).**
+> **A multi-modal Bayesian disease-intelligence system that fuses wastewater, genomic, and outbreak-text streams into a single calibrated probability — `P(Rₜ > 1)`, the probability that transmission is growing right now.**
+
+MOSAIC turns three asynchronous public data feeds into one number a public-health
+decision-maker can act on, and — critically — **validates that the number is
+calibrated**. On the real multi-year CDC wastewater record, the probability MOSAIC
+reports is well-calibrated (**ECE = 0.086**) and strongly discriminative
+(**AUROC = 0.917**). A full write-up with derivations and results is in
+[`paper/mosaic.pdf`](paper/mosaic.pdf), and a findings summary lives on the
+in-app **Research** page (`/research`).
 
 ---
 
-## The Problem
+## Table of contents
 
-Every major pandemic has been preceded by detectable early signals arriving days to weeks before official alerts. The critical failure is not data availability — it is **integration and calibration**.
+1. [What the percentages mean](#what-the-percentages-mean)
+2. [The problem](#the-problem)
+3. [System design](#system-design)
+4. [Architecture](#architecture)
+5. [The dashboard](#the-dashboard)
+6. [Data sources](#data-sources)
+7. [Metrics & definitions](#metrics--definitions)
+8. [The probabilistic model](#the-probabilistic-model)
+9. [Calibration & validation](#calibration--validation)
+10. [REST API](#rest-api)
+11. [Quick start](#quick-start)
+12. [Reproducing the paper figures](#reproducing-the-paper-figures)
+13. [Repository structure](#repository-structure)
+14. [Ethics & dual-use](#ethics--dual-use)
+15. [Citation](#citation)
 
-No existing open-source tool fuses **wastewater** (CDC NWSS), **genomics** (Nextstrain), and **news text** (ProMED/WHO DON) into a single probabilistic framework. No published system tells a public-health decision-maker: *"there is a 78% probability that R_t > 1 for pathogen X in location Y right now."*
+---
 
-**MOSAIC does.**
+## What the percentages mean
+
+Everything on the dashboard is expressed as **`P(Rₜ > 1)`** — the posterior
+probability that the effective reproduction number exceeds one, i.e. that the
+epidemic curve is **turning upward** for that pathogen and location *right now*.
+
+- **0 %** → strong evidence transmission is shrinking.
+- **50 %** → genuinely uncertain whether it is growing or shrinking.
+- **100 %** → strong evidence transmission is growing.
+
+This is deliberately unitless and comparable across pathogens. It is also
+**falsifiable**, which is what lets us calibrate it: we checked, on 1,334
+day-ahead forecasts from the real national wastewater record, whether activity
+actually rose when the model said it would. It did, at the stated rate —
+**when MOSAIC says 75 %, activity subsequently rises ~87 % of the time; when it
+says 15 %, ~6 % of the time** (a slight, benign under-confidence). See
+[Calibration & validation](#calibration--validation).
+
+Two derived labels appear alongside the probability:
+
+| Alert level | `P(Rₜ > 1)` range | Meaning |
+|-------------|-------------------|---------|
+| 🟢 **LOW**       | `< 0.40`        | No strong growth signal |
+| 🟠 **MODERATE**  | `0.40 – 0.70`   | Probable growth, watch |
+| 🔴 **HIGH**      | `0.70 – 0.85`   | Likely growth |
+| 🟣 **CRITICAL**  | `≥ 0.85`        | Strong growth signal |
+
+Each alert also shows **stream contributions** — how much of the signal came
+from the text, wastewater, and genomic streams (an additive analogue of Shapley
+attribution).
+
+---
+
+## The problem
+
+Every major epidemic of the past two decades was preceded by signals detectable
+days to weeks before official declarations. The binding constraint on early
+warning is **not data availability** — wastewater is sampled routinely, genomes
+are shared openly, and outbreak reports are published continuously. The
+constraint is:
+
+1. **Integration** — fusing three asynchronous, differently-scaled,
+   differently-noised streams into one coherent quantity, and
+2. **Calibration** — ensuring that when the system says "78 %," the event happens
+   about 78 % of the time.
+
+MOSAIC addresses both, and ships as a public, backend-free dashboard so the
+result is always live.
+
+---
+
+## System design
+
+MOSAIC runs in **two faithful tiers** that share the same observation models and
+the same target quantity `P(Rₜ > 1)`:
+
+- **Lightweight tier (default, no backend).** The entire pipeline runs in
+  TypeScript on serverless infrastructure (Vercel). Change-point detection
+  (BOCPD), Jensen–Shannon anomaly scoring, EpiEstim `Rₜ`, fusion, calibration,
+  and forecasting all execute in-process. This is what the public dashboard
+  uses; it never requires a server.
+- **Full tier (optional).** When `MOSAIC_API_URL` is set, the routes proxy to a
+  Python/FastAPI backend that fits the full hierarchical renewal-equation model
+  with NumPyro / NUTS and an LLM signal extractor.
+
+Three design decisions make the lightweight tier robust on serverless hosts:
+
+- **In-process fusion, no HTTP self-calls.** Fusion endpoints (`alerts`,
+  `signals`, `outbreak-probability`) compute the streams by calling shared
+  functions in [`lib/streams.ts`](apps/web/lib/streams.ts) /
+  [`lib/fusion.ts`](apps/web/lib/fusion.ts) — they do **not** fetch their own
+  sibling routes over the deployment URL (which fails under cold-start URL
+  resolution / deployment protection and was the original "no signal" bug).
+- **Server-side aggregation + bundled snapshots.** Wastewater is aggregated
+  server-side via SoQL into a small national series; genomic lineage snapshots
+  are bundled (~150 KB) rather than re-downloading ~9 MB live trees. The JSD
+  detector is `O(T·B·K)`, not `O(T²·K²)`.
+- **Dynamic routes + health check.** All data routes are dynamic (no empty
+  static pre-render), and [`/api/v1/health`](apps/web/app/api/v1/health/route.ts)
+  reports per-stream reachability and the latest available data date.
 
 ---
 
@@ -22,56 +124,198 @@ No existing open-source tool fuses **wastewater** (CDC NWSS), **genomics** (Next
 
 ```
 Public APIs (live, no auth required)
-  CDC NWSS · Nextstrain · ProMED RSS · WHO DON
-          │                        │
-┌─────────▼─────────┐   ┌──────────▼────────────────┐
-│  VERCEL (Next.js) │   │  PYTHON BACKEND (Docker)   │
-│  ───────────────  │   │  ────────────────────────  │
-│  Layer 1 lite:    │   │  Layer 1: Llama 3.3 70B    │
-│   Regex extract   │   │    LLM extraction + outlines│
-│  Layer 2 in TS:   │   │  Layer 2a: bocpdms BOCPD   │
-│   BOCPD + JSD +   │   │  Layer 2b: Rbeast BEAST    │
-│   EpiEstim Rt     │   │  Layer 2c: numpy JSD       │
-│  Layer 3 lite:    │   │  Layer 3: NumPyro NUTS     │
-│   Soft fusion     │   │    (4 chains, 2000 samples)│
-│  Layer 4:         │   │  Layer 4: FastAPI REST     │
-│   Dashboard UI    │   └────────────────────────────┘
-└───────────────────┘
+  CDC NWSS · Nextstrain · WHO DON · ProMED
+        │            │            │
+        ▼            ▼            ▼
+┌──────────────────────────────────────────────────────────┐
+│ Layer 1 — Signal extraction                              │
+│   WHO DON / ProMED → structured EpiEvents                │
+│   (regex + country resolver in lite; LLM in backend)     │
+├──────────────────────────────────────────────────────────┤
+│ Layer 2 — Per-stream detectors                           │
+│   2a BOCPD (Poisson-Gamma) on text event counts          │
+│   2b BOCPD + sustained-elevation on NWSS percentile      │
+│   2c Jensen-Shannon divergence on lineage frequencies    │
+├──────────────────────────────────────────────────────────┤
+│ Layer 3 — Fusion                                         │
+│   P(Rₜ>1): noisy-or of present streams (lite)            │
+│            hierarchical NUTS posterior (backend)         │
+├──────────────────────────────────────────────────────────┤
+│ Layer 4 — Calibrated dashboard                           │
+│   Today's Pulse · World Map · Signal Explorer ·          │
+│   Alert Feed · Calibration · Forecast · Research         │
+└──────────────────────────────────────────────────────────┘
 ```
 
-### The Four Layers
-
-| Layer | What it does | Technology |
-|-------|-------------|------------|
-| **1 — LLM Signal Extractor** | Extract structured EpiEvents (pathogen, location, date, case count, confidence) from ProMED RSS + WHO DON | Llama 3.3 70B via Ollama + `outlines` constrained decoding |
-| **2a — BOCPD (text)** | Poisson-Gamma conjugate Bayesian Online Change-Point Detection on daily event counts | `bocpdms` (Adams & MacKay 2007) |
-| **2b — BEAST (wastewater)** | RJMCMC change-point detection on CDC NWSS PMMoV-normalised concentrations | `Rbeast` Python wrapper (Zhao et al. 2019) |
-| **2c — KL anomaly (genomics)** | Jensen-Shannon divergence of 14-day lineage distribution vs 90-day rolling baseline | `numpy` + `scipy` |
-| **3 — Bayesian Hierarchical Fusion** | Renewal-equation latent incidence model with stream-specific observation kernels, fitted jointly | `NumPyro` + NUTS (4 chains, 2000 samples) |
-| **4 — Calibrated Dashboard** | P(R_t > 1) with 95% CI, stream Shapley contributions, reliability diagram | `Next.js` + `Recharts` |
+| Layer | What it does | Lite tier (TypeScript) | Full tier (Python) |
+|-------|--------------|------------------------|--------------------|
+| **1** | Extract `(pathogen, location, date, counts, novelty)` from text | regex + ISO-3166 resolver | Llama / constrained LLM + `outlines` |
+| **2a** | Change-point on text event counts | Poisson-Gamma BOCPD | `bocpdms` |
+| **2b** | Change-point + level on wastewater | BOCPD + elevation noisy-or | `Rbeast` BEAST RJMCMC |
+| **2c** | Genomic lineage-shift anomaly | Jensen-Shannon divergence | `numpy` / `scipy` JSD |
+| **3** | Fuse into `P(Rₜ>1)` | renormalized noisy-or | NumPyro renewal + NUTS |
+| **4** | Calibrated dashboard | Next.js + Recharts | — |
 
 ---
 
-## Quick Start
+## The dashboard
 
-### Option A — Live Dashboard on Vercel
+| Tab | What it shows |
+|-----|---------------|
+| **Today's Outbreak Pulse** | Landing cards for the top active pathogens ranked by `P(Rₜ>1)`, each with location, alert level, and dominant stream. Click a card to focus that country on the map. |
+| **World Map** | Choropleth of `P(Rₜ>1)` by country (keyed on ISO-A2). |
+| **Signal Explorer** | Per-stream alarm time series + fused `P(Rₜ>1)` with a 95 % band. Toggle **Recent (1y) / Full history** (back to 2019) and view the **damped-trend forecast** (dashed, with a widening band) beyond the last observation. |
+| **Alert Feed** | Sortable table of active alerts with `Rₜ` median + 95 % CI, stream-contribution bars, novelty flags, and source links. |
+| **Calibration** | The reliability diagram and ECE / Brier / AUROC computed on the real wastewater record. |
+| **Research** (`/research`) | Plain-language summary of the paper's findings with the real figures and a link to the full PDF. |
 
-1. Fork this repository
-2. Import to [vercel.com/new](https://vercel.com/new)
-3. Either leave **Root Directory** at the repository root or set it to `apps/web`
-4. Deploy — both Vercel configurations point at the Next.js dashboard correctly
+---
 
-The dashboard calls CDC NWSS, Nextstrain, ProMED, and WHO DON **live**. If the
-Python backend is deployed separately, set `MOSAIC_API_URL` in Vercel to enable
-the full NumPyro fusion API; otherwise the app uses the TypeScript BOCPD, JSD,
-and EpiEstim fallback.
+## Data sources
 
-### Option B — Full Stack with Docker
+All public, no authentication required.
+
+| Source | Endpoint | Notes |
+|--------|----------|-------|
+| CDC NWSS wastewater | `data.cdc.gov/resource/2ew6-ywp6.json` | SARS-CoV-2 activity; aggregated server-side into a national daily percentile series (cast `percentile::number`). |
+| Nextstrain lineages | bundled `nextstrain_lineage_snapshots.json` | Pre-computed biweekly lineage frequencies (SARS-CoV-2, H5N1, H1N1, H3N2); live `charon` fallback for other pathogens. |
+| WHO Disease Outbreak News | `cms.who.int/api/hubs/diseaseoutbreaknews` | Queried with `$orderby=PublicationDateAndTime desc` (without it the API returns 2008-era records). |
+| ProMED | `promedmail.org/api/posts` | The legacy `promedmail.org/feed/` RSS was retired; this is the current posts API. Queried best-effort with hard timeouts. |
+
+> **Note on staleness.** Public feeds lag and freeze (the NWSS percentile series
+> currently ends in late 2025). MOSAIC anchors all analysis windows to the
+> *latest available data*, not to wall-clock time, so the dashboard always shows
+> real signal.
+
+---
+
+## Metrics & definitions
+
+| Term | Definition |
+|------|------------|
+| **`P(Rₜ > 1)`** | Posterior probability the effective reproduction number exceeds 1 (transmission growing). The headline number everywhere. |
+| **`Rₜ` [95 % CI]** | Median effective reproduction number and credible interval, from the EpiEstim Poisson-Gamma renewal posterior. |
+| **Wastewater alarm** | Noisy-or of a BOCPD change-point probability and a *sustained-elevation* term (national percentile ≥ 70th). |
+| **Text alarm** | BOCPD change-point on dense daily report counts, weighted by recency (days since last report) and intensity (recent report volume). |
+| **Genomic alarm** | Empirical tail probability of the Jensen–Shannon divergence (JSD) of the 14-day lineage distribution vs. a 90-window baseline. |
+| **Stream contributions** | Normalized marginal evidence of each stream toward the fused probability (additive Shapley-style attribution). |
+| **ECE** | Expected Calibration Error — mean gap between predicted probability and observed frequency across reliability bins. `< 0.10` ⇒ well-calibrated. |
+| **Brier score** | Mean squared error of the probabilistic forecast (a strictly proper scoring rule). Lower is better. |
+| **AUROC** | Area under the ROC curve — rank discrimination between growth and non-growth days. `0.5` = chance, `1.0` = perfect. |
+
+---
+
+## The probabilistic model
+
+Full derivations are in the [paper](paper/mosaic.pdf); the essentials:
+
+**Latent incidence (renewal equation).** `E[Iₜ | Rₜ] = Rₜ · Σₛ wₛ Iₜ₋ₛ`, with
+`log Rₜ ~ N(log Rₜ₋₁, σ²)` and a discretized Gamma serial interval `wₛ`.
+
+**Observation kernels.**
+- Wastewater: `Cₜ ~ NegBin(ρ·Iₜ₋_d, φ)`
+- Text: `Eₜ ~ Poisson(λ·q̂ₜ·Iₜ₋_d)`
+- Genomic: `Lₜ ~ DirichletMultinomial(Nₜ·f(Iₜ₋_d, θ), κ)`
+
+**Detectors.**
+- **BOCPD** (Adams & MacKay 2007): recursive run-length posterior under a
+  Poisson-Gamma → Negative-Binomial predictive; the alarm is the windowed
+  maximum of `P(rₜ = 0)`.
+- **JSD** (Lin 1991): symmetric, bounded `[0, log 2]` divergence of lineage
+  distributions; degenerate single-lineage datasets correctly report no anomaly.
+- **EpiEstim** (Cori et al. 2013): conjugate Gamma posterior on `Rₜ`;
+  `P(Rₜ>1) = 1 − F_Gamma(1; a′, b′)` evaluated with a **Wilson–Hilferty** normal
+  branch for large shape (a numerical fix — the naive series/continued-fraction
+  expansions silently corrupt large-count series).
+
+**Fusion.** Lite tier: `P(Rₜ>1) = 1 − Πⱼ (1 − ωⱼ·aⱼ)` over the streams *present*
+for that pathogen, with weights renormalized so a text-only outbreak is not
+diluted by absent streams. Full tier: the joint posterior
+`p(Θ | C, E, L) ∝ p(C|Θ)p(E|Θ)p(L|Θ)p(Θ)` sampled by NUTS.
+
+**Forecast.** Damped-trend projection (Gardner & McKenzie 1985) in logit space,
+with a `√h`-widening 95 % band.
+
+---
+
+## Calibration & validation
+
+We treat `P(Rₜ>1)` as a probabilistic forecast and validate it on the **real**
+multi-year CDC NWSS national record (2021-12 → 2025-09): at each day compute
+`P(Rₜ>1)` from data up to that day, and label the outcome by whether activity
+actually rose over the next 14 days.
+
+| Metric | Value | Interpretation |
+|--------|-------|----------------|
+| **ECE** | **0.086** | `< 0.10` ⇒ well-calibrated |
+| **Brier** | **0.124** | proper scoring rule |
+| **AUROC** | **0.917** | strong discrimination |
+| **N** | **1,334** | day-ahead forecasts |
+
+The reliability curve hugs the diagonal (see the **Calibration** tab or
+`paper/figures/fig_calibration.pdf`). The dashboard's calibration computation
+([`lib/calibration.ts`](apps/web/lib/calibration.ts)) reproduces these numbers
+live. The full multi-stream NumPyro calibration is produced by the Python
+backend.
+
+The full backend additionally validates against four historical outbreaks with
+documented WHO DON dates (Omicron 2021-11-26, Mpox 2022-05-23, Poliovirus NY
+2022-07-21, H5N1 cattle 2024-03-25).
+
+---
+
+## REST API
+
+Served by the Next.js app (lite tier) or proxied to the Python backend when
+`MOSAIC_API_URL` is set. CORS-enabled, cached at the edge.
+
+| Endpoint | Purpose |
+|----------|---------|
+| `GET /api/v1/alerts` | Fused active alerts with stream attribution and map ISO codes. |
+| `GET /api/v1/signals?pathogen=&location=&range=recent\|all&forecast=1` | Per-stream + fused time series, optional full history and forecast. |
+| `GET /api/v1/outbreak-probability?pathogen=&location=&date=` | Single fused posterior in the paper's API shape. |
+| `GET /api/v1/nwss?pathogen=SARS-CoV-2&state=` | National (or per-jurisdiction) wastewater series + alarm. |
+| `GET /api/v1/nextstrain?pathogen=sars-cov-2` | Genomic JSD anomaly series + top lineages. |
+| `GET /api/v1/promed` | Extracted WHO/ProMED events + per-pathogen daily counts. |
+| `GET /api/v1/calibration` | Reliability diagram + ECE / Brier / AUROC. |
+| `GET /api/v1/health` | Per-stream status and data freshness. |
+
+Example:
+
+```bash
+curl ".../api/v1/outbreak-probability?pathogen=SARS-CoV-2&location=US"
+```
+
+```json
+{
+  "pathogen": "SARS-CoV-2", "location": "US",
+  "p_outbreak": 0.198, "r_t_median": 1.10,
+  "r_t_ci_lower": 1.02, "r_t_ci_upper": 1.24,
+  "alert_level": "LOW",
+  "stream_contributions": { "text_stream": 0.02, "wastewater_stream": 0.93, "genomic_stream": 0.04 },
+  "inference_method": "lightweight-js"
+}
+```
+
+---
+
+## Quick start
+
+### Option A — Live dashboard on Vercel (no backend)
+
+1. Fork this repository.
+2. Import it at [vercel.com/new](https://vercel.com/new). The root `vercel.json`
+   builds `apps/web` automatically (or set **Root Directory** to `apps/web`).
+3. Deploy. The dashboard calls CDC NWSS and WHO/ProMED live and serves the
+   bundled genomic snapshots. Set `MOSAIC_API_URL` to enable the full NumPyro
+   backend; otherwise the TypeScript tier runs everything.
+
+### Option B — Full stack with Docker
 
 ```bash
 git clone https://github.com/aravinds-kannappan/MOSAIC.git
 cd MOSAIC
-cp .env.example .env          # Configure LLM endpoint, DB, etc.
+cp .env.example .env
 docker compose up
 ```
 
@@ -79,180 +323,67 @@ docker compose up
 |---------|-----|
 | Dashboard | http://localhost:3000 |
 | REST API + OpenAPI docs | http://localhost:8000/docs |
-| Jupyter notebooks | http://localhost:8888 |
 
-**Cold-start time: < 10 min** on 16 GB RAM laptop (no GPU required; GPU enables Llama 70B locally).
-
-### Option C — Python Pipeline Only
+### Option C — Web app only, locally
 
 ```bash
-pip install jax[cpu] jaxlib
-pip install -e ".[dev]"
-
-# Fetch + detect on each stream
-python -m mosaic_core.ingest.nwss           # CDC wastewater
-python -m mosaic_core.ingest.nextstrain     # Nextstrain lineages
-python -m mosaic_core.ingest.promed         # ProMED RSS + WHO DON
-
-python -m mosaic_core.detect.bocpd          # BOCPD on text counts
-python -m mosaic_core.detect.kl_anomaly     # JSD genomic anomaly
-
-# Start API
-uvicorn mosaic_core.api.main:app --reload --port 8000
+cd apps/web
+npm install
+npm run dev        # http://localhost:3000
 ```
 
 ---
 
-## Data Sources
+## Reproducing the paper figures
 
-All public, no authentication required:
-
-| Source | Endpoint | Cadence |
-|--------|----------|---------|
-| CDC NWSS wastewater | `data.cdc.gov/resource/2ew6-ywp6.json` | Weekly |
-| Nextstrain SARS-CoV-2 | `nextstrain.org/charon/getDataset?prefix=ncov/open/global/6m` | Continuous |
-| Nextstrain H5N1 | `nextstrain.org/charon/getDataset?prefix=avian-flu/h5n1/ha` | Continuous |
-| Nextstrain seasonal flu | `nextstrain.org/charon/getDataset?prefix=seasonal-flu/...` | Continuous |
-| ProMED-mail RSS | `promedmail.org/feed/` | ~5–20 posts/day |
-| WHO Disease Outbreak News | `cms.who.int/api/hubs/diseaseoutbreaknews` | As published |
-
----
-
-## REST API
-
-When the Python backend is running (`MOSAIC_API_URL=http://localhost:8000`):
+Every figure is generated from real data — the live CDC NWSS Socrata API, the
+bundled Nextstrain snapshots, and the running MOSAIC API. Nothing is synthetic.
 
 ```bash
-GET /api/v1/outbreak-probability?pathogen=SARS-CoV-2&location=US&date=2026-04-22
+cd apps/web && npm run dev          # serve the API on :3000
+python3 -m venv .paper-venv && .paper-venv/bin/pip install matplotlib numpy scipy pypdf
+cd paper && ../.paper-venv/bin/python make_figures.py   # writes paper/figures/*.pdf
+tectonic mosaic.tex                  # compile paper/mosaic.pdf
 ```
-
-```json
-{
-  "pathogen": "SARS-CoV-2",
-  "location": "US",
-  "date": "2026-04-22",
-  "r_t_median": 0.94,
-  "r_t_ci_lower": 0.81,
-  "r_t_ci_upper": 1.12,
-  "p_outbreak": 0.31,
-  "alert_level": "LOW",
-  "stream_contributions": {
-    "text_stream": 0.08,
-    "wastewater_stream": 0.17,
-    "genomic_stream": 0.06
-  },
-  "inference_method": "nuts",
-  "last_updated": "2026-04-22T06:00:00Z"
-}
-```
-
-Full API reference: `http://localhost:8000/docs`
 
 ---
 
-## Mathematical Model
-
-### Latent incidence (renewal equation, §6.2.1)
-$$I_t = R_t \sum_{s=1}^{S} w_s I_{t-s} + \eta_t, \quad \log R_t \sim \mathcal{N}(\log R_{t-1},\, \sigma_R^2)$$
-
-### Wastewater observation (§6.2.2)
-$$C_t \sim \text{NegBin}(\rho_W \cdot I_{t-d_W},\; \phi_W)$$
-
-### News/text observation (§6.2.3)
-$$E_t \sim \text{Poisson}(\lambda_N \cdot \hat{q}_t \cdot I_{t-d_N})$$
-
-### Genomic observation (§6.2.4)
-$$\mathbf{L}_t \sim \text{DirMult}(N_t \cdot \mathbf{f}(I_{t-d_G}, \boldsymbol{\theta}_L),\; \kappa)$$
-
-### Joint posterior (§6.3)
-$$P(\Theta \mid \mathbf{C}, \mathbf{E}, \mathbf{L}) \propto P(\mathbf{C}|\Theta)\cdot P(\mathbf{E}|\Theta)\cdot P(\mathbf{L}|\Theta)\cdot P(\Theta)$$
-
----
-
-## Retrospective Validation
-
-MOSAIC is validated on 4 historical outbreaks (§8). Expected lead times vs WHO DON:
-
-| Outbreak | WHO DON date | Expected lead time |
-|----------|--------------|--------------------|
-| SARS-CoV-2 Omicron | 2021-11-26 | 7–14 days |
-| Mpox USA | 2022-05-23 | 5–12 days |
-| Poliovirus NY | 2022-07-21 | 10–18 days |
-| H5N1 cattle USA | 2024-03-25 | 8–15 days |
-
-```bash
-python -m mosaic_core.fusion.calibration --validate --outbreak all
-```
-
-Populate the retrospective source cache with real public data:
-
-```bash
-python scripts/fetch_historical.py --outbreak all
-python scripts/fetch_current_data.py
-```
-
-This writes provenance manifests plus raw WHO DON and CDC NWSS responses and
-compact Nextstrain-derived lineage snapshots. Empty response arrays are retained
-as real source responses and are not replaced with synthetic data.
-
----
-
-## Repository Structure
+## Repository structure
 
 ```
 MOSAIC/
-├── apps/web/                   # Next.js 14 dashboard (→ Vercel)
-│   ├── app/api/v1/             # Server-side routes: nwss, nextstrain, promed, alerts, signals
-│   ├── components/dashboard/   # WorldMap · SignalExplorer · AlertFeed · CalibrationPanel
-│   └── lib/                    # bocpd.ts · kl-divergence.ts · rt-estimation.ts
-├── mosaic_core/                # Python backend package
-│   ├── ingest/                 # promed.py · nwss.py · nextstrain.py
-│   ├── extract/                # llm_extractor.py · schema.py (EpiEvent Pydantic)
-│   ├── detect/                 # bocpd.py · beast_wrapper.py · kl_anomaly.py
-│   ├── fusion/                 # model.py · inference.py (NUTS+ADVI) · calibration.py
-│   └── api/                    # main.py (FastAPI) · schemas.py
-├── data/gold/                  # Consoli+EventEpi benchmark corpora (download separately)
-├── data/historical/            # Pre-fetched retrospective validation data
-├── notebooks/                  # 01_extraction · 02_changepoint · 03_fusion · 04_validation
-├── tests/                      # pytest: test_bocpd · test_kl_anomaly · test_extractor · test_fusion
-├── scripts/                    # enable-workflows.sh (GitHub Actions setup)
-├── docker-compose.yml          # One-command full-stack deployment
-├── Dockerfile.api              # Python backend container
-└── pyproject.toml              # Python dependencies (pip/uv)
+├── apps/web/                       # Next.js dashboard (→ Vercel)
+│   ├── app/
+│   │   ├── page.tsx                # dashboard (Today's Pulse + tabs)
+│   │   ├── research/page.tsx       # findings summary (the "Research" link)
+│   │   └── api/v1/                 # nwss · nextstrain · promed · alerts ·
+│   │                               #   signals · outbreak-probability ·
+│   │                               #   calibration · health
+│   ├── components/dashboard/       # Header · TodayPulse · WorldMap ·
+│   │                               #   SignalExplorer · AlertFeed · CalibrationPanel
+│   ├── lib/                        # streams.ts · fusion.ts · bocpd.ts ·
+│   │                               #   kl-divergence.ts · rt-estimation.ts ·
+│   │                               #   calibration.ts · countries.ts
+│   ├── data/                       # bundled nextstrain_lineage_snapshots.json
+│   └── public/                     # mosaic.pdf · research/*.png
+├── mosaic_core/                    # Python backend (ingest · detect · fusion · api)
+├── paper/                          # mosaic.tex/pdf · figures/ · make_figures.py
+├── data/                           # historical + current cached source data
+├── docker-compose.yml
+└── pyproject.toml
 ```
 
 ---
 
-## Enabling GitHub Actions
+## Ethics & dual-use
 
-```bash
-gh auth refresh -h github.com -s workflow
-bash scripts/enable-workflows.sh
-```
-
-Workflows:
-- **ci.yml** — lint + type-check + pytest + Next.js build on every PR
-- **data-refresh.yml** — daily 06:00 UTC data refresh + Vercel revalidation trigger
-
-The workflows live under `.github/workflows/`. Copies are also kept in
-`github-workflows/` for users who need to push them with the helper script.
-
----
-
-## Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md). Key areas:
-
-- **New pathogens** — add serial interval in `rt-estimation.ts` and Nextstrain URL in `nextstrain.py`
-- **New data sources** — implement `mosaic_core/ingest/<source>.py`
-- **Multilingual extraction** — fine-tune LLM extractor on Arabic/Mandarin/Swahili ProMED archives
-- **METAGENE-1 integration** — k-mer anomaly detection for truly novel pathogens
-
----
-
-## Ethical Considerations & Dual-Use
-
-MOSAIC is a **defensive** system. All data is aggregate and de-identified. No individual health records are processed. See [docs/dual-use.md](docs/dual-use.md) for the full dual-use risk assessment and responsible disclosure policy.
+MOSAIC is a **defensive** system built entirely on aggregate, de-identified,
+public data; no individual health records are processed. Outputs are
+population-level growth probabilities, not targeting information. We emphasize
+calibration and uncertainty (which discourage over-reaction to weak signals) and
+open-source the methodology so its limits are transparent. The system is
+intended to augment, not replace, public-health judgement. See
+[`docs/dual-use.md`](docs/dual-use.md) where available.
 
 ---
 
@@ -261,13 +392,11 @@ MOSAIC is a **defensive** system. All data is aggregate and de-identified. No in
 ```bibtex
 @misc{mosaic2026,
   title  = {MOSAIC: Multi-Modal Open Surveillance with AI-Driven Calibrated Inference},
-  author = {Kannappan, Aravind and {MOSAIC Contributors}},
+  author = {Kannappan, Aravind},
   year   = {2026},
   url    = {https://github.com/aravinds-kannappan/MOSAIC},
-  note   = {AIxBio Hackathon 2026, Track 2: Pandemic Early Warning}
+  note   = {Calibrated multi-stream outbreak early warning; ECE 0.086, AUROC 0.917}
 }
 ```
 
----
-
-**License: MIT** · Data licences: CDC public domain · Nextstrain CC-BY-4.0 · ProMED open access
+**License: MIT** · Data licences: CDC public domain · Nextstrain CC-BY-4.0 · ProMED / WHO open access
