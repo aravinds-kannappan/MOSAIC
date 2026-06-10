@@ -1,0 +1,5719 @@
+{
+  "datasets": {
+    "h5n1": {
+      "lineages": [
+        "unknown"
+      ],
+      "n_lineages": 1,
+      "n_snapshots": 64,
+      "snapshots": [
+        {
+          "date": "2021-12-26",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2022-04-17",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2022-10-16",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 6
+        },
+        {
+          "date": "2023-06-11",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 7
+        },
+        {
+          "date": "2023-12-24",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 10
+        },
+        {
+          "date": "2024-01-07",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 6
+        },
+        {
+          "date": "2024-01-21",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 8
+        },
+        {
+          "date": "2024-02-04",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 15
+        },
+        {
+          "date": "2024-02-18",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 21
+        },
+        {
+          "date": "2024-03-03",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 67
+        },
+        {
+          "date": "2024-03-17",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 124
+        },
+        {
+          "date": "2024-03-31",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 59
+        },
+        {
+          "date": "2024-05-26",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 20
+        },
+        {
+          "date": "2024-06-09",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 98
+        },
+        {
+          "date": "2024-06-23",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 69
+        },
+        {
+          "date": "2024-07-07",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 93
+        },
+        {
+          "date": "2024-07-21",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 42
+        },
+        {
+          "date": "2024-08-04",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 27
+        },
+        {
+          "date": "2024-08-18",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 55
+        },
+        {
+          "date": "2024-09-01",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 35
+        },
+        {
+          "date": "2024-09-15",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 64
+        },
+        {
+          "date": "2024-09-29",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 85
+        },
+        {
+          "date": "2024-10-13",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 206
+        },
+        {
+          "date": "2024-10-27",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 182
+        },
+        {
+          "date": "2024-11-10",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 191
+        },
+        {
+          "date": "2024-11-24",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 209
+        },
+        {
+          "date": "2024-12-08",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 176
+        },
+        {
+          "date": "2024-12-22",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 111
+        },
+        {
+          "date": "2025-01-05",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 171
+        },
+        {
+          "date": "2025-01-19",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 220
+        },
+        {
+          "date": "2025-02-02",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 151
+        },
+        {
+          "date": "2025-02-16",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 149
+        },
+        {
+          "date": "2025-03-02",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 133
+        },
+        {
+          "date": "2025-03-16",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 175
+        },
+        {
+          "date": "2025-03-30",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 154
+        },
+        {
+          "date": "2025-04-13",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 135
+        },
+        {
+          "date": "2025-04-27",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 88
+        },
+        {
+          "date": "2025-05-11",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 116
+        },
+        {
+          "date": "2025-05-25",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 71
+        },
+        {
+          "date": "2025-06-08",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 36
+        },
+        {
+          "date": "2025-06-22",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 37
+        },
+        {
+          "date": "2025-07-06",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 74
+        },
+        {
+          "date": "2025-07-20",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 75
+        },
+        {
+          "date": "2025-08-03",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 73
+        },
+        {
+          "date": "2025-08-17",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 62
+        },
+        {
+          "date": "2025-08-31",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 56
+        },
+        {
+          "date": "2025-09-14",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 86
+        },
+        {
+          "date": "2025-09-28",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 83
+        },
+        {
+          "date": "2025-10-12",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 97
+        },
+        {
+          "date": "2025-10-26",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 109
+        },
+        {
+          "date": "2025-11-09",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 95
+        },
+        {
+          "date": "2025-11-23",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 67
+        },
+        {
+          "date": "2025-12-07",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 94
+        },
+        {
+          "date": "2025-12-21",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 62
+        },
+        {
+          "date": "2026-01-04",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 95
+        },
+        {
+          "date": "2026-01-18",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 74
+        },
+        {
+          "date": "2026-02-01",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 78
+        },
+        {
+          "date": "2026-02-15",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 131
+        },
+        {
+          "date": "2026-03-01",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 118
+        },
+        {
+          "date": "2026-03-15",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 55
+        },
+        {
+          "date": "2026-03-29",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 23
+        },
+        {
+          "date": "2026-04-12",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 5
+        },
+        {
+          "date": "2026-04-26",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 3
+        },
+        {
+          "date": "2026-05-10",
+          "frequencies": {
+            "unknown": 1.0
+          },
+          "n_sequences": 1
+        }
+      ],
+      "source_url": "https://nextstrain.org/charon/getDataset?prefix=avian-flu/h5n1/ha"
+    },
+    "influenza-h1n1": {
+      "lineages": [
+        "5",
+        "5a",
+        "5a.1",
+        "5a.2",
+        "5a.2a",
+        "5a.2a.1",
+        "6",
+        "6B.1A"
+      ],
+      "n_lineages": 8,
+      "n_snapshots": 117,
+      "snapshots": [
+        {
+          "date": "2018-06-03",
+          "frequencies": {
+            "5": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2018-07-29",
+          "frequencies": {
+            "6B.1A": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2018-09-09",
+          "frequencies": {
+            "5a": 0.6666666666666666,
+            "6B.1A": 0.3333333333333333
+          },
+          "n_sequences": 3
+        },
+        {
+          "date": "2018-09-23",
+          "frequencies": {
+            "6B.1A": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2018-10-21",
+          "frequencies": {
+            "5a": 1.0
+          },
+          "n_sequences": 3
+        },
+        {
+          "date": "2018-11-18",
+          "frequencies": {
+            "5a": 0.5,
+            "6": 0.5
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2018-12-02",
+          "frequencies": {
+            "5a": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2018-12-16",
+          "frequencies": {
+            "5a": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2018-12-30",
+          "frequencies": {
+            "6B.1A": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2019-01-13",
+          "frequencies": {
+            "5a": 0.5,
+            "6B.1A": 0.5
+          },
+          "n_sequences": 4
+        },
+        {
+          "date": "2019-01-27",
+          "frequencies": {
+            "5": 0.5,
+            "5a": 0.5
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2019-03-10",
+          "frequencies": {
+            "6B.1A": 1.0
+          },
+          "n_sequences": 3
+        },
+        {
+          "date": "2019-04-07",
+          "frequencies": {
+            "5a.1": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2019-04-21",
+          "frequencies": {
+            "5": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2019-06-02",
+          "frequencies": {
+            "5": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2019-06-16",
+          "frequencies": {
+            "5a.1": 1.0
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2019-08-11",
+          "frequencies": {
+            "5": 0.5,
+            "5a.1": 0.5
+          },
+          "n_sequences": 4
+        },
+        {
+          "date": "2019-08-25",
+          "frequencies": {
+            "5a.1": 1.0
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2019-09-08",
+          "frequencies": {
+            "5a.1": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2019-09-22",
+          "frequencies": {
+            "5a.1": 1.0
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2019-10-20",
+          "frequencies": {
+            "5a.1": 1.0
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2019-11-03",
+          "frequencies": {
+            "5a.2": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2019-11-17",
+          "frequencies": {
+            "5a.2": 1.0
+          },
+          "n_sequences": 3
+        },
+        {
+          "date": "2019-12-15",
+          "frequencies": {
+            "5a.2": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2019-12-29",
+          "frequencies": {
+            "5a.2": 0.6666666666666666,
+            "6B.1A": 0.3333333333333333
+          },
+          "n_sequences": 3
+        },
+        {
+          "date": "2020-01-12",
+          "frequencies": {
+            "5a.2": 1.0
+          },
+          "n_sequences": 6
+        },
+        {
+          "date": "2020-01-26",
+          "frequencies": {
+            "5a.2": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2020-02-09",
+          "frequencies": {
+            "5a": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2020-02-23",
+          "frequencies": {
+            "5a.2": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2020-03-08",
+          "frequencies": {
+            "5a.1": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2020-09-20",
+          "frequencies": {
+            "5": 1.0
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2020-11-01",
+          "frequencies": {
+            "5a.1": 1.0
+          },
+          "n_sequences": 3
+        },
+        {
+          "date": "2020-12-27",
+          "frequencies": {
+            "5a.1": 1.0
+          },
+          "n_sequences": 3
+        },
+        {
+          "date": "2021-04-04",
+          "frequencies": {
+            "5a.1": 1.0
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2021-06-13",
+          "frequencies": {
+            "5a.2a": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2021-08-22",
+          "frequencies": {
+            "5a.1": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2021-09-05",
+          "frequencies": {
+            "5a.1": 0.3333333333333333,
+            "5a.2a": 0.6666666666666666
+          },
+          "n_sequences": 3
+        },
+        {
+          "date": "2021-10-03",
+          "frequencies": {
+            "5a.2a": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2021-11-14",
+          "frequencies": {
+            "5a.1": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2021-12-26",
+          "frequencies": {
+            "5a.2a": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2022-04-03",
+          "frequencies": {
+            "5a.2a": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2022-08-21",
+          "frequencies": {
+            "5a.2a.1": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2022-09-04",
+          "frequencies": {
+            "5a.2a.1": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2022-10-02",
+          "frequencies": {
+            "5a.2a.1": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2022-10-16",
+          "frequencies": {
+            "5a.2a": 0.5,
+            "5a.2a.1": 0.5
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2022-11-27",
+          "frequencies": {
+            "5a.2": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2022-12-11",
+          "frequencies": {
+            "5a.2a.1": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2022-12-25",
+          "frequencies": {
+            "5a.2": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2023-01-22",
+          "frequencies": {
+            "5a.2a": 0.5,
+            "5a.2a.1": 0.5
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2023-02-05",
+          "frequencies": {
+            "5a.2a": 1.0
+          },
+          "n_sequences": 3
+        },
+        {
+          "date": "2023-03-05",
+          "frequencies": {
+            "5a.2a": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2023-04-02",
+          "frequencies": {
+            "5a.2a": 1.0
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2023-08-06",
+          "frequencies": {
+            "5a.2a": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2023-09-03",
+          "frequencies": {
+            "5a.2a": 0.25,
+            "5a.2a.1": 0.75
+          },
+          "n_sequences": 4
+        },
+        {
+          "date": "2023-09-17",
+          "frequencies": {
+            "5a.2a.1": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2023-10-01",
+          "frequencies": {
+            "5a.2a": 1.0
+          },
+          "n_sequences": 3
+        },
+        {
+          "date": "2023-10-15",
+          "frequencies": {
+            "5a.2a": 0.6666666666666666,
+            "5a.2a.1": 0.3333333333333333
+          },
+          "n_sequences": 3
+        },
+        {
+          "date": "2023-10-29",
+          "frequencies": {
+            "5a.2a": 0.75,
+            "5a.2a.1": 0.25
+          },
+          "n_sequences": 4
+        },
+        {
+          "date": "2023-11-12",
+          "frequencies": {
+            "5a.2a": 1.0
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2023-12-24",
+          "frequencies": {
+            "5a.2a.1": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2024-02-18",
+          "frequencies": {
+            "5a.2a.1": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2024-03-03",
+          "frequencies": {
+            "5a.2a": 0.5,
+            "5a.2a.1": 0.5
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2024-03-31",
+          "frequencies": {
+            "5a.2a": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2024-04-14",
+          "frequencies": {
+            "5a.2a": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2024-04-28",
+          "frequencies": {
+            "5a.2a": 1.0
+          },
+          "n_sequences": 4
+        },
+        {
+          "date": "2024-05-26",
+          "frequencies": {
+            "5a.2a": 0.9473684210526315,
+            "5a.2a.1": 0.05263157894736842
+          },
+          "n_sequences": 19
+        },
+        {
+          "date": "2024-06-09",
+          "frequencies": {
+            "5a.2a": 0.6833333333333333,
+            "5a.2a.1": 0.31666666666666665
+          },
+          "n_sequences": 60
+        },
+        {
+          "date": "2024-06-23",
+          "frequencies": {
+            "5a.2a": 0.8961038961038961,
+            "5a.2a.1": 0.1038961038961039
+          },
+          "n_sequences": 77
+        },
+        {
+          "date": "2024-07-07",
+          "frequencies": {
+            "5a.2a": 0.8688524590163934,
+            "5a.2a.1": 0.13114754098360656
+          },
+          "n_sequences": 61
+        },
+        {
+          "date": "2024-07-21",
+          "frequencies": {
+            "5a.2a": 0.896551724137931,
+            "5a.2a.1": 0.10344827586206896
+          },
+          "n_sequences": 58
+        },
+        {
+          "date": "2024-08-04",
+          "frequencies": {
+            "5a.2a": 0.8307692307692308,
+            "5a.2a.1": 0.16923076923076924
+          },
+          "n_sequences": 65
+        },
+        {
+          "date": "2024-08-18",
+          "frequencies": {
+            "5a.2a": 0.7846153846153846,
+            "5a.2a.1": 0.2153846153846154
+          },
+          "n_sequences": 65
+        },
+        {
+          "date": "2024-09-01",
+          "frequencies": {
+            "5a.2a": 0.8888888888888888,
+            "5a.2a.1": 0.1111111111111111
+          },
+          "n_sequences": 54
+        },
+        {
+          "date": "2024-09-15",
+          "frequencies": {
+            "5a.2a": 0.8125,
+            "5a.2a.1": 0.1875
+          },
+          "n_sequences": 64
+        },
+        {
+          "date": "2024-09-29",
+          "frequencies": {
+            "5a.2a": 0.8367346938775511,
+            "5a.2a.1": 0.16326530612244897
+          },
+          "n_sequences": 49
+        },
+        {
+          "date": "2024-10-13",
+          "frequencies": {
+            "5a.2a": 0.75,
+            "5a.2a.1": 0.25
+          },
+          "n_sequences": 76
+        },
+        {
+          "date": "2024-10-27",
+          "frequencies": {
+            "5a.2a": 0.7857142857142857,
+            "5a.2a.1": 0.21428571428571427
+          },
+          "n_sequences": 70
+        },
+        {
+          "date": "2024-11-10",
+          "frequencies": {
+            "5a.2a": 0.875,
+            "5a.2a.1": 0.125
+          },
+          "n_sequences": 56
+        },
+        {
+          "date": "2024-11-24",
+          "frequencies": {
+            "5a.2a": 0.9210526315789473,
+            "5a.2a.1": 0.07894736842105263
+          },
+          "n_sequences": 76
+        },
+        {
+          "date": "2024-12-08",
+          "frequencies": {
+            "5a.2a": 0.8333333333333334,
+            "5a.2a.1": 0.16666666666666666
+          },
+          "n_sequences": 60
+        },
+        {
+          "date": "2024-12-22",
+          "frequencies": {
+            "5a.2a": 0.7941176470588235,
+            "5a.2a.1": 0.20588235294117646
+          },
+          "n_sequences": 68
+        },
+        {
+          "date": "2025-01-05",
+          "frequencies": {
+            "5a.2a": 0.8985507246376812,
+            "5a.2a.1": 0.10144927536231885
+          },
+          "n_sequences": 69
+        },
+        {
+          "date": "2025-01-19",
+          "frequencies": {
+            "5a.2a": 0.7636363636363637,
+            "5a.2a.1": 0.23636363636363636
+          },
+          "n_sequences": 55
+        },
+        {
+          "date": "2025-02-02",
+          "frequencies": {
+            "5a.2a": 0.7966101694915254,
+            "5a.2a.1": 0.2033898305084746
+          },
+          "n_sequences": 59
+        },
+        {
+          "date": "2025-02-16",
+          "frequencies": {
+            "5a.2a": 0.6708860759493671,
+            "5a.2a.1": 0.3291139240506329
+          },
+          "n_sequences": 79
+        },
+        {
+          "date": "2025-03-02",
+          "frequencies": {
+            "5a.2a": 0.7441860465116279,
+            "5a.2a.1": 0.2558139534883721
+          },
+          "n_sequences": 43
+        },
+        {
+          "date": "2025-03-16",
+          "frequencies": {
+            "5a.2a": 0.4625,
+            "5a.2a.1": 0.5375
+          },
+          "n_sequences": 80
+        },
+        {
+          "date": "2025-03-30",
+          "frequencies": {
+            "5a.2a": 0.515625,
+            "5a.2a.1": 0.484375
+          },
+          "n_sequences": 64
+        },
+        {
+          "date": "2025-04-13",
+          "frequencies": {
+            "5a.2a": 0.26785714285714285,
+            "5a.2a.1": 0.7321428571428571
+          },
+          "n_sequences": 56
+        },
+        {
+          "date": "2025-04-27",
+          "frequencies": {
+            "5a.2a": 0.39285714285714285,
+            "5a.2a.1": 0.6071428571428571
+          },
+          "n_sequences": 56
+        },
+        {
+          "date": "2025-05-11",
+          "frequencies": {
+            "5a.2a": 0.288135593220339,
+            "5a.2a.1": 0.711864406779661
+          },
+          "n_sequences": 59
+        },
+        {
+          "date": "2025-05-25",
+          "frequencies": {
+            "5a.2a": 0.14285714285714285,
+            "5a.2a.1": 0.8571428571428571
+          },
+          "n_sequences": 70
+        },
+        {
+          "date": "2025-06-08",
+          "frequencies": {
+            "5a.2a": 0.13636363636363635,
+            "5a.2a.1": 0.8636363636363636
+          },
+          "n_sequences": 44
+        },
+        {
+          "date": "2025-06-22",
+          "frequencies": {
+            "5a.2a": 0.19230769230769232,
+            "5a.2a.1": 0.8076923076923077
+          },
+          "n_sequences": 78
+        },
+        {
+          "date": "2025-07-06",
+          "frequencies": {
+            "5a.2a.1": 1.0
+          },
+          "n_sequences": 49
+        },
+        {
+          "date": "2025-07-20",
+          "frequencies": {
+            "5a.2a": 0.18,
+            "5a.2a.1": 0.82
+          },
+          "n_sequences": 50
+        },
+        {
+          "date": "2025-08-03",
+          "frequencies": {
+            "5a.2a": 0.11538461538461539,
+            "5a.2a.1": 0.8846153846153846
+          },
+          "n_sequences": 52
+        },
+        {
+          "date": "2025-08-17",
+          "frequencies": {
+            "5a.2a": 0.09090909090909091,
+            "5a.2a.1": 0.9090909090909091
+          },
+          "n_sequences": 66
+        },
+        {
+          "date": "2025-08-31",
+          "frequencies": {
+            "5a.2a": 0.0425531914893617,
+            "5a.2a.1": 0.9574468085106383
+          },
+          "n_sequences": 47
+        },
+        {
+          "date": "2025-09-14",
+          "frequencies": {
+            "5a.2a": 0.09836065573770492,
+            "5a.2a.1": 0.9016393442622951
+          },
+          "n_sequences": 61
+        },
+        {
+          "date": "2025-09-28",
+          "frequencies": {
+            "5a.2a": 0.047619047619047616,
+            "5a.2a.1": 0.9523809523809523
+          },
+          "n_sequences": 63
+        },
+        {
+          "date": "2025-10-12",
+          "frequencies": {
+            "5a.2a": 0.07272727272727272,
+            "5a.2a.1": 0.9272727272727272
+          },
+          "n_sequences": 55
+        },
+        {
+          "date": "2025-10-26",
+          "frequencies": {
+            "5a.2a": 0.11290322580645161,
+            "5a.2a.1": 0.8870967741935484
+          },
+          "n_sequences": 62
+        },
+        {
+          "date": "2025-11-09",
+          "frequencies": {
+            "5a.2a": 0.05970149253731343,
+            "5a.2a.1": 0.9402985074626866
+          },
+          "n_sequences": 67
+        },
+        {
+          "date": "2025-11-23",
+          "frequencies": {
+            "5a.2a": 0.03125,
+            "5a.2a.1": 0.96875
+          },
+          "n_sequences": 64
+        },
+        {
+          "date": "2025-12-07",
+          "frequencies": {
+            "5a.2a": 0.01694915254237288,
+            "5a.2a.1": 0.9830508474576272
+          },
+          "n_sequences": 59
+        },
+        {
+          "date": "2025-12-21",
+          "frequencies": {
+            "5a.2a.1": 1.0
+          },
+          "n_sequences": 45
+        },
+        {
+          "date": "2026-01-04",
+          "frequencies": {
+            "5a.2a": 0.018867924528301886,
+            "5a.2a.1": 0.9811320754716981
+          },
+          "n_sequences": 53
+        },
+        {
+          "date": "2026-01-18",
+          "frequencies": {
+            "5a.2a.1": 1.0
+          },
+          "n_sequences": 46
+        },
+        {
+          "date": "2026-02-01",
+          "frequencies": {
+            "5a.2a.1": 1.0
+          },
+          "n_sequences": 40
+        },
+        {
+          "date": "2026-02-15",
+          "frequencies": {
+            "5a.2a.1": 1.0
+          },
+          "n_sequences": 57
+        },
+        {
+          "date": "2026-03-01",
+          "frequencies": {
+            "5a.2a.1": 1.0
+          },
+          "n_sequences": 50
+        },
+        {
+          "date": "2026-03-15",
+          "frequencies": {
+            "5a.2a.1": 1.0
+          },
+          "n_sequences": 39
+        },
+        {
+          "date": "2026-03-29",
+          "frequencies": {
+            "5a.2a.1": 1.0
+          },
+          "n_sequences": 34
+        },
+        {
+          "date": "2026-04-12",
+          "frequencies": {
+            "5a.2a.1": 1.0
+          },
+          "n_sequences": 30
+        },
+        {
+          "date": "2026-04-26",
+          "frequencies": {
+            "5a.2a.1": 1.0
+          },
+          "n_sequences": 58
+        },
+        {
+          "date": "2026-05-10",
+          "frequencies": {
+            "5a.2a.1": 1.0
+          },
+          "n_sequences": 21
+        }
+      ],
+      "source_url": "https://nextstrain.org/charon/getDataset?prefix=seasonal-flu/h1n1pdm/ha/2y"
+    },
+    "influenza-h3n2": {
+      "lineages": [
+        "1",
+        "1a",
+        "2",
+        "2a",
+        "2a.1a",
+        "2a.1b",
+        "2a.3",
+        "2a.3a",
+        "2a.3a.1",
+        "2b",
+        "2c",
+        "3C.2a1b.1a",
+        "3C.2a1b.1b",
+        "3C.2a1b.2",
+        "3C.2a1b.2a",
+        "3C.2a1b.2b",
+        "3C.2a2"
+      ],
+      "n_lineages": 17,
+      "n_snapshots": 113,
+      "snapshots": [
+        {
+          "date": "2018-07-15",
+          "frequencies": {
+            "3C.2a2": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2018-10-07",
+          "frequencies": {
+            "3C.2a1b.2": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2018-10-21",
+          "frequencies": {
+            "3C.2a2": 1.0
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2018-12-16",
+          "frequencies": {
+            "3C.2a1b.1b": 0.5,
+            "3C.2a1b.2": 0.5
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2019-01-27",
+          "frequencies": {
+            "3C.2a1b.2": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2019-03-24",
+          "frequencies": {
+            "3C.2a1b.2b": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2019-05-19",
+          "frequencies": {
+            "3C.2a1b.1b": 0.5,
+            "3C.2a1b.2b": 0.5
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2019-06-16",
+          "frequencies": {
+            "3C.2a1b.1b": 1.0
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2019-07-28",
+          "frequencies": {
+            "3C.2a1b.1b": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2019-08-11",
+          "frequencies": {
+            "3C.2a1b.2b": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2019-08-25",
+          "frequencies": {
+            "3C.2a1b.2a": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2019-09-22",
+          "frequencies": {
+            "3C.2a1b.1b": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2019-11-03",
+          "frequencies": {
+            "3C.2a1b.1b": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2019-12-29",
+          "frequencies": {
+            "3C.2a1b.1a": 0.5,
+            "3C.2a1b.2": 0.5
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2020-01-26",
+          "frequencies": {
+            "3C.2a1b.1a": 1.0
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2020-02-09",
+          "frequencies": {
+            "1": 1.0
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2020-03-08",
+          "frequencies": {
+            "3C.2a1b.1b": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2020-06-14",
+          "frequencies": {
+            "3C.2a1b.1a": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2020-07-12",
+          "frequencies": {
+            "1a": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2020-08-23",
+          "frequencies": {
+            "2": 1.0
+          },
+          "n_sequences": 4
+        },
+        {
+          "date": "2020-09-20",
+          "frequencies": {
+            "1a": 0.5,
+            "2": 0.5
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2020-10-04",
+          "frequencies": {
+            "1a": 0.5,
+            "3C.2a1b.1a": 0.5
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2020-11-15",
+          "frequencies": {
+            "2": 1.0
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2020-12-27",
+          "frequencies": {
+            "1a": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2021-03-07",
+          "frequencies": {
+            "2a": 1.0
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2021-04-04",
+          "frequencies": {
+            "2a": 1.0
+          },
+          "n_sequences": 3
+        },
+        {
+          "date": "2021-04-18",
+          "frequencies": {
+            "2a": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2021-08-08",
+          "frequencies": {
+            "2a.3": 1.0
+          },
+          "n_sequences": 4
+        },
+        {
+          "date": "2021-09-19",
+          "frequencies": {
+            "2c": 1.0
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2021-10-03",
+          "frequencies": {
+            "2a.1a": 0.5,
+            "2a.3": 0.5
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2022-05-29",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2022-07-10",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2022-10-02",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2022-10-16",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2022-11-13",
+          "frequencies": {
+            "2b": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2022-11-27",
+          "frequencies": {
+            "2b": 1.0
+          },
+          "n_sequences": 4
+        },
+        {
+          "date": "2022-12-11",
+          "frequencies": {
+            "2a.3a.1": 0.5,
+            "2b": 0.5
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2022-12-25",
+          "frequencies": {
+            "2a.3a.1": 0.5,
+            "2b": 0.5
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2023-01-08",
+          "frequencies": {
+            "2b": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2023-02-05",
+          "frequencies": {
+            "2b": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2023-02-19",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2023-03-05",
+          "frequencies": {
+            "2b": 1.0
+          },
+          "n_sequences": 3
+        },
+        {
+          "date": "2023-03-19",
+          "frequencies": {
+            "2a.1b": 0.5,
+            "2b": 0.5
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2023-04-02",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2023-04-30",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2023-05-14",
+          "frequencies": {
+            "2a.1b": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2023-05-28",
+          "frequencies": {
+            "2a.3a.1": 0.5,
+            "2b": 0.5
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2023-09-03",
+          "frequencies": {
+            "2a.3a.1": 0.6666666666666666,
+            "2b": 0.3333333333333333
+          },
+          "n_sequences": 3
+        },
+        {
+          "date": "2023-10-01",
+          "frequencies": {
+            "2a.1b": 0.3333333333333333,
+            "2a.3a.1": 0.6666666666666666
+          },
+          "n_sequences": 6
+        },
+        {
+          "date": "2023-10-15",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 4
+        },
+        {
+          "date": "2023-10-29",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2023-11-12",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 3
+        },
+        {
+          "date": "2023-11-26",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 3
+        },
+        {
+          "date": "2023-12-10",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 3
+        },
+        {
+          "date": "2023-12-24",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2024-01-21",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2024-02-04",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2024-02-18",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2024-03-31",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2024-04-14",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2024-05-12",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2024-05-26",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 28
+        },
+        {
+          "date": "2024-06-09",
+          "frequencies": {
+            "2a.3a": 0.01694915254237288,
+            "2a.3a.1": 0.9830508474576272
+          },
+          "n_sequences": 59
+        },
+        {
+          "date": "2024-06-23",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 59
+        },
+        {
+          "date": "2024-07-07",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 55
+        },
+        {
+          "date": "2024-07-21",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 65
+        },
+        {
+          "date": "2024-08-04",
+          "frequencies": {
+            "2a.3a": 0.017857142857142856,
+            "2a.3a.1": 0.9821428571428571
+          },
+          "n_sequences": 56
+        },
+        {
+          "date": "2024-08-18",
+          "frequencies": {
+            "2a.3a": 0.017857142857142856,
+            "2a.3a.1": 0.9821428571428571
+          },
+          "n_sequences": 56
+        },
+        {
+          "date": "2024-09-01",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 69
+        },
+        {
+          "date": "2024-09-15",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 45
+        },
+        {
+          "date": "2024-09-29",
+          "frequencies": {
+            "2a.3a": 0.020833333333333332,
+            "2a.3a.1": 0.9791666666666666
+          },
+          "n_sequences": 48
+        },
+        {
+          "date": "2024-10-13",
+          "frequencies": {
+            "2a.3a": 0.017857142857142856,
+            "2a.3a.1": 0.9821428571428571
+          },
+          "n_sequences": 56
+        },
+        {
+          "date": "2024-10-27",
+          "frequencies": {
+            "2a.3a": 0.03896103896103896,
+            "2a.3a.1": 0.961038961038961
+          },
+          "n_sequences": 77
+        },
+        {
+          "date": "2024-11-10",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 57
+        },
+        {
+          "date": "2024-11-24",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 55
+        },
+        {
+          "date": "2024-12-08",
+          "frequencies": {
+            "2a.3a": 0.016666666666666666,
+            "2a.3a.1": 0.9833333333333333
+          },
+          "n_sequences": 60
+        },
+        {
+          "date": "2024-12-22",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 72
+        },
+        {
+          "date": "2025-01-05",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 62
+        },
+        {
+          "date": "2025-01-19",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 49
+        },
+        {
+          "date": "2025-02-02",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 60
+        },
+        {
+          "date": "2025-02-16",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 77
+        },
+        {
+          "date": "2025-03-02",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 65
+        },
+        {
+          "date": "2025-03-16",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 56
+        },
+        {
+          "date": "2025-03-30",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 62
+        },
+        {
+          "date": "2025-04-13",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 58
+        },
+        {
+          "date": "2025-04-27",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 43
+        },
+        {
+          "date": "2025-05-11",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 70
+        },
+        {
+          "date": "2025-05-25",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 42
+        },
+        {
+          "date": "2025-06-08",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 45
+        },
+        {
+          "date": "2025-06-22",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 67
+        },
+        {
+          "date": "2025-07-06",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 37
+        },
+        {
+          "date": "2025-07-20",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 67
+        },
+        {
+          "date": "2025-08-03",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 36
+        },
+        {
+          "date": "2025-08-17",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 73
+        },
+        {
+          "date": "2025-08-31",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 47
+        },
+        {
+          "date": "2025-09-14",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 67
+        },
+        {
+          "date": "2025-09-28",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 50
+        },
+        {
+          "date": "2025-10-12",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 72
+        },
+        {
+          "date": "2025-10-26",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 72
+        },
+        {
+          "date": "2025-11-09",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 55
+        },
+        {
+          "date": "2025-11-23",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 81
+        },
+        {
+          "date": "2025-12-07",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 52
+        },
+        {
+          "date": "2025-12-21",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 66
+        },
+        {
+          "date": "2026-01-04",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 74
+        },
+        {
+          "date": "2026-01-18",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 49
+        },
+        {
+          "date": "2026-02-01",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 59
+        },
+        {
+          "date": "2026-02-15",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 78
+        },
+        {
+          "date": "2026-03-01",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 67
+        },
+        {
+          "date": "2026-03-15",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 40
+        },
+        {
+          "date": "2026-03-29",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 46
+        },
+        {
+          "date": "2026-04-12",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 31
+        },
+        {
+          "date": "2026-04-26",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 50
+        },
+        {
+          "date": "2026-05-10",
+          "frequencies": {
+            "2a.3a.1": 1.0
+          },
+          "n_sequences": 14
+        }
+      ],
+      "source_url": "https://nextstrain.org/charon/getDataset?prefix=seasonal-flu/h3n2/ha/2y"
+    },
+    "sars-cov-2": {
+      "lineages": [
+        "A",
+        "A.1",
+        "A.2.5",
+        "A.23.1",
+        "A.24",
+        "A.25",
+        "A.5",
+        "A.6",
+        "AD.1",
+        "AY.1",
+        "AY.103",
+        "AY.111",
+        "AY.113",
+        "AY.121",
+        "AY.122",
+        "AY.125",
+        "AY.126",
+        "AY.127",
+        "AY.131",
+        "AY.2",
+        "AY.20",
+        "AY.23",
+        "AY.24",
+        "AY.25",
+        "AY.29",
+        "AY.30",
+        "AY.31",
+        "AY.32",
+        "AY.33",
+        "AY.34.1",
+        "AY.34.1.1",
+        "AY.36",
+        "AY.38",
+        "AY.4",
+        "AY.4.2",
+        "AY.42",
+        "AY.43",
+        "AY.43.3",
+        "AY.44",
+        "AY.45",
+        "AY.46",
+        "AY.57",
+        "AY.6",
+        "AY.79",
+        "AY.84",
+        "AY.85",
+        "AY.9.2",
+        "AY.99",
+        "B",
+        "B.1",
+        "B.1.1",
+        "B.1.1.1",
+        "B.1.1.101",
+        "B.1.1.203",
+        "B.1.1.216",
+        "B.1.1.222",
+        "B.1.1.229",
+        "B.1.1.232",
+        "B.1.1.25",
+        "B.1.1.277",
+        "B.1.1.28",
+        "B.1.1.306",
+        "B.1.1.317",
+        "B.1.1.318",
+        "B.1.1.329",
+        "B.1.1.33",
+        "B.1.1.352",
+        "B.1.1.354",
+        "B.1.1.366",
+        "B.1.1.398",
+        "B.1.1.413",
+        "B.1.1.432",
+        "B.1.1.48",
+        "B.1.1.50",
+        "B.1.1.63",
+        "B.1.1.7",
+        "B.1.111",
+        "B.1.160",
+        "B.1.177",
+        "B.1.177.86",
+        "B.1.195",
+        "B.1.2",
+        "B.1.210",
+        "B.1.213",
+        "B.1.234",
+        "B.1.237",
+        "B.1.239",
+        "B.1.243",
+        "B.1.247",
+        "B.1.258",
+        "B.1.260",
+        "B.1.336",
+        "B.1.351",
+        "B.1.351.3",
+        "B.1.36",
+        "B.1.36.16",
+        "B.1.36.27",
+        "B.1.36.29",
+        "B.1.36.31",
+        "B.1.36.7",
+        "B.1.36.8",
+        "B.1.378",
+        "B.1.393",
+        "B.1.416",
+        "B.1.428.1",
+        "B.1.466",
+        "B.1.466.2",
+        "B.1.470",
+        "B.1.471",
+        "B.1.480",
+        "B.1.497",
+        "B.1.524",
+        "B.1.525",
+        "B.1.528",
+        "B.1.530",
+        "B.1.555",
+        "B.1.560",
+        "B.1.617",
+        "B.1.617.1",
+        "B.1.617.2",
+        "B.1.619",
+        "B.1.621",
+        "B.1.625",
+        "B.1.9.5",
+        "B.4",
+        "B.4.6",
+        "B.4.7",
+        "B.40",
+        "B.53",
+        "B.6",
+        "BA.1",
+        "BA.1.1",
+        "BA.1.1.1",
+        "BA.1.1.18",
+        "BA.1.1.2",
+        "BA.1.1.7",
+        "BA.1.13.1",
+        "BA.1.14",
+        "BA.1.15",
+        "BA.1.17",
+        "BA.1.18",
+        "BA.2",
+        "BA.2.10",
+        "BA.2.10.1",
+        "BA.2.12",
+        "BA.2.12.1",
+        "BA.2.2",
+        "BA.2.2.1",
+        "BA.2.3",
+        "BA.2.3.2",
+        "BA.2.3.7",
+        "BA.2.38",
+        "BA.2.38.2",
+        "BA.2.40.1",
+        "BA.2.43",
+        "BA.2.74",
+        "BA.2.75",
+        "BA.2.75.10",
+        "BA.2.75.5",
+        "BA.2.76",
+        "BA.2.86.1",
+        "BA.2.9",
+        "BA.4",
+        "BA.4.1",
+        "BA.4.1.1",
+        "BA.4.6",
+        "BA.5.1.25",
+        "BA.5.2",
+        "BA.5.2.1",
+        "BA.5.2.20",
+        "BA.5.2.22",
+        "BA.5.2.27",
+        "BA.5.2.36",
+        "BA.5.2.48",
+        "BA.5.2.7",
+        "BA.5.2.9",
+        "BA.5.3",
+        "BA.5.3.1",
+        "BA.5.3.5",
+        "BE.1.1",
+        "BE.4",
+        "BF.13",
+        "BF.28",
+        "BF.3",
+        "BF.7",
+        "BF.7.14",
+        "BF.7.14.1",
+        "BF.7.14.4",
+        "BF.7.14.5",
+        "BF.7.14.6",
+        "BJ.1",
+        "BL.1",
+        "BM.1.1.3",
+        "BN.1.2",
+        "BN.1.3.6",
+        "BN.1.3.9",
+        "BN.1.4",
+        "BQ.1.1",
+        "BQ.1.1.38",
+        "BQ.1.1.60",
+        "BQ.1.8",
+        "BU.1",
+        "C.35",
+        "C.36",
+        "C.36.3",
+        "C.36.3.1",
+        "C.37",
+        "CK.2",
+        "D.2",
+        "DY.1",
+        "DY.2",
+        "DY.3",
+        "EG.5.1.1",
+        "EG.5.1.4",
+        "EG.5.1.6",
+        "EG.5.2",
+        "EU.1.1.3",
+        "FD.4",
+        "FE.1.1",
+        "FE.1.1.3",
+        "FL.10",
+        "FL.12",
+        "FL.13.2",
+        "FL.15",
+        "FL.2.3",
+        "FL.2.4",
+        "FL.4",
+        "FL.4.2",
+        "FL.4.6",
+        "FL.5",
+        "FU.1",
+        "FY.3.1",
+        "FY.4.1",
+        "FY.4.1.2",
+        "GA.4.1",
+        "GD.1",
+        "GK.1",
+        "GK.1.8",
+        "GN.1",
+        "GR.1",
+        "GW.4",
+        "GW.5",
+        "GW.5.1.1",
+        "GY.1",
+        "HK.3",
+        "HV.1",
+        "JD.1.1",
+        "JD.2",
+        "JN.1",
+        "JN.1.1",
+        "JN.1.1.3",
+        "JN.1.1.5",
+        "JN.1.16",
+        "JN.1.16.1",
+        "JN.1.18",
+        "JN.1.19",
+        "JN.1.20",
+        "JN.1.32",
+        "JN.1.39",
+        "JN.1.4",
+        "JN.1.4.5",
+        "JN.1.5",
+        "JN.1.55",
+        "JN.1.63.1",
+        "JN.1.67.1",
+        "JN.1.9.2",
+        "JN.18",
+        "KP.3.1.1",
+        "KP.3.1.11",
+        "L.3",
+        "LB.1.7",
+        "LF.7.1.3",
+        "LF.7.11",
+        "LF.7.11.2",
+        "LF.7.11.3",
+        "LF.7.11.4",
+        "LF.7.3",
+        "LF.7.7.1",
+        "LP.8.1.1",
+        "LZ.2.1",
+        "MC.1",
+        "MC.16",
+        "MC.33.1",
+        "MU.1",
+        "MZ.2",
+        "N.3",
+        "N.5",
+        "NB.1",
+        "NB.1.8.1",
+        "NB.1.9",
+        "NW.1.2.1",
+        "NW.3",
+        "NY.3.7.1",
+        "NY.9",
+        "P.1",
+        "P.1.12",
+        "P.1.7",
+        "P.2",
+        "P.3",
+        "PE.1.4",
+        "PE.1.4.2",
+        "PL.3",
+        "PQ.1",
+        "PQ.1.1",
+        "PQ.1.2",
+        "PQ.1.5",
+        "PQ.10",
+        "PQ.10.1",
+        "PQ.10.1.2",
+        "PQ.10.1.3",
+        "PQ.10.1.4",
+        "PQ.11",
+        "PQ.12",
+        "PQ.13",
+        "PQ.13.1",
+        "PQ.13.3.1",
+        "PQ.14.1.1",
+        "PQ.14.2",
+        "PQ.14.3",
+        "PQ.14.3.1",
+        "PQ.14.4",
+        "PQ.15",
+        "PQ.17",
+        "PQ.17.1",
+        "PQ.17.10",
+        "PQ.17.10.1",
+        "PQ.17.11",
+        "PQ.17.11.1",
+        "PQ.17.2",
+        "PQ.17.2.1",
+        "PQ.17.3",
+        "PQ.17.4",
+        "PQ.17.5",
+        "PQ.17.6",
+        "PQ.17.7.1",
+        "PQ.17.8",
+        "PQ.18",
+        "PQ.19",
+        "PQ.2",
+        "PQ.2.1",
+        "PQ.2.1.1",
+        "PQ.2.1.2",
+        "PQ.2.1.3",
+        "PQ.2.1.5",
+        "PQ.2.1.6",
+        "PQ.2.1.7",
+        "PQ.2.1.9",
+        "PQ.2.2",
+        "PQ.2.3",
+        "PQ.2.4",
+        "PQ.2.4.2",
+        "PQ.2.5",
+        "PQ.2.5.1",
+        "PQ.2.5.3",
+        "PQ.2.7",
+        "PQ.2.8.1",
+        "PQ.23",
+        "PQ.24",
+        "PQ.25.1",
+        "PQ.25.3",
+        "PQ.3",
+        "PQ.31",
+        "PQ.31.1",
+        "PQ.32",
+        "PQ.37",
+        "PQ.39",
+        "PQ.39.1",
+        "PQ.4",
+        "PQ.4.1",
+        "PQ.4.10",
+        "PQ.4.10.1",
+        "PQ.4.6.1",
+        "PQ.4.6.2",
+        "PQ.4.7",
+        "PQ.4.9",
+        "PQ.41",
+        "PQ.41.1.1",
+        "PQ.43.1.1",
+        "PQ.48",
+        "PQ.49",
+        "PQ.5",
+        "PQ.6",
+        "PQ.7",
+        "PQ.8",
+        "PQ.8.1",
+        "PY.1",
+        "PY.1.1.1",
+        "QF.1",
+        "QF.1.1.1",
+        "QF.2",
+        "QF.2.1",
+        "QF.2.2",
+        "QF.2.2.1",
+        "QF.3",
+        "QF.4",
+        "QF.5",
+        "QF.5.1",
+        "QF.6",
+        "QF.7",
+        "QK.1",
+        "QK.2",
+        "QK.4",
+        "QM.1",
+        "QM.3",
+        "QQ.1",
+        "QQ.2",
+        "QS.1",
+        "QS.2",
+        "QT.3",
+        "QW.1",
+        "QW.1.1",
+        "QY.2",
+        "QY.3",
+        "R.1",
+        "RB.2",
+        "RC.1",
+        "RC.2",
+        "RC.2.1",
+        "RC.3",
+        "RD.1.1",
+        "RD.1.1.1",
+        "RE.1",
+        "RE.1.1",
+        "RE.1.1.1",
+        "RE.1.1.2",
+        "RE.2",
+        "RE.2.1",
+        "RE.2.1.1",
+        "RE.2.1.2",
+        "RE.2.1.3",
+        "RE.2.2",
+        "RE.2.2.1",
+        "RE.2.2.2",
+        "RE.2.2.3",
+        "RE.2.2.4",
+        "RE.2.2.5",
+        "RE.2.2.6",
+        "RE.2.2.7",
+        "RE.2.2.8",
+        "RE.2.3",
+        "RE.2.4",
+        "RE.3.1",
+        "RF.1",
+        "RF.4",
+        "RF.5",
+        "RH.1",
+        "RJ.1",
+        "RK.1",
+        "RN.1",
+        "RN.2",
+        "RN.2.1",
+        "RP.1",
+        "RP.2",
+        "RR.1",
+        "RT.1",
+        "RU.1",
+        "RV.1",
+        "XAZ",
+        "XBB.1",
+        "XBB.1.14",
+        "XBB.1.16",
+        "XBB.1.16.1",
+        "XBB.1.16.11",
+        "XBB.1.16.13",
+        "XBB.1.16.2",
+        "XBB.1.16.3",
+        "XBB.1.16.31",
+        "XBB.1.16.6",
+        "XBB.1.3",
+        "XBB.1.41.1",
+        "XBB.1.43.1",
+        "XBB.1.5",
+        "XBB.1.5.1",
+        "XBB.1.5.18",
+        "XBB.1.5.59",
+        "XBB.1.5.7",
+        "XBB.1.9",
+        "XBB.1.9.1",
+        "XBB.1.9.2",
+        "XBB.2",
+        "XBB.2.3",
+        "XBB.2.3.2",
+        "XBB.2.4",
+        "XBB.3",
+        "XBB.5",
+        "XDP",
+        "XDV.1",
+        "XDV.1.12",
+        "XDV.1.7",
+        "XEC",
+        "XEC.18.2",
+        "XEC.2.6",
+        "XEC.31",
+        "XEC.4.2",
+        "XEC.8",
+        "XEC.9",
+        "XEP.1",
+        "XFC.1.10",
+        "XFC.1.2",
+        "XFC.1.4",
+        "XFC.3",
+        "XFG",
+        "XFG.1",
+        "XFG.1.1",
+        "XFG.1.1.1",
+        "XFG.1.1.2",
+        "XFG.1.2",
+        "XFG.10",
+        "XFG.10.1",
+        "XFG.10.2",
+        "XFG.10.4",
+        "XFG.10.5",
+        "XFG.13",
+        "XFG.14",
+        "XFG.14.1",
+        "XFG.14.1.1",
+        "XFG.14.1.3",
+        "XFG.14.1.4",
+        "XFG.14.1.5",
+        "XFG.14.1.7",
+        "XFG.14.1.8",
+        "XFG.14.2",
+        "XFG.14.5",
+        "XFG.14.9",
+        "XFG.16",
+        "XFG.17",
+        "XFG.17.2",
+        "XFG.17.2.1",
+        "XFG.17.3",
+        "XFG.18.1",
+        "XFG.2",
+        "XFG.2.10",
+        "XFG.2.12",
+        "XFG.2.13",
+        "XFG.2.5",
+        "XFG.2.5.1",
+        "XFG.2.6",
+        "XFG.2.7",
+        "XFG.2.7.1",
+        "XFG.2.8",
+        "XFG.2.8.1",
+        "XFG.2.9",
+        "XFG.21",
+        "XFG.22",
+        "XFG.22.1",
+        "XFG.22.3",
+        "XFG.23.1",
+        "XFG.23.1.2",
+        "XFG.23.1.3",
+        "XFG.23.1.4",
+        "XFG.26",
+        "XFG.28",
+        "XFG.29",
+        "XFG.3",
+        "XFG.3.1",
+        "XFG.3.1.12",
+        "XFG.3.1.2",
+        "XFG.3.1.3",
+        "XFG.3.1.5",
+        "XFG.3.1.9",
+        "XFG.3.10",
+        "XFG.3.10.2",
+        "XFG.3.12",
+        "XFG.3.12.1",
+        "XFG.3.13",
+        "XFG.3.14",
+        "XFG.3.15",
+        "XFG.3.16",
+        "XFG.3.16.1",
+        "XFG.3.17",
+        "XFG.3.18",
+        "XFG.3.18.1",
+        "XFG.3.2",
+        "XFG.3.20",
+        "XFG.3.23",
+        "XFG.3.24",
+        "XFG.3.27.1",
+        "XFG.3.3",
+        "XFG.3.3.1",
+        "XFG.3.3.2",
+        "XFG.3.30.1",
+        "XFG.3.33",
+        "XFG.3.4",
+        "XFG.3.4.1",
+        "XFG.3.4.2",
+        "XFG.3.4.3",
+        "XFG.3.4.6",
+        "XFG.3.4.8",
+        "XFG.3.5",
+        "XFG.3.5.2",
+        "XFG.3.6",
+        "XFG.3.7.1",
+        "XFG.3.8",
+        "XFG.3.9",
+        "XFG.30",
+        "XFG.31",
+        "XFG.32",
+        "XFG.36",
+        "XFG.37",
+        "XFG.38",
+        "XFG.4",
+        "XFG.4.1",
+        "XFG.4.1.3",
+        "XFG.4.1.4",
+        "XFG.4.4",
+        "XFG.5",
+        "XFG.5.1",
+        "XFG.5.1.4",
+        "XFG.5.1.7",
+        "XFG.5.2",
+        "XFG.5.2.2",
+        "XFG.5.2.3",
+        "XFG.5.2.4",
+        "XFG.5.2.5",
+        "XFG.5.2.6",
+        "XFG.5.4",
+        "XFG.6",
+        "XFG.6.1",
+        "XFG.6.10",
+        "XFG.6.12",
+        "XFG.6.2",
+        "XFG.6.2.1",
+        "XFG.6.2.2",
+        "XFG.6.3",
+        "XFG.6.3.3",
+        "XFG.6.4",
+        "XFG.6.5.1",
+        "XFG.6.7",
+        "XFG.6.8",
+        "XFG.7",
+        "XFG.7.1",
+        "XFG.7.1.1",
+        "XFG.8",
+        "XFG.8.1",
+        "XFG.8.1.1",
+        "XFG.8.2.1",
+        "XFG.8.5",
+        "XFG.9",
+        "XFG.9.1",
+        "XFG.9.3",
+        "XFG.9.3.1",
+        "XFG.9.3.2",
+        "XFG.9.4",
+        "XFG.9.5",
+        "XFJ",
+        "XFJ.3.1",
+        "XFJ.3.1.1",
+        "XFJ.3.1.2",
+        "XFJ.8.1",
+        "XFN",
+        "XFN.2.1",
+        "XFV",
+        "XFV.6",
+        "XFY",
+        "XFY.1",
+        "XFY.2",
+        "XFZ",
+        "XFZ.1",
+        "XFZ.2",
+        "XGA",
+        "XGA.1",
+        "XGA.2",
+        "XGA.3",
+        "XGJ"
+      ],
+      "n_lineages": 664,
+      "n_snapshots": 156,
+      "snapshots": [
+        {
+          "date": "2019-12-15",
+          "frequencies": {
+            "B": 1.0
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2019-12-29",
+          "frequencies": {
+            "B": 1.0
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2020-01-12",
+          "frequencies": {
+            "B": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2020-01-26",
+          "frequencies": {
+            "B": 0.8,
+            "B.1": 0.2
+          },
+          "n_sequences": 5
+        },
+        {
+          "date": "2020-02-09",
+          "frequencies": {
+            "A": 0.5,
+            "A.6": 0.5
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2020-02-23",
+          "frequencies": {
+            "A.1": 0.14285714285714285,
+            "B": 0.14285714285714285,
+            "B.1": 0.2857142857142857,
+            "B.1.1": 0.2857142857142857,
+            "B.53": 0.14285714285714285
+          },
+          "n_sequences": 7
+        },
+        {
+          "date": "2020-03-08",
+          "frequencies": {
+            "A.6": 0.0625,
+            "B": 0.0625,
+            "B.1": 0.4375,
+            "B.1.1": 0.1875,
+            "B.1.195": 0.0625,
+            "B.1.378": 0.0625,
+            "B.4": 0.0625,
+            "B.6": 0.0625
+          },
+          "n_sequences": 16
+        },
+        {
+          "date": "2020-03-22",
+          "frequencies": {
+            "A": 0.11764705882352941,
+            "A.5": 0.058823529411764705,
+            "B.1": 0.4117647058823529,
+            "B.1.1": 0.058823529411764705,
+            "B.1.1.33": 0.058823529411764705,
+            "B.1.378": 0.058823529411764705,
+            "B.4": 0.058823529411764705,
+            "B.40": 0.058823529411764705,
+            "B.6": 0.11764705882352941
+          },
+          "n_sequences": 17
+        },
+        {
+          "date": "2020-04-05",
+          "frequencies": {
+            "B.1": 0.6666666666666666,
+            "B.1.1": 0.16666666666666666,
+            "B.6": 0.16666666666666666
+          },
+          "n_sequences": 6
+        },
+        {
+          "date": "2020-04-19",
+          "frequencies": {
+            "A": 0.13333333333333333,
+            "B": 0.06666666666666667,
+            "B.1": 0.13333333333333333,
+            "B.1.1": 0.13333333333333333,
+            "B.1.1.48": 0.06666666666666667,
+            "B.1.210": 0.06666666666666667,
+            "B.1.36.8": 0.06666666666666667,
+            "B.1.528": 0.06666666666666667,
+            "B.1.555": 0.06666666666666667,
+            "B.4": 0.13333333333333333,
+            "B.4.6": 0.06666666666666667
+          },
+          "n_sequences": 15
+        },
+        {
+          "date": "2020-05-03",
+          "frequencies": {
+            "B.1": 0.25,
+            "B.1.1": 0.375,
+            "B.1.1.306": 0.125,
+            "B.1.1.366": 0.125,
+            "B.4.7": 0.125
+          },
+          "n_sequences": 8
+        },
+        {
+          "date": "2020-05-17",
+          "frequencies": {
+            "B": 0.08333333333333333,
+            "B.1": 0.16666666666666666,
+            "B.1.1": 0.08333333333333333,
+            "B.1.1.25": 0.08333333333333333,
+            "B.1.1.28": 0.08333333333333333,
+            "B.1.111": 0.08333333333333333,
+            "B.1.210": 0.08333333333333333,
+            "B.1.260": 0.08333333333333333,
+            "B.1.470": 0.16666666666666666,
+            "B.1.9.5": 0.08333333333333333
+          },
+          "n_sequences": 12
+        },
+        {
+          "date": "2020-05-31",
+          "frequencies": {
+            "A": 0.07692307692307693,
+            "B": 0.15384615384615385,
+            "B.1": 0.38461538461538464,
+            "B.1.1.317": 0.07692307692307693,
+            "B.1.210": 0.07692307692307693,
+            "B.1.428.1": 0.07692307692307693,
+            "B.1.497": 0.07692307692307693,
+            "B.1.555": 0.07692307692307693
+          },
+          "n_sequences": 13
+        },
+        {
+          "date": "2020-06-14",
+          "frequencies": {
+            "B.1": 0.36363636363636365,
+            "B.1.1": 0.2727272727272727,
+            "B.1.1.101": 0.09090909090909091,
+            "B.1.2": 0.09090909090909091,
+            "B.1.36.8": 0.18181818181818182
+          },
+          "n_sequences": 11
+        },
+        {
+          "date": "2020-06-28",
+          "frequencies": {
+            "A": 0.14285714285714285,
+            "B.1": 0.2857142857142857,
+            "B.1.1": 0.2857142857142857,
+            "B.1.1.306": 0.14285714285714285,
+            "B.1.247": 0.14285714285714285
+          },
+          "n_sequences": 7
+        },
+        {
+          "date": "2020-07-12",
+          "frequencies": {
+            "B.1": 0.2222222222222222,
+            "B.1.1": 0.2222222222222222,
+            "B.1.1.203": 0.1111111111111111,
+            "B.1.1.222": 0.1111111111111111,
+            "B.1.1.25": 0.1111111111111111,
+            "B.1.1.306": 0.1111111111111111,
+            "B.1.1.63": 0.1111111111111111
+          },
+          "n_sequences": 9
+        },
+        {
+          "date": "2020-07-26",
+          "frequencies": {
+            "A.25": 0.14285714285714285,
+            "B.1.1": 0.42857142857142855,
+            "B.1.213": 0.14285714285714285,
+            "B.1.36.8": 0.14285714285714285,
+            "D.2": 0.14285714285714285
+          },
+          "n_sequences": 7
+        },
+        {
+          "date": "2020-08-09",
+          "frequencies": {
+            "B.1.1": 0.2,
+            "B.1.1.25": 0.2,
+            "B.1.1.28": 0.2,
+            "B.1.160": 0.2,
+            "B.1.471": 0.2
+          },
+          "n_sequences": 5
+        },
+        {
+          "date": "2020-08-23",
+          "frequencies": {
+            "B": 0.16666666666666666,
+            "B.1.1.229": 0.16666666666666666,
+            "B.1.1.33": 0.16666666666666666,
+            "B.1.177": 0.16666666666666666,
+            "B.1.336": 0.16666666666666666,
+            "B.1.393": 0.16666666666666666
+          },
+          "n_sequences": 6
+        },
+        {
+          "date": "2020-09-06",
+          "frequencies": {
+            "A": 0.1,
+            "B.1": 0.2,
+            "B.1.1": 0.1,
+            "B.1.1.232": 0.1,
+            "B.1.1.329": 0.1,
+            "B.1.36": 0.1,
+            "B.1.36.16": 0.1,
+            "B.1.416": 0.1,
+            "N.3": 0.1
+          },
+          "n_sequences": 10
+        },
+        {
+          "date": "2020-09-20",
+          "frequencies": {
+            "B.1.1": 0.2,
+            "B.1.1.432": 0.2,
+            "B.1.239": 0.2,
+            "B.1.36": 0.2,
+            "B.4": 0.2
+          },
+          "n_sequences": 5
+        },
+        {
+          "date": "2020-10-04",
+          "frequencies": {
+            "B.1.1": 0.625,
+            "B.1.237": 0.125,
+            "B.1.36.31": 0.125,
+            "B.1.36.7": 0.125
+          },
+          "n_sequences": 8
+        },
+        {
+          "date": "2020-10-18",
+          "frequencies": {
+            "B.1.1": 0.25,
+            "B.1.1.1": 0.125,
+            "B.1.1.216": 0.125,
+            "B.1.1.277": 0.125,
+            "B.1.393": 0.125,
+            "B.1.497": 0.125,
+            "C.35": 0.125
+          },
+          "n_sequences": 8
+        },
+        {
+          "date": "2020-11-01",
+          "frequencies": {
+            "B.1": 0.3333333333333333,
+            "B.1.1": 0.6666666666666666
+          },
+          "n_sequences": 3
+        },
+        {
+          "date": "2020-11-15",
+          "frequencies": {
+            "B.1.1.306": 0.08333333333333333,
+            "B.1.160": 0.08333333333333333,
+            "B.1.177": 0.08333333333333333,
+            "B.1.2": 0.08333333333333333,
+            "B.1.258": 0.08333333333333333,
+            "B.1.36": 0.25,
+            "B.1.36.29": 0.08333333333333333,
+            "B.1.36.31": 0.08333333333333333,
+            "B.1.524": 0.08333333333333333,
+            "C.36": 0.08333333333333333
+          },
+          "n_sequences": 12
+        },
+        {
+          "date": "2020-11-29",
+          "frequencies": {
+            "A.23.1": 0.07692307692307693,
+            "A.24": 0.07692307692307693,
+            "AD.1": 0.07692307692307693,
+            "B.1.1": 0.07692307692307693,
+            "B.1.1.25": 0.07692307692307693,
+            "B.1.1.306": 0.07692307692307693,
+            "B.1.1.352": 0.07692307692307693,
+            "B.1.1.398": 0.07692307692307693,
+            "B.1.1.7": 0.07692307692307693,
+            "B.1.2": 0.07692307692307693,
+            "B.1.234": 0.07692307692307693,
+            "B.1.36": 0.07692307692307693,
+            "N.5": 0.07692307692307693
+          },
+          "n_sequences": 13
+        },
+        {
+          "date": "2020-12-13",
+          "frequencies": {
+            "B.1": 0.1,
+            "B.1.1": 0.1,
+            "B.1.1.398": 0.1,
+            "B.1.1.7": 0.1,
+            "B.1.2": 0.1,
+            "B.1.36": 0.1,
+            "B.1.36.16": 0.1,
+            "B.1.36.29": 0.1,
+            "B.1.480": 0.1,
+            "L.3": 0.1
+          },
+          "n_sequences": 10
+        },
+        {
+          "date": "2020-12-27",
+          "frequencies": {
+            "B.1": 0.058823529411764705,
+            "B.1.1": 0.11764705882352941,
+            "B.1.1.398": 0.058823529411764705,
+            "B.1.1.50": 0.058823529411764705,
+            "B.1.1.7": 0.23529411764705882,
+            "B.1.177": 0.058823529411764705,
+            "B.1.243": 0.058823529411764705,
+            "B.1.351": 0.058823529411764705,
+            "B.1.36": 0.058823529411764705,
+            "B.1.36.8": 0.058823529411764705,
+            "B.1.525": 0.058823529411764705,
+            "B.1.560": 0.058823529411764705,
+            "L.3": 0.058823529411764705
+          },
+          "n_sequences": 17
+        },
+        {
+          "date": "2021-01-10",
+          "frequencies": {
+            "A.23.1": 0.06666666666666667,
+            "B.1": 0.06666666666666667,
+            "B.1.1.7": 0.13333333333333333,
+            "B.1.2": 0.06666666666666667,
+            "B.1.351": 0.2,
+            "B.1.36.27": 0.06666666666666667,
+            "B.1.466": 0.06666666666666667,
+            "B.1.524": 0.06666666666666667,
+            "B.1.530": 0.06666666666666667,
+            "B.1.560": 0.06666666666666667,
+            "P.1": 0.06666666666666667,
+            "P.2": 0.06666666666666667
+          },
+          "n_sequences": 15
+        },
+        {
+          "date": "2021-01-24",
+          "frequencies": {
+            "B.1": 0.15384615384615385,
+            "B.1.1.28": 0.07692307692307693,
+            "B.1.1.7": 0.07692307692307693,
+            "B.1.177.86": 0.07692307692307693,
+            "B.1.351": 0.15384615384615385,
+            "B.1.36": 0.07692307692307693,
+            "B.1.466.2": 0.07692307692307693,
+            "B.1.480": 0.07692307692307693,
+            "B.1.617.2": 0.07692307692307693,
+            "B.1.619": 0.07692307692307693,
+            "P.2": 0.07692307692307693
+          },
+          "n_sequences": 13
+        },
+        {
+          "date": "2021-02-07",
+          "frequencies": {
+            "B.1.1": 0.08333333333333333,
+            "B.1.1.318": 0.08333333333333333,
+            "B.1.1.7": 0.08333333333333333,
+            "B.1.351": 0.08333333333333333,
+            "B.1.36": 0.08333333333333333,
+            "B.1.36.16": 0.08333333333333333,
+            "B.1.466": 0.08333333333333333,
+            "B.1.466.2": 0.16666666666666666,
+            "B.1.617.2": 0.08333333333333333,
+            "C.36": 0.08333333333333333,
+            "C.37": 0.08333333333333333
+          },
+          "n_sequences": 12
+        },
+        {
+          "date": "2021-02-21",
+          "frequencies": {
+            "B": 0.1111111111111111,
+            "B.1": 0.1111111111111111,
+            "B.1.1.7": 0.3333333333333333,
+            "B.1.351": 0.1111111111111111,
+            "B.1.466.2": 0.1111111111111111,
+            "B.1.525": 0.1111111111111111,
+            "B.1.560": 0.1111111111111111
+          },
+          "n_sequences": 9
+        },
+        {
+          "date": "2021-03-07",
+          "frequencies": {
+            "B.1.1.7": 0.3333333333333333,
+            "B.1.36.16": 0.08333333333333333,
+            "B.1.466.2": 0.08333333333333333,
+            "B.1.524": 0.08333333333333333,
+            "B.1.525": 0.08333333333333333,
+            "B.1.617": 0.08333333333333333,
+            "P.1": 0.08333333333333333,
+            "P.3": 0.08333333333333333,
+            "R.1": 0.08333333333333333
+          },
+          "n_sequences": 12
+        },
+        {
+          "date": "2021-03-21",
+          "frequencies": {
+            "B.1.1.354": 0.16666666666666666,
+            "B.1.1.7": 0.16666666666666666,
+            "B.1.351": 0.16666666666666666,
+            "B.1.466": 0.3333333333333333,
+            "B.1.466.2": 0.16666666666666666
+          },
+          "n_sequences": 6
+        },
+        {
+          "date": "2021-04-04",
+          "frequencies": {
+            "B.1.1.7": 0.3076923076923077,
+            "B.1.351": 0.07692307692307693,
+            "B.1.351.3": 0.07692307692307693,
+            "B.1.466.2": 0.23076923076923078,
+            "B.1.525": 0.07692307692307693,
+            "B.1.617.1": 0.07692307692307693,
+            "B.1.617.2": 0.15384615384615385
+          },
+          "n_sequences": 13
+        },
+        {
+          "date": "2021-04-18",
+          "frequencies": {
+            "B.1": 0.2,
+            "B.1.1.7": 0.3,
+            "B.1.617.2": 0.3,
+            "C.36.3": 0.1,
+            "C.37": 0.1
+          },
+          "n_sequences": 10
+        },
+        {
+          "date": "2021-05-02",
+          "frequencies": {
+            "B.1.1.413": 0.1111111111111111,
+            "B.1.466.2": 0.2222222222222222,
+            "B.1.525": 0.1111111111111111,
+            "B.1.617.2": 0.4444444444444444,
+            "B.1.625": 0.1111111111111111
+          },
+          "n_sequences": 9
+        },
+        {
+          "date": "2021-05-16",
+          "frequencies": {
+            "A.2.5": 0.09090909090909091,
+            "B.1.1.7": 0.09090909090909091,
+            "B.1.351": 0.2727272727272727,
+            "B.1.617.2": 0.2727272727272727,
+            "C.36.3.1": 0.09090909090909091,
+            "C.37": 0.09090909090909091,
+            "R.1": 0.09090909090909091
+          },
+          "n_sequences": 11
+        },
+        {
+          "date": "2021-05-30",
+          "frequencies": {
+            "AY.23": 0.14285714285714285,
+            "AY.38": 0.07142857142857142,
+            "B.1": 0.07142857142857142,
+            "B.1.1": 0.07142857142857142,
+            "B.1.1.7": 0.07142857142857142,
+            "B.1.617.2": 0.42857142857142855,
+            "P.1": 0.14285714285714285
+          },
+          "n_sequences": 14
+        },
+        {
+          "date": "2021-06-13",
+          "frequencies": {
+            "A.2.5": 0.09090909090909091,
+            "AY.32": 0.09090909090909091,
+            "AY.46": 0.09090909090909091,
+            "B.1.1.7": 0.18181818181818182,
+            "B.1.617.2": 0.36363636363636365,
+            "B.1.621": 0.09090909090909091,
+            "P.1.12": 0.09090909090909091
+          },
+          "n_sequences": 11
+        },
+        {
+          "date": "2021-06-27",
+          "frequencies": {
+            "AY.111": 0.1111111111111111,
+            "AY.2": 0.1111111111111111,
+            "AY.33": 0.1111111111111111,
+            "AY.36": 0.1111111111111111,
+            "B.1.351": 0.1111111111111111,
+            "B.1.617.2": 0.4444444444444444
+          },
+          "n_sequences": 9
+        },
+        {
+          "date": "2021-07-11",
+          "frequencies": {
+            "AY.24": 0.09090909090909091,
+            "AY.43": 0.18181818181818182,
+            "AY.46": 0.09090909090909091,
+            "AY.6": 0.09090909090909091,
+            "AY.9.2": 0.09090909090909091,
+            "B.1.351": 0.09090909090909091,
+            "B.1.617.2": 0.2727272727272727,
+            "P.1": 0.09090909090909091
+          },
+          "n_sequences": 11
+        },
+        {
+          "date": "2021-07-25",
+          "frequencies": {
+            "AY.122": 0.14285714285714285,
+            "AY.125": 0.14285714285714285,
+            "AY.31": 0.14285714285714285,
+            "AY.43": 0.14285714285714285,
+            "AY.45": 0.14285714285714285,
+            "AY.57": 0.14285714285714285,
+            "B.1.617.2": 0.14285714285714285
+          },
+          "n_sequences": 7
+        },
+        {
+          "date": "2021-08-08",
+          "frequencies": {
+            "AY.23": 0.1111111111111111,
+            "AY.29": 0.1111111111111111,
+            "AY.34.1": 0.1111111111111111,
+            "AY.4": 0.1111111111111111,
+            "AY.85": 0.1111111111111111,
+            "AY.9.2": 0.1111111111111111,
+            "B.1.617.2": 0.3333333333333333
+          },
+          "n_sequences": 9
+        },
+        {
+          "date": "2021-08-22",
+          "frequencies": {
+            "AY.127": 0.09090909090909091,
+            "AY.29": 0.09090909090909091,
+            "AY.30": 0.09090909090909091,
+            "AY.36": 0.09090909090909091,
+            "AY.42": 0.09090909090909091,
+            "AY.43": 0.09090909090909091,
+            "AY.44": 0.09090909090909091,
+            "AY.57": 0.09090909090909091,
+            "B.1.617.2": 0.2727272727272727
+          },
+          "n_sequences": 11
+        },
+        {
+          "date": "2021-09-05",
+          "frequencies": {
+            "AY.1": 0.125,
+            "AY.113": 0.125,
+            "AY.23": 0.125,
+            "AY.24": 0.125,
+            "AY.36": 0.125,
+            "AY.45": 0.125,
+            "B.1.617.2": 0.125,
+            "P.1.7": 0.125
+          },
+          "n_sequences": 8
+        },
+        {
+          "date": "2021-09-19",
+          "frequencies": {
+            "AY.126": 0.25,
+            "AY.23": 0.25,
+            "B.1.617.2": 0.5
+          },
+          "n_sequences": 4
+        },
+        {
+          "date": "2021-10-03",
+          "frequencies": {
+            "AY.126": 0.1111111111111111,
+            "AY.24": 0.1111111111111111,
+            "AY.36": 0.1111111111111111,
+            "B.1.617.2": 0.5555555555555556,
+            "B.1.621": 0.1111111111111111
+          },
+          "n_sequences": 9
+        },
+        {
+          "date": "2021-10-17",
+          "frequencies": {
+            "AY.103": 0.16666666666666666,
+            "AY.122": 0.3333333333333333,
+            "AY.20": 0.16666666666666666,
+            "AY.34.1": 0.16666666666666666,
+            "AY.6": 0.16666666666666666
+          },
+          "n_sequences": 6
+        },
+        {
+          "date": "2021-10-31",
+          "frequencies": {
+            "AY.122": 0.25,
+            "AY.34.1.1": 0.125,
+            "AY.57": 0.125,
+            "AY.84": 0.125,
+            "AY.99": 0.125,
+            "B.1.617.2": 0.25
+          },
+          "n_sequences": 8
+        },
+        {
+          "date": "2021-11-14",
+          "frequencies": {
+            "AY.113": 0.3333333333333333,
+            "AY.43.3": 0.3333333333333333,
+            "BA.1.17": 0.3333333333333333
+          },
+          "n_sequences": 3
+        },
+        {
+          "date": "2021-11-28",
+          "frequencies": {
+            "AY.25": 0.16666666666666666,
+            "AY.33": 0.16666666666666666,
+            "AY.4.2": 0.16666666666666666,
+            "B.1.1.7": 0.16666666666666666,
+            "BA.1": 0.16666666666666666,
+            "BA.1.18": 0.16666666666666666
+          },
+          "n_sequences": 6
+        },
+        {
+          "date": "2021-12-12",
+          "frequencies": {
+            "AY.121": 0.125,
+            "AY.43": 0.125,
+            "AY.9.2": 0.125,
+            "BA.1.1": 0.25,
+            "BA.1.14": 0.125,
+            "BA.1.15": 0.25
+          },
+          "n_sequences": 8
+        },
+        {
+          "date": "2021-12-26",
+          "frequencies": {
+            "AY.127": 0.058823529411764705,
+            "AY.57": 0.058823529411764705,
+            "AY.79": 0.11764705882352941,
+            "BA.1": 0.17647058823529413,
+            "BA.1.1": 0.29411764705882354,
+            "BA.1.1.1": 0.058823529411764705,
+            "BA.1.1.18": 0.058823529411764705,
+            "BA.1.1.7": 0.058823529411764705,
+            "BA.1.15": 0.058823529411764705,
+            "BA.2": 0.058823529411764705
+          },
+          "n_sequences": 17
+        },
+        {
+          "date": "2022-01-09",
+          "frequencies": {
+            "BA.1.1": 0.5,
+            "BA.1.1.7": 0.25,
+            "BA.2": 0.25
+          },
+          "n_sequences": 8
+        },
+        {
+          "date": "2022-01-23",
+          "frequencies": {
+            "BA.1": 0.25,
+            "BA.1.1": 0.25,
+            "BA.1.1.2": 0.125,
+            "BA.1.14": 0.125,
+            "BA.2": 0.125,
+            "BA.2.10": 0.125
+          },
+          "n_sequences": 8
+        },
+        {
+          "date": "2022-02-06",
+          "frequencies": {
+            "BA.1": 0.14285714285714285,
+            "BA.1.1": 0.14285714285714285,
+            "BA.1.13.1": 0.14285714285714285,
+            "BA.2": 0.14285714285714285,
+            "BA.2.10.1": 0.42857142857142855
+          },
+          "n_sequences": 7
+        },
+        {
+          "date": "2022-02-20",
+          "frequencies": {
+            "BA.1.1": 0.8,
+            "BA.2.3.2": 0.2
+          },
+          "n_sequences": 5
+        },
+        {
+          "date": "2022-03-06",
+          "frequencies": {
+            "BA.1.1.1": 0.2,
+            "BA.2": 0.4,
+            "BA.2.2": 0.2,
+            "BA.2.2.1": 0.2
+          },
+          "n_sequences": 5
+        },
+        {
+          "date": "2022-03-20",
+          "frequencies": {
+            "BA.1.1": 0.25,
+            "BA.2": 0.25,
+            "BA.2.3": 0.25,
+            "BA.2.3.7": 0.25
+          },
+          "n_sequences": 4
+        },
+        {
+          "date": "2022-04-03",
+          "frequencies": {
+            "BA.1.1": 0.25,
+            "BA.2": 0.5,
+            "BA.2.2.1": 0.25
+          },
+          "n_sequences": 4
+        },
+        {
+          "date": "2022-04-17",
+          "frequencies": {
+            "BA.2": 0.25,
+            "BA.2.43": 0.75
+          },
+          "n_sequences": 4
+        },
+        {
+          "date": "2022-05-01",
+          "frequencies": {
+            "AY.1": 0.07142857142857142,
+            "BA.2": 0.2857142857142857,
+            "BA.2.10": 0.07142857142857142,
+            "BA.2.12": 0.07142857142857142,
+            "BA.2.12.1": 0.07142857142857142,
+            "BA.2.38.2": 0.07142857142857142,
+            "BA.2.43": 0.07142857142857142,
+            "BA.2.9": 0.14285714285714285,
+            "BA.4": 0.07142857142857142,
+            "BA.4.1": 0.07142857142857142
+          },
+          "n_sequences": 14
+        },
+        {
+          "date": "2022-05-15",
+          "frequencies": {
+            "BA.1.1": 0.3333333333333333,
+            "BA.4.1.1": 0.6666666666666666
+          },
+          "n_sequences": 3
+        },
+        {
+          "date": "2022-05-29",
+          "frequencies": {
+            "BA.2": 0.16666666666666666,
+            "BA.2.38": 0.08333333333333333,
+            "BA.2.40.1": 0.08333333333333333,
+            "BA.2.74": 0.08333333333333333,
+            "BA.4.1": 0.08333333333333333,
+            "BA.5.2": 0.08333333333333333,
+            "BA.5.2.1": 0.25,
+            "BA.5.2.20": 0.08333333333333333,
+            "BA.5.3": 0.08333333333333333
+          },
+          "n_sequences": 12
+        },
+        {
+          "date": "2022-06-12",
+          "frequencies": {
+            "BA.2": 0.25,
+            "BA.2.43": 0.25,
+            "BA.5.2.1": 0.25,
+            "BE.4": 0.25
+          },
+          "n_sequences": 4
+        },
+        {
+          "date": "2022-06-26",
+          "frequencies": {
+            "BA.4": 0.4,
+            "BA.4.1": 0.2,
+            "BA.5.2": 0.2,
+            "BA.5.2.1": 0.2
+          },
+          "n_sequences": 5
+        },
+        {
+          "date": "2022-07-10",
+          "frequencies": {
+            "BA.2.75": 0.16666666666666666,
+            "BA.2.76": 0.16666666666666666,
+            "BA.5.1.25": 0.16666666666666666,
+            "BE.1.1": 0.16666666666666666,
+            "BF.3": 0.16666666666666666,
+            "BF.7": 0.16666666666666666
+          },
+          "n_sequences": 6
+        },
+        {
+          "date": "2022-07-24",
+          "frequencies": {
+            "AY.131": 0.09090909090909091,
+            "BA.2": 0.09090909090909091,
+            "BA.2.75": 0.09090909090909091,
+            "BA.4.1": 0.09090909090909091,
+            "BA.4.1.1": 0.09090909090909091,
+            "BA.4.6": 0.09090909090909091,
+            "BA.5.2": 0.2727272727272727,
+            "BA.5.2.36": 0.09090909090909091,
+            "BA.5.2.9": 0.09090909090909091
+          },
+          "n_sequences": 11
+        },
+        {
+          "date": "2022-08-07",
+          "frequencies": {
+            "BA.2.75.10": 0.25,
+            "BA.2.75.5": 0.25,
+            "BA.5.2": 0.25,
+            "BA.5.2.1": 0.25
+          },
+          "n_sequences": 4
+        },
+        {
+          "date": "2022-08-21",
+          "frequencies": {
+            "BA.2.75": 0.25,
+            "BA.5.2": 0.25,
+            "BM.1.1.3": 0.25,
+            "CK.2": 0.25
+          },
+          "n_sequences": 4
+        },
+        {
+          "date": "2022-09-04",
+          "frequencies": {
+            "BA.5.2.22": 0.16666666666666666,
+            "BA.5.3.1": 0.16666666666666666,
+            "BF.13": 0.16666666666666666,
+            "BF.28": 0.16666666666666666,
+            "BJ.1": 0.16666666666666666,
+            "BM.1.1.3": 0.16666666666666666
+          },
+          "n_sequences": 6
+        },
+        {
+          "date": "2022-09-18",
+          "frequencies": {
+            "BA.5.2.27": 0.25,
+            "BA.5.2.7": 0.25,
+            "BN.1.4": 0.25,
+            "BU.1": 0.25
+          },
+          "n_sequences": 4
+        },
+        {
+          "date": "2022-10-02",
+          "frequencies": {
+            "BF.7": 0.125,
+            "BL.1": 0.25,
+            "XBB.1": 0.125,
+            "XBB.3": 0.375,
+            "XBB.5": 0.125
+          },
+          "n_sequences": 8
+        },
+        {
+          "date": "2022-10-16",
+          "frequencies": {
+            "DY.2": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2022-10-30",
+          "frequencies": {
+            "BA.5.3.5": 0.25,
+            "DY.3": 0.75
+          },
+          "n_sequences": 4
+        },
+        {
+          "date": "2022-11-13",
+          "frequencies": {
+            "BA.5.2.7": 0.16666666666666666,
+            "BF.7.14.6": 0.16666666666666666,
+            "BN.1.3.6": 0.16666666666666666,
+            "DY.3": 0.3333333333333333,
+            "XBB.1": 0.16666666666666666
+          },
+          "n_sequences": 6
+        },
+        {
+          "date": "2022-11-27",
+          "frequencies": {
+            "BA.5.2": 0.09090909090909091,
+            "BQ.1.1": 0.09090909090909091,
+            "BQ.1.8": 0.09090909090909091,
+            "DY.3": 0.18181818181818182,
+            "XBB.1": 0.18181818181818182,
+            "XBB.1.9": 0.09090909090909091,
+            "XBB.2": 0.18181818181818182,
+            "XBB.3": 0.09090909090909091
+          },
+          "n_sequences": 11
+        },
+        {
+          "date": "2022-12-11",
+          "frequencies": {
+            "DY.3": 0.5,
+            "XBB.3": 0.5
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2022-12-25",
+          "frequencies": {
+            "DY.3": 0.14285714285714285,
+            "FL.10": 0.14285714285714285,
+            "FL.4": 0.14285714285714285,
+            "XAZ": 0.14285714285714285,
+            "XBB.1.3": 0.14285714285714285,
+            "XBB.1.5": 0.2857142857142857
+          },
+          "n_sequences": 7
+        },
+        {
+          "date": "2023-01-08",
+          "frequencies": {
+            "BA.5.2.1": 0.2,
+            "BA.5.2.48": 0.2,
+            "BN.1.2": 0.2,
+            "XBB.1": 0.2,
+            "XBB.1.5.18": 0.2
+          },
+          "n_sequences": 5
+        },
+        {
+          "date": "2023-01-22",
+          "frequencies": {
+            "BA.5.2.48": 0.125,
+            "BN.1.3.9": 0.125,
+            "BQ.1.1.38": 0.125,
+            "BQ.1.1.60": 0.125,
+            "DY.1": 0.125,
+            "XBB.1": 0.125,
+            "XBB.1.43.1": 0.125,
+            "XBB.1.5.7": 0.125
+          },
+          "n_sequences": 8
+        },
+        {
+          "date": "2023-02-05",
+          "frequencies": {
+            "BF.7.14": 0.2,
+            "FL.5": 0.2,
+            "JD.2": 0.2,
+            "XBB.1.16": 0.2,
+            "XBB.1.5": 0.2
+          },
+          "n_sequences": 5
+        },
+        {
+          "date": "2023-02-19",
+          "frequencies": {
+            "BF.7.14.1": 0.14285714285714285,
+            "BF.7.14.4": 0.14285714285714285,
+            "XBB.1.14": 0.14285714285714285,
+            "XBB.1.5": 0.14285714285714285,
+            "XBB.1.5.1": 0.14285714285714285,
+            "XBB.1.9.2": 0.14285714285714285,
+            "XBB.2.3": 0.14285714285714285
+          },
+          "n_sequences": 7
+        },
+        {
+          "date": "2023-03-05",
+          "frequencies": {
+            "BF.7.14.5": 0.16666666666666666,
+            "DY.2": 0.16666666666666666,
+            "DY.3": 0.16666666666666666,
+            "FD.4": 0.16666666666666666,
+            "XBB.1.16": 0.3333333333333333
+          },
+          "n_sequences": 6
+        },
+        {
+          "date": "2023-03-19",
+          "frequencies": {
+            "FL.12": 0.5,
+            "XBB.1.5.7": 0.5
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2023-04-02",
+          "frequencies": {
+            "BF.7.14": 0.3333333333333333,
+            "XBB.1.5": 0.6666666666666666
+          },
+          "n_sequences": 3
+        },
+        {
+          "date": "2023-04-16",
+          "frequencies": {
+            "EG.5.2": 0.1111111111111111,
+            "FL.4.2": 0.1111111111111111,
+            "FL.4.6": 0.1111111111111111,
+            "FY.4.1": 0.1111111111111111,
+            "GR.1": 0.1111111111111111,
+            "XBB.1.16": 0.1111111111111111,
+            "XBB.1.16.11": 0.1111111111111111,
+            "XBB.1.16.3": 0.1111111111111111,
+            "XBB.1.9.1": 0.1111111111111111
+          },
+          "n_sequences": 9
+        },
+        {
+          "date": "2023-04-30",
+          "frequencies": {
+            "DY.2": 0.25,
+            "GW.4": 0.25,
+            "XBB.1.16": 0.25,
+            "XBB.1.16.13": 0.25
+          },
+          "n_sequences": 4
+        },
+        {
+          "date": "2023-05-28",
+          "frequencies": {
+            "FL.2.3": 0.2,
+            "GY.1": 0.2,
+            "XBB.1.16.1": 0.2,
+            "XBB.1.5.59": 0.2,
+            "XBB.1.9.2": 0.2
+          },
+          "n_sequences": 5
+        },
+        {
+          "date": "2023-06-11",
+          "frequencies": {
+            "XBB.1.16.2": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2023-06-25",
+          "frequencies": {
+            "EG.5.1.4": 0.14285714285714285,
+            "FL.13.2": 0.14285714285714285,
+            "FU.1": 0.2857142857142857,
+            "FY.4.1.2": 0.14285714285714285,
+            "GK.1": 0.14285714285714285,
+            "XBB.2.3.2": 0.14285714285714285
+          },
+          "n_sequences": 7
+        },
+        {
+          "date": "2023-07-09",
+          "frequencies": {
+            "EU.1.1.3": 0.2,
+            "FL.2.4": 0.2,
+            "XBB.1.16": 0.2,
+            "XBB.1.16.6": 0.2,
+            "XBB.2.4": 0.2
+          },
+          "n_sequences": 5
+        },
+        {
+          "date": "2023-07-23",
+          "frequencies": {
+            "XBB.1": 0.5,
+            "XBB.1.41.1": 0.5
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2023-08-06",
+          "frequencies": {
+            "BQ.1.8": 0.3333333333333333,
+            "EG.5.1.1": 0.6666666666666666
+          },
+          "n_sequences": 3
+        },
+        {
+          "date": "2023-08-20",
+          "frequencies": {
+            "EG.5.1.4": 0.2,
+            "FL.15": 0.2,
+            "GD.1": 0.2,
+            "GW.5": 0.2,
+            "GW.5.1.1": 0.2
+          },
+          "n_sequences": 5
+        },
+        {
+          "date": "2023-09-03",
+          "frequencies": {
+            "FE.1.1": 0.25,
+            "GA.4.1": 0.25,
+            "XBB.1.16": 0.25,
+            "XBB.1.41.1": 0.25
+          },
+          "n_sequences": 4
+        },
+        {
+          "date": "2023-09-17",
+          "frequencies": {
+            "EG.5.1.1": 0.5,
+            "FY.3.1": 0.5
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2023-10-01",
+          "frequencies": {
+            "EG.5.1.6": 0.3333333333333333,
+            "GK.1.8": 0.3333333333333333,
+            "XBB.1.16.31": 0.3333333333333333
+          },
+          "n_sequences": 3
+        },
+        {
+          "date": "2023-10-15",
+          "frequencies": {
+            "FE.1.1.3": 0.25,
+            "GN.1": 0.25,
+            "HK.3": 0.25,
+            "HV.1": 0.25
+          },
+          "n_sequences": 4
+        },
+        {
+          "date": "2023-10-29",
+          "frequencies": {
+            "HK.3": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2023-11-12",
+          "frequencies": {
+            "BA.2.86.1": 0.5,
+            "EG.5.1.1": 0.5
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2023-12-10",
+          "frequencies": {
+            "JN.1.1": 0.8333333333333334,
+            "XBB.1.16.6": 0.16666666666666666
+          },
+          "n_sequences": 6
+        },
+        {
+          "date": "2023-12-24",
+          "frequencies": {
+            "HV.1": 0.2,
+            "JN.1.1": 0.4,
+            "JN.1.18": 0.2,
+            "JN.1.39": 0.2
+          },
+          "n_sequences": 5
+        },
+        {
+          "date": "2024-01-07",
+          "frequencies": {
+            "JN.1": 1.0
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2024-01-21",
+          "frequencies": {
+            "JN.1": 0.4,
+            "JN.1.1.5": 0.2,
+            "JN.1.39": 0.2,
+            "JN.1.55": 0.2
+          },
+          "n_sequences": 5
+        },
+        {
+          "date": "2024-02-04",
+          "frequencies": {
+            "JN.1.1.3": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2024-02-18",
+          "frequencies": {
+            "BA.2.86.1": 0.4,
+            "JN.1.20": 0.2,
+            "JN.1.4": 0.2,
+            "JN.18": 0.2
+          },
+          "n_sequences": 5
+        },
+        {
+          "date": "2024-03-03",
+          "frequencies": {
+            "BA.2.86.1": 0.3333333333333333,
+            "JN.1.19": 0.3333333333333333,
+            "JN.1.4.5": 0.3333333333333333
+          },
+          "n_sequences": 3
+        },
+        {
+          "date": "2024-03-17",
+          "frequencies": {
+            "JN.1.20": 0.5,
+            "JN.1.4": 0.5
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2024-03-31",
+          "frequencies": {
+            "JD.1.1": 0.25,
+            "JN.1.32": 0.25,
+            "JN.1.5": 0.25,
+            "XDP": 0.25
+          },
+          "n_sequences": 4
+        },
+        {
+          "date": "2024-04-14",
+          "frequencies": {
+            "JN.1": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2024-04-28",
+          "frequencies": {
+            "JN.1.16": 0.3333333333333333,
+            "JN.1.4": 0.3333333333333333,
+            "MZ.2": 0.3333333333333333
+          },
+          "n_sequences": 3
+        },
+        {
+          "date": "2024-06-09",
+          "frequencies": {
+            "LB.1.7": 0.5,
+            "LZ.2.1": 0.5
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2024-06-23",
+          "frequencies": {
+            "KP.3.1.1": 0.5,
+            "KP.3.1.11": 0.5
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2024-07-07",
+          "frequencies": {
+            "JN.1.16": 0.3333333333333333,
+            "JN.1.16.1": 0.3333333333333333,
+            "XDV.1.7": 0.3333333333333333
+          },
+          "n_sequences": 3
+        },
+        {
+          "date": "2024-07-21",
+          "frequencies": {
+            "XDV.1": 0.5,
+            "XDV.1.12": 0.5
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2024-08-04",
+          "frequencies": {
+            "JN.1.67.1": 0.5,
+            "MU.1": 0.5
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2024-08-18",
+          "frequencies": {
+            "LF.7.3": 0.5,
+            "XEC": 0.5
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2024-09-15",
+          "frequencies": {
+            "JN.1.63.1": 0.5,
+            "MC.16": 0.5
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2024-09-29",
+          "frequencies": {
+            "XDV.1": 1.0
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2024-10-27",
+          "frequencies": {
+            "XEC": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2024-11-10",
+          "frequencies": {
+            "LF.7.1.3": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2024-12-08",
+          "frequencies": {
+            "KP.3.1.1": 0.5,
+            "NW.3": 0.5
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2024-12-22",
+          "frequencies": {
+            "MC.33.1": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2025-01-05",
+          "frequencies": {
+            "PQ.6": 0.3333333333333333,
+            "XEC.8": 0.3333333333333333,
+            "XEC.9": 0.3333333333333333
+          },
+          "n_sequences": 3
+        },
+        {
+          "date": "2025-01-19",
+          "frequencies": {
+            "XEP.1": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2025-02-02",
+          "frequencies": {
+            "MC.33.1": 0.5,
+            "XEC.2.6": 0.5
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2025-03-02",
+          "frequencies": {
+            "NB.1.8.1": 0.5,
+            "XEC.4.2": 0.5
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2025-03-16",
+          "frequencies": {
+            "LP.8.1.1": 0.3333333333333333,
+            "XEC.31": 0.3333333333333333,
+            "XFG.2.12": 0.3333333333333333
+          },
+          "n_sequences": 3
+        },
+        {
+          "date": "2025-03-30",
+          "frequencies": {
+            "PQ.17": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2025-04-13",
+          "frequencies": {
+            "NB.1.9": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2025-05-11",
+          "frequencies": {
+            "LF.7.7.1": 0.25,
+            "NB.1.8.1": 0.25,
+            "PQ.1": 0.25,
+            "PQ.1.1": 0.25
+          },
+          "n_sequences": 4
+        },
+        {
+          "date": "2025-05-25",
+          "frequencies": {
+            "NB.1.8.1": 0.4,
+            "NB.1.9": 0.2,
+            "PQ.1": 0.2,
+            "XFC.1.10": 0.2
+          },
+          "n_sequences": 5
+        },
+        {
+          "date": "2025-06-08",
+          "frequencies": {
+            "PQ.17.2": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2025-06-22",
+          "frequencies": {
+            "NB.1.8.1": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2025-07-20",
+          "frequencies": {
+            "PY.1": 0.5,
+            "XFG.5.1": 0.5
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2025-08-03",
+          "frequencies": {
+            "XFG.4.1": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2025-08-17",
+          "frequencies": {
+            "XFG.10.2": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2025-08-31",
+          "frequencies": {
+            "NB.1.8.1": 0.3333333333333333,
+            "XFG.4": 0.3333333333333333,
+            "XFG.5": 0.3333333333333333
+          },
+          "n_sequences": 3
+        },
+        {
+          "date": "2025-09-14",
+          "frequencies": {
+            "QF.2": 1.0
+          },
+          "n_sequences": 1
+        },
+        {
+          "date": "2025-10-12",
+          "frequencies": {
+            "QK.2": 0.5,
+            "XFG.3.1.9": 0.5
+          },
+          "n_sequences": 2
+        },
+        {
+          "date": "2025-11-09",
+          "frequencies": {
+            "RF.1": 0.25,
+            "XFG.2.5": 0.25,
+            "XFG.3": 0.25,
+            "XFG.9.3": 0.25
+          },
+          "n_sequences": 4
+        },
+        {
+          "date": "2025-11-23",
+          "frequencies": {
+            "LF.7.11.2": 0.0032258064516129032,
+            "LF.7.11.3": 0.0032258064516129032,
+            "NB.1.8.1": 0.03225806451612903,
+            "NY.3.7.1": 0.0032258064516129032,
+            "PQ.1": 0.0032258064516129032,
+            "PQ.1.2": 0.0032258064516129032,
+            "PQ.10": 0.00967741935483871,
+            "PQ.10.1": 0.012903225806451613,
+            "PQ.12": 0.0064516129032258064,
+            "PQ.13": 0.0032258064516129032,
+            "PQ.13.1": 0.0064516129032258064,
+            "PQ.14.2": 0.0032258064516129032,
+            "PQ.14.3.1": 0.0032258064516129032,
+            "PQ.17": 0.00967741935483871,
+            "PQ.17.10.1": 0.0032258064516129032,
+            "PQ.17.11": 0.0064516129032258064,
+            "PQ.17.2.1": 0.0032258064516129032,
+            "PQ.17.3": 0.0064516129032258064,
+            "PQ.2": 0.02258064516129032,
+            "PQ.2.1": 0.012903225806451613,
+            "PQ.2.1.3": 0.0032258064516129032,
+            "PQ.2.1.5": 0.0032258064516129032,
+            "PQ.2.1.9": 0.0032258064516129032,
+            "PQ.2.4.2": 0.0032258064516129032,
+            "PQ.2.5": 0.0032258064516129032,
+            "PQ.23": 0.0032258064516129032,
+            "PQ.25.3": 0.0032258064516129032,
+            "PQ.31": 0.012903225806451613,
+            "PQ.32": 0.0032258064516129032,
+            "PQ.39": 0.0032258064516129032,
+            "PQ.39.1": 0.0064516129032258064,
+            "PQ.41": 0.0064516129032258064,
+            "PQ.6": 0.0064516129032258064,
+            "PQ.8.1": 0.012903225806451613,
+            "PY.1.1.1": 0.0032258064516129032,
+            "QF.2": 0.012903225806451613,
+            "QF.5": 0.00967741935483871,
+            "QF.7": 0.0064516129032258064,
+            "QK.2": 0.0032258064516129032,
+            "QS.2": 0.0032258064516129032,
+            "RE.1.1.1": 0.0064516129032258064,
+            "RE.2.1": 0.0064516129032258064,
+            "RE.2.1.1": 0.0032258064516129032,
+            "RE.2.1.2": 0.0064516129032258064,
+            "RE.2.1.3": 0.0064516129032258064,
+            "RE.2.2": 0.0064516129032258064,
+            "RE.2.2.1": 0.0032258064516129032,
+            "RE.2.2.2": 0.0032258064516129032,
+            "RE.2.2.3": 0.016129032258064516,
+            "RE.2.2.5": 0.0064516129032258064,
+            "RE.2.2.6": 0.0064516129032258064,
+            "RE.2.2.7": 0.0064516129032258064,
+            "RE.2.3": 0.012903225806451613,
+            "RE.2.4": 0.0064516129032258064,
+            "RE.3.1": 0.0032258064516129032,
+            "RN.1": 0.0032258064516129032,
+            "RP.1": 0.0064516129032258064,
+            "RR.1": 0.00967741935483871,
+            "RT.1": 0.0032258064516129032,
+            "RU.1": 0.0032258064516129032,
+            "XFG": 0.02903225806451613,
+            "XFG.1.1": 0.016129032258064516,
+            "XFG.1.1.1": 0.00967741935483871,
+            "XFG.10.4": 0.0032258064516129032,
+            "XFG.10.5": 0.0064516129032258064,
+            "XFG.14": 0.0064516129032258064,
+            "XFG.14.1": 0.02258064516129032,
+            "XFG.14.1.1": 0.00967741935483871,
+            "XFG.14.1.5": 0.0032258064516129032,
+            "XFG.14.1.8": 0.0032258064516129032,
+            "XFG.14.2": 0.0032258064516129032,
+            "XFG.17.2.1": 0.02258064516129032,
+            "XFG.17.3": 0.0032258064516129032,
+            "XFG.2": 0.00967741935483871,
+            "XFG.2.10": 0.0032258064516129032,
+            "XFG.2.5.1": 0.00967741935483871,
+            "XFG.2.8.1": 0.0032258064516129032,
+            "XFG.21": 0.0064516129032258064,
+            "XFG.22": 0.0064516129032258064,
+            "XFG.22.1": 0.0064516129032258064,
+            "XFG.26": 0.0032258064516129032,
+            "XFG.28": 0.0032258064516129032,
+            "XFG.29": 0.0064516129032258064,
+            "XFG.3": 0.03225806451612903,
+            "XFG.3.1": 0.0032258064516129032,
+            "XFG.3.1.3": 0.0064516129032258064,
+            "XFG.3.12.1": 0.0032258064516129032,
+            "XFG.3.15": 0.012903225806451613,
+            "XFG.3.16": 0.0032258064516129032,
+            "XFG.3.17": 0.0064516129032258064,
+            "XFG.3.20": 0.0064516129032258064,
+            "XFG.3.27.1": 0.0032258064516129032,
+            "XFG.3.4.1": 0.035483870967741936,
+            "XFG.3.4.3": 0.00967741935483871,
+            "XFG.3.5": 0.0032258064516129032,
+            "XFG.3.6": 0.0064516129032258064,
+            "XFG.3.7.1": 0.0032258064516129032,
+            "XFG.3.9": 0.012903225806451613,
+            "XFG.30": 0.0032258064516129032,
+            "XFG.31": 0.0032258064516129032,
+            "XFG.37": 0.012903225806451613,
+            "XFG.4": 0.0032258064516129032,
+            "XFG.4.1": 0.0064516129032258064,
+            "XFG.4.1.4": 0.0032258064516129032,
+            "XFG.5": 0.0032258064516129032,
+            "XFG.5.1": 0.035483870967741936,
+            "XFG.5.1.4": 0.00967741935483871,
+            "XFG.5.1.7": 0.0064516129032258064,
+            "XFG.5.2": 0.00967741935483871,
+            "XFG.5.2.2": 0.0032258064516129032,
+            "XFG.5.2.3": 0.0032258064516129032,
+            "XFG.5.4": 0.016129032258064516,
+            "XFG.6": 0.012903225806451613,
+            "XFG.6.1": 0.0032258064516129032,
+            "XFG.6.10": 0.0032258064516129032,
+            "XFG.6.2": 0.0064516129032258064,
+            "XFG.6.8": 0.0064516129032258064,
+            "XFG.7.1.1": 0.0032258064516129032,
+            "XFG.8": 0.012903225806451613,
+            "XFG.8.1.1": 0.0032258064516129032,
+            "XFG.8.5": 0.0032258064516129032,
+            "XFG.9": 0.01935483870967742,
+            "XFG.9.1": 0.0032258064516129032,
+            "XFG.9.4": 0.0032258064516129032,
+            "XFG.9.5": 0.0032258064516129032,
+            "XFJ.3.1": 0.0032258064516129032,
+            "XFJ.8.1": 0.0032258064516129032,
+            "XFN.2.1": 0.01935483870967742,
+            "XFV": 0.00967741935483871,
+            "XFZ": 0.0064516129032258064,
+            "XFZ.1": 0.00967741935483871,
+            "XGA": 0.0032258064516129032
+          },
+          "n_sequences": 310
+        },
+        {
+          "date": "2025-12-07",
+          "frequencies": {
+            "LF.7.11": 0.005454545454545455,
+            "LF.7.11.4": 0.0018181818181818182,
+            "NB.1.8.1": 0.02,
+            "NW.1.2.1": 0.0018181818181818182,
+            "NY.3.7.1": 0.0018181818181818182,
+            "PQ.1": 0.0036363636363636364,
+            "PQ.1.2": 0.0018181818181818182,
+            "PQ.10": 0.016363636363636365,
+            "PQ.10.1": 0.01090909090909091,
+            "PQ.10.1.3": 0.0036363636363636364,
+            "PQ.11": 0.0018181818181818182,
+            "PQ.13": 0.0018181818181818182,
+            "PQ.13.1": 0.0018181818181818182,
+            "PQ.14.2": 0.0018181818181818182,
+            "PQ.14.4": 0.0018181818181818182,
+            "PQ.17": 0.016363636363636365,
+            "PQ.17.10": 0.0018181818181818182,
+            "PQ.17.11": 0.0018181818181818182,
+            "PQ.17.11.1": 0.0018181818181818182,
+            "PQ.17.2": 0.0018181818181818182,
+            "PQ.17.5": 0.0036363636363636364,
+            "PQ.17.8": 0.0018181818181818182,
+            "PQ.19": 0.0018181818181818182,
+            "PQ.2": 0.02,
+            "PQ.2.1": 0.007272727272727273,
+            "PQ.2.1.1": 0.005454545454545455,
+            "PQ.2.1.7": 0.005454545454545455,
+            "PQ.2.4.2": 0.0036363636363636364,
+            "PQ.2.5": 0.0036363636363636364,
+            "PQ.2.7": 0.0018181818181818182,
+            "PQ.2.8.1": 0.0036363636363636364,
+            "PQ.3": 0.0018181818181818182,
+            "PQ.31": 0.0036363636363636364,
+            "PQ.32": 0.0018181818181818182,
+            "PQ.39": 0.0018181818181818182,
+            "PQ.39.1": 0.01090909090909091,
+            "PQ.4": 0.005454545454545455,
+            "PQ.4.1": 0.01090909090909091,
+            "PQ.4.6.1": 0.0018181818181818182,
+            "PQ.4.9": 0.0036363636363636364,
+            "PQ.41": 0.0036363636363636364,
+            "PQ.43.1.1": 0.0018181818181818182,
+            "PQ.48": 0.0018181818181818182,
+            "PQ.5": 0.0018181818181818182,
+            "PQ.7": 0.0018181818181818182,
+            "PQ.8": 0.0018181818181818182,
+            "PQ.8.1": 0.005454545454545455,
+            "PY.1.1.1": 0.0018181818181818182,
+            "QF.1.1.1": 0.0018181818181818182,
+            "QF.2": 0.007272727272727273,
+            "QF.3": 0.0018181818181818182,
+            "QF.4": 0.0036363636363636364,
+            "QF.5": 0.005454545454545455,
+            "QF.5.1": 0.0018181818181818182,
+            "QF.6": 0.0018181818181818182,
+            "QF.7": 0.005454545454545455,
+            "QK.1": 0.0018181818181818182,
+            "QK.2": 0.005454545454545455,
+            "QQ.2": 0.005454545454545455,
+            "QS.1": 0.0018181818181818182,
+            "QT.3": 0.0036363636363636364,
+            "QW.1": 0.0018181818181818182,
+            "QW.1.1": 0.0018181818181818182,
+            "QY.3": 0.0018181818181818182,
+            "RC.2": 0.0018181818181818182,
+            "RD.1.1.1": 0.005454545454545455,
+            "RE.1.1.1": 0.007272727272727273,
+            "RE.2": 0.0018181818181818182,
+            "RE.2.1": 0.005454545454545455,
+            "RE.2.1.1": 0.007272727272727273,
+            "RE.2.1.2": 0.012727272727272728,
+            "RE.2.1.3": 0.014545454545454545,
+            "RE.2.2": 0.007272727272727273,
+            "RE.2.2.2": 0.005454545454545455,
+            "RE.2.2.3": 0.03272727272727273,
+            "RE.2.2.4": 0.0036363636363636364,
+            "RE.2.2.5": 0.02181818181818182,
+            "RE.2.2.6": 0.005454545454545455,
+            "RE.2.2.7": 0.01090909090909091,
+            "RE.2.2.8": 0.0036363636363636364,
+            "RE.2.3": 0.00909090909090909,
+            "RE.2.4": 0.005454545454545455,
+            "RE.3.1": 0.007272727272727273,
+            "RJ.1": 0.0018181818181818182,
+            "RP.1": 0.0036363636363636364,
+            "RR.1": 0.005454545454545455,
+            "RT.1": 0.005454545454545455,
+            "RU.1": 0.0018181818181818182,
+            "XEC.18.2": 0.0036363636363636364,
+            "XFC.1.2": 0.0018181818181818182,
+            "XFG": 0.014545454545454545,
+            "XFG.1.1": 0.025454545454545455,
+            "XFG.1.1.1": 0.005454545454545455,
+            "XFG.1.1.2": 0.0018181818181818182,
+            "XFG.1.2": 0.0018181818181818182,
+            "XFG.10.4": 0.0036363636363636364,
+            "XFG.13": 0.0018181818181818182,
+            "XFG.14.1": 0.023636363636363636,
+            "XFG.14.1.1": 0.0018181818181818182,
+            "XFG.14.1.4": 0.0018181818181818182,
+            "XFG.14.1.8": 0.0018181818181818182,
+            "XFG.14.5": 0.0018181818181818182,
+            "XFG.14.9": 0.0018181818181818182,
+            "XFG.17.2.1": 0.02909090909090909,
+            "XFG.18.1": 0.0018181818181818182,
+            "XFG.2": 0.00909090909090909,
+            "XFG.2.10": 0.0018181818181818182,
+            "XFG.2.5.1": 0.0036363636363636364,
+            "XFG.2.6": 0.0036363636363636364,
+            "XFG.2.7": 0.0018181818181818182,
+            "XFG.2.7.1": 0.0018181818181818182,
+            "XFG.2.8.1": 0.0018181818181818182,
+            "XFG.2.9": 0.0036363636363636364,
+            "XFG.22": 0.014545454545454545,
+            "XFG.23.1.2": 0.005454545454545455,
+            "XFG.23.1.3": 0.005454545454545455,
+            "XFG.26": 0.0018181818181818182,
+            "XFG.28": 0.0036363636363636364,
+            "XFG.29": 0.0018181818181818182,
+            "XFG.3": 0.04727272727272727,
+            "XFG.3.1": 0.005454545454545455,
+            "XFG.3.1.3": 0.01090909090909091,
+            "XFG.3.1.9": 0.0018181818181818182,
+            "XFG.3.13": 0.01090909090909091,
+            "XFG.3.15": 0.0018181818181818182,
+            "XFG.3.16": 0.005454545454545455,
+            "XFG.3.17": 0.0018181818181818182,
+            "XFG.3.2": 0.0018181818181818182,
+            "XFG.3.23": 0.0018181818181818182,
+            "XFG.3.33": 0.0036363636363636364,
+            "XFG.3.4": 0.0018181818181818182,
+            "XFG.3.4.1": 0.02909090909090909,
+            "XFG.3.4.3": 0.00909090909090909,
+            "XFG.3.7.1": 0.0018181818181818182,
+            "XFG.3.8": 0.0018181818181818182,
+            "XFG.3.9": 0.0036363636363636364,
+            "XFG.30": 0.01090909090909091,
+            "XFG.31": 0.0018181818181818182,
+            "XFG.36": 0.00909090909090909,
+            "XFG.37": 0.0036363636363636364,
+            "XFG.4": 0.0036363636363636364,
+            "XFG.4.1": 0.005454545454545455,
+            "XFG.4.1.4": 0.0018181818181818182,
+            "XFG.5": 0.0036363636363636364,
+            "XFG.5.1": 0.023636363636363636,
+            "XFG.5.1.7": 0.00909090909090909,
+            "XFG.5.2": 0.012727272727272728,
+            "XFG.5.2.4": 0.0018181818181818182,
+            "XFG.5.2.6": 0.005454545454545455,
+            "XFG.5.4": 0.0018181818181818182,
+            "XFG.6": 0.007272727272727273,
+            "XFG.6.10": 0.0036363636363636364,
+            "XFG.6.2": 0.005454545454545455,
+            "XFG.6.2.2": 0.0018181818181818182,
+            "XFG.6.4": 0.0018181818181818182,
+            "XFG.6.5.1": 0.0018181818181818182,
+            "XFG.6.7": 0.0018181818181818182,
+            "XFG.6.8": 0.005454545454545455,
+            "XFG.7": 0.0018181818181818182,
+            "XFG.7.1": 0.0018181818181818182,
+            "XFG.8": 0.005454545454545455,
+            "XFG.9": 0.012727272727272728,
+            "XFG.9.1": 0.005454545454545455,
+            "XFG.9.3": 0.0018181818181818182,
+            "XFG.9.3.1": 0.0018181818181818182,
+            "XFG.9.3.2": 0.0036363636363636364,
+            "XFG.9.4": 0.0018181818181818182,
+            "XFJ": 0.0018181818181818182,
+            "XFJ.3.1": 0.0018181818181818182,
+            "XFJ.3.1.1": 0.0018181818181818182,
+            "XFJ.8.1": 0.0018181818181818182,
+            "XFN.2.1": 0.01090909090909091,
+            "XFV": 0.00909090909090909,
+            "XFV.6": 0.0018181818181818182,
+            "XFY": 0.0036363636363636364,
+            "XFY.2": 0.0018181818181818182,
+            "XFZ": 0.01090909090909091,
+            "XFZ.1": 0.0036363636363636364,
+            "XGA": 0.0018181818181818182,
+            "XGA.1": 0.0018181818181818182,
+            "XGA.2": 0.0018181818181818182,
+            "XGA.3": 0.0018181818181818182
+          },
+          "n_sequences": 550
+        },
+        {
+          "date": "2025-12-21",
+          "frequencies": {
+            "LF.7.11": 0.0024691358024691358,
+            "LF.7.11.2": 0.0024691358024691358,
+            "NB.1": 0.0049382716049382715,
+            "NB.1.8.1": 0.012345679012345678,
+            "NW.1.2.1": 0.0024691358024691358,
+            "NY.9": 0.0024691358024691358,
+            "PQ.10": 0.0049382716049382715,
+            "PQ.10.1": 0.0024691358024691358,
+            "PQ.13.3.1": 0.0049382716049382715,
+            "PQ.17": 0.024691358024691357,
+            "PQ.17.10.1": 0.0049382716049382715,
+            "PQ.17.11": 0.0024691358024691358,
+            "PQ.17.4": 0.0024691358024691358,
+            "PQ.17.5": 0.0024691358024691358,
+            "PQ.19": 0.0024691358024691358,
+            "PQ.2": 0.022222222222222223,
+            "PQ.2.1": 0.009876543209876543,
+            "PQ.2.1.3": 0.0049382716049382715,
+            "PQ.2.1.5": 0.0024691358024691358,
+            "PQ.2.1.7": 0.0024691358024691358,
+            "PQ.2.4": 0.007407407407407408,
+            "PQ.2.5": 0.0049382716049382715,
+            "PQ.2.7": 0.0024691358024691358,
+            "PQ.2.8.1": 0.012345679012345678,
+            "PQ.31": 0.0024691358024691358,
+            "PQ.39.1": 0.0024691358024691358,
+            "PQ.4": 0.0024691358024691358,
+            "PQ.4.1": 0.022222222222222223,
+            "PQ.43.1.1": 0.0024691358024691358,
+            "PQ.8.1": 0.0049382716049382715,
+            "QF.2": 0.014814814814814815,
+            "QF.2.1": 0.0049382716049382715,
+            "QF.2.2.1": 0.0024691358024691358,
+            "QF.3": 0.0024691358024691358,
+            "QF.4": 0.0024691358024691358,
+            "QF.5": 0.0024691358024691358,
+            "QF.5.1": 0.0024691358024691358,
+            "QF.7": 0.0024691358024691358,
+            "QQ.2": 0.0049382716049382715,
+            "QS.2": 0.0024691358024691358,
+            "QT.3": 0.0024691358024691358,
+            "QY.2": 0.0024691358024691358,
+            "RC.3": 0.0024691358024691358,
+            "RD.1.1": 0.0024691358024691358,
+            "RD.1.1.1": 0.0049382716049382715,
+            "RE.1.1.1": 0.007407407407407408,
+            "RE.1.1.2": 0.0024691358024691358,
+            "RE.2": 0.0024691358024691358,
+            "RE.2.1": 0.0049382716049382715,
+            "RE.2.1.1": 0.012345679012345678,
+            "RE.2.1.2": 0.0024691358024691358,
+            "RE.2.2": 0.007407407407407408,
+            "RE.2.2.3": 0.056790123456790124,
+            "RE.2.2.4": 0.0049382716049382715,
+            "RE.2.2.5": 0.024691358024691357,
+            "RE.2.2.6": 0.0049382716049382715,
+            "RE.2.2.7": 0.0024691358024691358,
+            "RE.2.2.8": 0.0024691358024691358,
+            "RE.2.3": 0.0024691358024691358,
+            "RE.2.4": 0.0049382716049382715,
+            "RK.1": 0.0049382716049382715,
+            "RN.1": 0.0024691358024691358,
+            "RN.2": 0.0024691358024691358,
+            "RN.2.1": 0.0049382716049382715,
+            "RR.1": 0.0024691358024691358,
+            "RT.1": 0.0024691358024691358,
+            "RU.1": 0.0049382716049382715,
+            "XFG": 0.01728395061728395,
+            "XFG.1.1": 0.06666666666666667,
+            "XFG.1.1.1": 0.012345679012345678,
+            "XFG.1.2": 0.0024691358024691358,
+            "XFG.10": 0.0024691358024691358,
+            "XFG.10.1": 0.0024691358024691358,
+            "XFG.10.4": 0.0024691358024691358,
+            "XFG.14.1": 0.03950617283950617,
+            "XFG.14.1.1": 0.009876543209876543,
+            "XFG.14.1.3": 0.0024691358024691358,
+            "XFG.14.1.5": 0.0024691358024691358,
+            "XFG.14.1.8": 0.0024691358024691358,
+            "XFG.17": 0.0024691358024691358,
+            "XFG.17.2": 0.0024691358024691358,
+            "XFG.17.2.1": 0.022222222222222223,
+            "XFG.17.3": 0.0024691358024691358,
+            "XFG.2": 0.0049382716049382715,
+            "XFG.2.5.1": 0.014814814814814815,
+            "XFG.2.6": 0.0049382716049382715,
+            "XFG.2.7": 0.0024691358024691358,
+            "XFG.2.8": 0.0024691358024691358,
+            "XFG.2.8.1": 0.0024691358024691358,
+            "XFG.2.9": 0.0024691358024691358,
+            "XFG.21": 0.0024691358024691358,
+            "XFG.22": 0.019753086419753086,
+            "XFG.22.1": 0.007407407407407408,
+            "XFG.23.1.2": 0.007407407407407408,
+            "XFG.23.1.3": 0.009876543209876543,
+            "XFG.23.1.4": 0.0024691358024691358,
+            "XFG.26": 0.012345679012345678,
+            "XFG.28": 0.0049382716049382715,
+            "XFG.3": 0.024691358024691357,
+            "XFG.3.1": 0.014814814814814815,
+            "XFG.3.1.2": 0.0049382716049382715,
+            "XFG.3.1.3": 0.0049382716049382715,
+            "XFG.3.10": 0.0024691358024691358,
+            "XFG.3.13": 0.0024691358024691358,
+            "XFG.3.16": 0.0024691358024691358,
+            "XFG.3.16.1": 0.0024691358024691358,
+            "XFG.3.18.1": 0.0024691358024691358,
+            "XFG.3.20": 0.0024691358024691358,
+            "XFG.3.23": 0.0024691358024691358,
+            "XFG.3.24": 0.0024691358024691358,
+            "XFG.3.3.2": 0.0024691358024691358,
+            "XFG.3.4": 0.0024691358024691358,
+            "XFG.3.4.1": 0.037037037037037035,
+            "XFG.3.4.2": 0.0024691358024691358,
+            "XFG.3.4.3": 0.0024691358024691358,
+            "XFG.3.5": 0.0024691358024691358,
+            "XFG.3.7.1": 0.009876543209876543,
+            "XFG.30": 0.0024691358024691358,
+            "XFG.36": 0.0024691358024691358,
+            "XFG.37": 0.009876543209876543,
+            "XFG.4": 0.0024691358024691358,
+            "XFG.4.1": 0.007407407407407408,
+            "XFG.5.1": 0.024691358024691357,
+            "XFG.5.2": 0.0024691358024691358,
+            "XFG.5.2.6": 0.0024691358024691358,
+            "XFG.5.4": 0.0049382716049382715,
+            "XFG.6": 0.012345679012345678,
+            "XFG.6.1": 0.0049382716049382715,
+            "XFG.6.2": 0.0024691358024691358,
+            "XFG.6.2.1": 0.0024691358024691358,
+            "XFG.6.4": 0.0024691358024691358,
+            "XFG.6.5.1": 0.0024691358024691358,
+            "XFG.6.8": 0.012345679012345678,
+            "XFG.8": 0.0024691358024691358,
+            "XFG.9": 0.012345679012345678,
+            "XFG.9.1": 0.0024691358024691358,
+            "XFG.9.4": 0.0024691358024691358,
+            "XFJ.3.1": 0.0049382716049382715,
+            "XFV": 0.009876543209876543,
+            "XFY": 0.012345679012345678,
+            "XFY.1": 0.0024691358024691358,
+            "XFZ": 0.007407407407407408,
+            "XFZ.1": 0.0024691358024691358,
+            "XGA": 0.0024691358024691358,
+            "XGA.1": 0.007407407407407408
+          },
+          "n_sequences": 405
+        },
+        {
+          "date": "2026-01-04",
+          "frequencies": {
+            "LF.7.11": 0.0017793594306049821,
+            "LF.7.11.2": 0.0017793594306049821,
+            "LF.7.11.4": 0.0017793594306049821,
+            "NB.1": 0.0071174377224199285,
+            "NB.1.8.1": 0.02491103202846975,
+            "PE.1.4": 0.0017793594306049821,
+            "PQ.10": 0.0017793594306049821,
+            "PQ.10.1": 0.005338078291814947,
+            "PQ.10.1.2": 0.0035587188612099642,
+            "PQ.10.1.3": 0.0017793594306049821,
+            "PQ.11": 0.012455516014234875,
+            "PQ.13.3.1": 0.0035587188612099642,
+            "PQ.14.3": 0.0017793594306049821,
+            "PQ.14.3.1": 0.0017793594306049821,
+            "PQ.17": 0.023131672597864767,
+            "PQ.17.1": 0.0017793594306049821,
+            "PQ.17.10.1": 0.005338078291814947,
+            "PQ.17.11": 0.0017793594306049821,
+            "PQ.17.11.1": 0.0035587188612099642,
+            "PQ.17.2": 0.0035587188612099642,
+            "PQ.17.3": 0.0035587188612099642,
+            "PQ.17.5": 0.0035587188612099642,
+            "PQ.17.7.1": 0.0017793594306049821,
+            "PQ.17.8": 0.0017793594306049821,
+            "PQ.19": 0.0017793594306049821,
+            "PQ.2": 0.028469750889679714,
+            "PQ.2.1": 0.019572953736654804,
+            "PQ.2.1.1": 0.0017793594306049821,
+            "PQ.2.1.3": 0.0017793594306049821,
+            "PQ.2.1.5": 0.005338078291814947,
+            "PQ.2.1.6": 0.0017793594306049821,
+            "PQ.2.1.7": 0.008896797153024912,
+            "PQ.2.4.2": 0.0017793594306049821,
+            "PQ.2.5": 0.008896797153024912,
+            "PQ.2.7": 0.0017793594306049821,
+            "PQ.2.8.1": 0.0071174377224199285,
+            "PQ.23": 0.0017793594306049821,
+            "PQ.25.1": 0.0035587188612099642,
+            "PQ.31": 0.0017793594306049821,
+            "PQ.31.1": 0.0017793594306049821,
+            "PQ.32": 0.005338078291814947,
+            "PQ.37": 0.0017793594306049821,
+            "PQ.39": 0.0071174377224199285,
+            "PQ.39.1": 0.0071174377224199285,
+            "PQ.4": 0.0017793594306049821,
+            "PQ.4.1": 0.0071174377224199285,
+            "PQ.4.6.1": 0.0017793594306049821,
+            "PQ.4.6.2": 0.0035587188612099642,
+            "PQ.4.9": 0.0035587188612099642,
+            "PQ.41.1.1": 0.0017793594306049821,
+            "PQ.6": 0.0017793594306049821,
+            "PQ.8.1": 0.0035587188612099642,
+            "PY.1.1.1": 0.0071174377224199285,
+            "QF.1": 0.0017793594306049821,
+            "QF.1.1.1": 0.005338078291814947,
+            "QF.2": 0.02491103202846975,
+            "QF.2.1": 0.008896797153024912,
+            "QF.2.2.1": 0.0017793594306049821,
+            "QF.3": 0.0035587188612099642,
+            "QF.4": 0.0017793594306049821,
+            "QF.5": 0.005338078291814947,
+            "QF.5.1": 0.0017793594306049821,
+            "QF.7": 0.005338078291814947,
+            "QK.2": 0.0071174377224199285,
+            "QM.3": 0.0017793594306049821,
+            "QQ.1": 0.0017793594306049821,
+            "QQ.2": 0.0017793594306049821,
+            "QS.2": 0.0035587188612099642,
+            "QY.2": 0.0017793594306049821,
+            "QY.3": 0.0017793594306049821,
+            "RB.2": 0.0017793594306049821,
+            "RC.1": 0.0017793594306049821,
+            "RD.1.1.1": 0.0017793594306049821,
+            "RE.1.1": 0.0017793594306049821,
+            "RE.1.1.1": 0.005338078291814947,
+            "RE.2.1": 0.0071174377224199285,
+            "RE.2.1.1": 0.008896797153024912,
+            "RE.2.1.3": 0.0035587188612099642,
+            "RE.2.2": 0.0035587188612099642,
+            "RE.2.2.2": 0.0017793594306049821,
+            "RE.2.2.3": 0.030249110320284697,
+            "RE.2.2.5": 0.010676156583629894,
+            "RE.2.2.6": 0.0017793594306049821,
+            "RE.2.2.8": 0.0017793594306049821,
+            "RE.2.3": 0.008896797153024912,
+            "RE.2.4": 0.0035587188612099642,
+            "RJ.1": 0.0017793594306049821,
+            "RK.1": 0.0017793594306049821,
+            "RN.2.1": 0.0017793594306049821,
+            "RP.2": 0.0017793594306049821,
+            "RT.1": 0.0035587188612099642,
+            "RU.1": 0.0017793594306049821,
+            "RV.1": 0.0017793594306049821,
+            "XFG": 0.014234875444839857,
+            "XFG.1.1": 0.042704626334519574,
+            "XFG.1.1.1": 0.008896797153024912,
+            "XFG.10.4": 0.0017793594306049821,
+            "XFG.13": 0.0017793594306049821,
+            "XFG.14": 0.0017793594306049821,
+            "XFG.14.1": 0.05693950177935943,
+            "XFG.14.1.1": 0.0071174377224199285,
+            "XFG.14.1.3": 0.0035587188612099642,
+            "XFG.14.1.4": 0.0017793594306049821,
+            "XFG.14.1.5": 0.0017793594306049821,
+            "XFG.17.2": 0.0035587188612099642,
+            "XFG.17.2.1": 0.03558718861209965,
+            "XFG.17.3": 0.008896797153024912,
+            "XFG.2": 0.010676156583629894,
+            "XFG.2.10": 0.0017793594306049821,
+            "XFG.2.13": 0.0017793594306049821,
+            "XFG.2.5.1": 0.012455516014234875,
+            "XFG.2.6": 0.0035587188612099642,
+            "XFG.2.7": 0.0017793594306049821,
+            "XFG.2.9": 0.005338078291814947,
+            "XFG.21": 0.0017793594306049821,
+            "XFG.22": 0.014234875444839857,
+            "XFG.22.1": 0.0017793594306049821,
+            "XFG.22.3": 0.0017793594306049821,
+            "XFG.23.1.3": 0.008896797153024912,
+            "XFG.23.1.4": 0.0017793594306049821,
+            "XFG.26": 0.005338078291814947,
+            "XFG.28": 0.0017793594306049821,
+            "XFG.3": 0.01601423487544484,
+            "XFG.3.1": 0.0035587188612099642,
+            "XFG.3.1.9": 0.0017793594306049821,
+            "XFG.3.10": 0.0017793594306049821,
+            "XFG.3.12.1": 0.0017793594306049821,
+            "XFG.3.15": 0.005338078291814947,
+            "XFG.3.17": 0.0017793594306049821,
+            "XFG.3.18": 0.0017793594306049821,
+            "XFG.3.23": 0.0035587188612099642,
+            "XFG.3.24": 0.0035587188612099642,
+            "XFG.3.27.1": 0.0017793594306049821,
+            "XFG.3.30.1": 0.0017793594306049821,
+            "XFG.3.33": 0.0017793594306049821,
+            "XFG.3.4": 0.0017793594306049821,
+            "XFG.3.4.1": 0.023131672597864767,
+            "XFG.3.4.3": 0.0035587188612099642,
+            "XFG.3.6": 0.0071174377224199285,
+            "XFG.3.7.1": 0.005338078291814947,
+            "XFG.3.9": 0.008896797153024912,
+            "XFG.30": 0.012455516014234875,
+            "XFG.36": 0.0017793594306049821,
+            "XFG.4": 0.0017793594306049821,
+            "XFG.4.1": 0.0017793594306049821,
+            "XFG.4.1.4": 0.0017793594306049821,
+            "XFG.4.4": 0.0017793594306049821,
+            "XFG.5": 0.0035587188612099642,
+            "XFG.5.1": 0.02491103202846975,
+            "XFG.5.1.4": 0.0017793594306049821,
+            "XFG.5.1.7": 0.010676156583629894,
+            "XFG.5.2": 0.008896797153024912,
+            "XFG.5.2.5": 0.0035587188612099642,
+            "XFG.5.4": 0.010676156583629894,
+            "XFG.6": 0.0017793594306049821,
+            "XFG.6.10": 0.0017793594306049821,
+            "XFG.6.2": 0.005338078291814947,
+            "XFG.6.2.1": 0.005338078291814947,
+            "XFG.6.3": 0.0035587188612099642,
+            "XFG.6.4": 0.0035587188612099642,
+            "XFG.6.5.1": 0.005338078291814947,
+            "XFG.6.8": 0.0017793594306049821,
+            "XFG.7.1.1": 0.0017793594306049821,
+            "XFG.8": 0.0035587188612099642,
+            "XFG.9": 0.008896797153024912,
+            "XFG.9.1": 0.0035587188612099642,
+            "XFG.9.3": 0.0017793594306049821,
+            "XFG.9.4": 0.0017793594306049821,
+            "XFV": 0.014234875444839857,
+            "XFY": 0.005338078291814947,
+            "XFY.1": 0.0017793594306049821,
+            "XFZ": 0.0071174377224199285,
+            "XFZ.1": 0.0017793594306049821,
+            "XGA": 0.0035587188612099642,
+            "XGA.1": 0.0071174377224199285,
+            "XGJ": 0.0017793594306049821
+          },
+          "n_sequences": 562
+        },
+        {
+          "date": "2026-01-18",
+          "frequencies": {
+            "LF.7.11.2": 0.016706443914081145,
+            "LF.7.11.4": 0.002386634844868735,
+            "NB.1.8.1": 0.016706443914081145,
+            "PQ.1": 0.002386634844868735,
+            "PQ.10.1": 0.007159904534606206,
+            "PQ.10.1.2": 0.00477326968973747,
+            "PQ.10.1.4": 0.00477326968973747,
+            "PQ.11": 0.01909307875894988,
+            "PQ.12": 0.00954653937947494,
+            "PQ.13.1": 0.002386634844868735,
+            "PQ.17": 0.0405727923627685,
+            "PQ.17.10.1": 0.002386634844868735,
+            "PQ.17.11": 0.002386634844868735,
+            "PQ.17.11.1": 0.002386634844868735,
+            "PQ.17.2": 0.00477326968973747,
+            "PQ.17.4": 0.002386634844868735,
+            "PQ.19": 0.014319809069212411,
+            "PQ.2": 0.014319809069212411,
+            "PQ.2.1": 0.011933174224343675,
+            "PQ.2.1.1": 0.002386634844868735,
+            "PQ.2.1.7": 0.002386634844868735,
+            "PQ.2.1.9": 0.002386634844868735,
+            "PQ.2.2": 0.002386634844868735,
+            "PQ.2.3": 0.002386634844868735,
+            "PQ.2.4.2": 0.002386634844868735,
+            "PQ.2.5": 0.002386634844868735,
+            "PQ.2.5.1": 0.002386634844868735,
+            "PQ.2.8.1": 0.016706443914081145,
+            "PQ.24": 0.002386634844868735,
+            "PQ.32": 0.002386634844868735,
+            "PQ.37": 0.00477326968973747,
+            "PQ.39.1": 0.02386634844868735,
+            "PQ.4": 0.002386634844868735,
+            "PQ.4.1": 0.007159904534606206,
+            "PQ.49": 0.002386634844868735,
+            "PQ.5": 0.002386634844868735,
+            "PY.1.1.1": 0.002386634844868735,
+            "QF.1": 0.002386634844868735,
+            "QF.2": 0.059665871121718374,
+            "QF.2.1": 0.011933174224343675,
+            "QF.2.2.1": 0.007159904534606206,
+            "QF.3": 0.002386634844868735,
+            "QF.5": 0.00477326968973747,
+            "QF.7": 0.00477326968973747,
+            "QK.2": 0.00477326968973747,
+            "QQ.2": 0.002386634844868735,
+            "QT.3": 0.007159904534606206,
+            "QY.2": 0.002386634844868735,
+            "RC.1": 0.002386634844868735,
+            "RC.2.1": 0.002386634844868735,
+            "RC.3": 0.007159904534606206,
+            "RD.1.1": 0.002386634844868735,
+            "RD.1.1.1": 0.00477326968973747,
+            "RE.1.1": 0.002386634844868735,
+            "RE.1.1.1": 0.02386634844868735,
+            "RE.1.1.2": 0.00477326968973747,
+            "RE.2": 0.00477326968973747,
+            "RE.2.1": 0.00477326968973747,
+            "RE.2.1.1": 0.007159904534606206,
+            "RE.2.1.2": 0.002386634844868735,
+            "RE.2.1.3": 0.00477326968973747,
+            "RE.2.2": 0.02386634844868735,
+            "RE.2.2.3": 0.050119331742243436,
+            "RE.2.2.4": 0.007159904534606206,
+            "RE.2.2.5": 0.011933174224343675,
+            "RE.2.2.6": 0.002386634844868735,
+            "RE.2.3": 0.00954653937947494,
+            "RE.2.4": 0.00954653937947494,
+            "RK.1": 0.002386634844868735,
+            "RN.2.1": 0.002386634844868735,
+            "RP.1": 0.00477326968973747,
+            "RT.1": 0.002386634844868735,
+            "XFC.1.4": 0.002386634844868735,
+            "XFG": 0.011933174224343675,
+            "XFG.1": 0.002386634844868735,
+            "XFG.1.1": 0.03818615751789976,
+            "XFG.1.1.1": 0.007159904534606206,
+            "XFG.10.1": 0.002386634844868735,
+            "XFG.10.4": 0.007159904534606206,
+            "XFG.14.1": 0.031026252983293555,
+            "XFG.14.1.1": 0.00954653937947494,
+            "XFG.14.1.3": 0.002386634844868735,
+            "XFG.14.1.4": 0.00477326968973747,
+            "XFG.14.1.7": 0.002386634844868735,
+            "XFG.14.1.8": 0.002386634844868735,
+            "XFG.14.5": 0.002386634844868735,
+            "XFG.17.2": 0.002386634844868735,
+            "XFG.17.2.1": 0.00954653937947494,
+            "XFG.17.3": 0.00477326968973747,
+            "XFG.2": 0.00477326968973747,
+            "XFG.2.5": 0.002386634844868735,
+            "XFG.2.5.1": 0.002386634844868735,
+            "XFG.2.9": 0.002386634844868735,
+            "XFG.22": 0.01909307875894988,
+            "XFG.23.1": 0.002386634844868735,
+            "XFG.23.1.3": 0.00954653937947494,
+            "XFG.23.1.4": 0.002386634844868735,
+            "XFG.26": 0.002386634844868735,
+            "XFG.3": 0.014319809069212411,
+            "XFG.3.1": 0.011933174224343675,
+            "XFG.3.12": 0.002386634844868735,
+            "XFG.3.14": 0.002386634844868735,
+            "XFG.3.15": 0.002386634844868735,
+            "XFG.3.17": 0.002386634844868735,
+            "XFG.3.18.1": 0.007159904534606206,
+            "XFG.3.30.1": 0.011933174224343675,
+            "XFG.3.4.1": 0.02386634844868735,
+            "XFG.3.4.2": 0.002386634844868735,
+            "XFG.3.4.6": 0.002386634844868735,
+            "XFG.3.5": 0.002386634844868735,
+            "XFG.3.6": 0.00477326968973747,
+            "XFG.3.7.1": 0.002386634844868735,
+            "XFG.30": 0.007159904534606206,
+            "XFG.32": 0.002386634844868735,
+            "XFG.4": 0.002386634844868735,
+            "XFG.4.1": 0.002386634844868735,
+            "XFG.4.4": 0.002386634844868735,
+            "XFG.5": 0.002386634844868735,
+            "XFG.5.1": 0.011933174224343675,
+            "XFG.5.1.4": 0.002386634844868735,
+            "XFG.5.1.7": 0.002386634844868735,
+            "XFG.5.2": 0.007159904534606206,
+            "XFG.5.2.5": 0.002386634844868735,
+            "XFG.5.4": 0.00477326968973747,
+            "XFG.6": 0.007159904534606206,
+            "XFG.6.12": 0.002386634844868735,
+            "XFG.6.2": 0.00477326968973747,
+            "XFG.6.3": 0.002386634844868735,
+            "XFG.6.4": 0.00477326968973747,
+            "XFG.8": 0.002386634844868735,
+            "XFG.8.1": 0.002386634844868735,
+            "XFG.8.2.1": 0.002386634844868735,
+            "XFV": 0.014319809069212411,
+            "XFZ": 0.01909307875894988,
+            "XFZ.2": 0.00477326968973747,
+            "XGA": 0.007159904534606206,
+            "XGA.1": 0.014319809069212411
+          },
+          "n_sequences": 419
+        },
+        {
+          "date": "2026-02-01",
+          "frequencies": {
+            "JN.1.9.2": 0.0028328611898017,
+            "LF.7.11.2": 0.0028328611898017,
+            "LF.7.11.4": 0.0028328611898017,
+            "NB.1.8.1": 0.0113314447592068,
+            "PE.1.4": 0.0056657223796034,
+            "PQ.10.1": 0.019830028328611898,
+            "PQ.17": 0.036827195467422094,
+            "PQ.17.11": 0.0056657223796034,
+            "PQ.17.11.1": 0.0056657223796034,
+            "PQ.17.2.1": 0.0028328611898017,
+            "PQ.17.4": 0.0028328611898017,
+            "PQ.17.6": 0.0028328611898017,
+            "PQ.19": 0.0028328611898017,
+            "PQ.2": 0.0056657223796034,
+            "PQ.2.1": 0.0113314447592068,
+            "PQ.2.1.2": 0.0028328611898017,
+            "PQ.2.1.3": 0.0056657223796034,
+            "PQ.2.1.6": 0.0028328611898017,
+            "PQ.2.1.7": 0.0028328611898017,
+            "PQ.2.1.9": 0.0028328611898017,
+            "PQ.2.7": 0.0056657223796034,
+            "PQ.2.8.1": 0.0226628895184136,
+            "PQ.31": 0.0084985835694051,
+            "PQ.32": 0.0028328611898017,
+            "PQ.39.1": 0.0226628895184136,
+            "PQ.4.10": 0.0028328611898017,
+            "PQ.4.7": 0.0028328611898017,
+            "PQ.43.1.1": 0.0028328611898017,
+            "PQ.5": 0.0028328611898017,
+            "QF.2": 0.053824362606232294,
+            "QF.2.1": 0.019830028328611898,
+            "QF.2.2": 0.0028328611898017,
+            "QF.2.2.1": 0.0056657223796034,
+            "QF.4": 0.0028328611898017,
+            "QF.7": 0.0084985835694051,
+            "QK.2": 0.0113314447592068,
+            "QK.4": 0.0028328611898017,
+            "QT.3": 0.0028328611898017,
+            "RB.2": 0.0028328611898017,
+            "RC.2.1": 0.0028328611898017,
+            "RC.3": 0.0084985835694051,
+            "RE.1.1.1": 0.0028328611898017,
+            "RE.2": 0.0113314447592068,
+            "RE.2.1.3": 0.0028328611898017,
+            "RE.2.2.1": 0.0028328611898017,
+            "RE.2.2.2": 0.0028328611898017,
+            "RE.2.2.3": 0.0113314447592068,
+            "RE.2.2.5": 0.0056657223796034,
+            "RE.2.3": 0.0056657223796034,
+            "RJ.1": 0.0028328611898017,
+            "RK.1": 0.019830028328611898,
+            "RP.1": 0.0113314447592068,
+            "RP.2": 0.0028328611898017,
+            "RR.1": 0.0056657223796034,
+            "XFG": 0.031161473087818695,
+            "XFG.1": 0.0028328611898017,
+            "XFG.1.1": 0.0708215297450425,
+            "XFG.1.1.1": 0.0113314447592068,
+            "XFG.10.4": 0.019830028328611898,
+            "XFG.14.1": 0.053824362606232294,
+            "XFG.14.1.1": 0.0226628895184136,
+            "XFG.14.1.8": 0.0056657223796034,
+            "XFG.16": 0.0028328611898017,
+            "XFG.17.2.1": 0.0169971671388102,
+            "XFG.17.3": 0.0056657223796034,
+            "XFG.18.1": 0.0028328611898017,
+            "XFG.2": 0.0056657223796034,
+            "XFG.2.5.1": 0.0113314447592068,
+            "XFG.2.6": 0.0028328611898017,
+            "XFG.2.9": 0.0028328611898017,
+            "XFG.21": 0.0056657223796034,
+            "XFG.22": 0.019830028328611898,
+            "XFG.22.1": 0.0028328611898017,
+            "XFG.23.1": 0.0028328611898017,
+            "XFG.23.1.3": 0.0169971671388102,
+            "XFG.23.1.4": 0.0056657223796034,
+            "XFG.26": 0.0028328611898017,
+            "XFG.3": 0.0226628895184136,
+            "XFG.3.1": 0.0056657223796034,
+            "XFG.3.1.5": 0.0028328611898017,
+            "XFG.3.10": 0.0084985835694051,
+            "XFG.3.13": 0.0028328611898017,
+            "XFG.3.15": 0.0028328611898017,
+            "XFG.3.18.1": 0.0028328611898017,
+            "XFG.3.4": 0.0028328611898017,
+            "XFG.3.4.1": 0.0113314447592068,
+            "XFG.3.4.3": 0.0028328611898017,
+            "XFG.3.4.6": 0.0028328611898017,
+            "XFG.3.4.8": 0.0028328611898017,
+            "XFG.3.5.2": 0.0028328611898017,
+            "XFG.3.6": 0.0028328611898017,
+            "XFG.3.7.1": 0.0084985835694051,
+            "XFG.3.9": 0.0028328611898017,
+            "XFG.30": 0.0028328611898017,
+            "XFG.38": 0.0056657223796034,
+            "XFG.4": 0.0028328611898017,
+            "XFG.5.1": 0.0084985835694051,
+            "XFG.5.1.7": 0.014164305949008499,
+            "XFG.5.2": 0.0169971671388102,
+            "XFG.6": 0.0028328611898017,
+            "XFG.6.1": 0.0056657223796034,
+            "XFG.6.2": 0.0056657223796034,
+            "XFG.6.3": 0.0028328611898017,
+            "XFG.6.8": 0.0028328611898017,
+            "XFG.8": 0.0028328611898017,
+            "XFG.8.1": 0.0028328611898017,
+            "XFG.9.1": 0.0028328611898017,
+            "XFG.9.3.1": 0.0028328611898017,
+            "XFG.9.4": 0.0056657223796034,
+            "XFN": 0.0056657223796034,
+            "XFV": 0.039660056657223795,
+            "XFY": 0.0084985835694051,
+            "XFZ": 0.0113314447592068,
+            "XFZ.1": 0.0028328611898017,
+            "XGA": 0.0028328611898017,
+            "XGA.1": 0.0028328611898017
+          },
+          "n_sequences": 353
+        },
+        {
+          "date": "2026-02-15",
+          "frequencies": {
+            "LF.7.11.2": 0.003952569169960474,
+            "NB.1.8.1": 0.011857707509881422,
+            "PQ.10.1": 0.023715415019762844,
+            "PQ.10.1.2": 0.003952569169960474,
+            "PQ.11": 0.003952569169960474,
+            "PQ.13.3.1": 0.011857707509881422,
+            "PQ.14.1.1": 0.003952569169960474,
+            "PQ.17": 0.019762845849802372,
+            "PQ.17.1": 0.007905138339920948,
+            "PQ.17.11": 0.003952569169960474,
+            "PQ.17.11.1": 0.003952569169960474,
+            "PQ.17.3": 0.003952569169960474,
+            "PQ.17.6": 0.003952569169960474,
+            "PQ.18": 0.003952569169960474,
+            "PQ.2.1": 0.003952569169960474,
+            "PQ.2.1.2": 0.003952569169960474,
+            "PQ.2.1.3": 0.003952569169960474,
+            "PQ.2.1.6": 0.02766798418972332,
+            "PQ.2.1.7": 0.003952569169960474,
+            "PQ.2.1.9": 0.003952569169960474,
+            "PQ.2.3": 0.003952569169960474,
+            "PQ.2.4.2": 0.007905138339920948,
+            "PQ.2.5.3": 0.003952569169960474,
+            "PQ.2.8.1": 0.05138339920948617,
+            "PQ.32": 0.003952569169960474,
+            "PQ.39.1": 0.03162055335968379,
+            "PQ.4": 0.003952569169960474,
+            "PQ.4.7": 0.003952569169960474,
+            "PQ.43.1.1": 0.003952569169960474,
+            "PQ.5": 0.003952569169960474,
+            "PY.1.1.1": 0.003952569169960474,
+            "QF.2": 0.06719367588932806,
+            "QF.2.1": 0.019762845849802372,
+            "QF.2.2": 0.003952569169960474,
+            "QF.2.2.1": 0.003952569169960474,
+            "QF.4": 0.003952569169960474,
+            "QK.2": 0.003952569169960474,
+            "QQ.2": 0.003952569169960474,
+            "RC.1": 0.003952569169960474,
+            "RC.3": 0.007905138339920948,
+            "RE.2": 0.015810276679841896,
+            "RE.2.1.1": 0.003952569169960474,
+            "RE.2.1.2": 0.003952569169960474,
+            "RE.2.2.3": 0.003952569169960474,
+            "RE.3.1": 0.003952569169960474,
+            "RK.1": 0.011857707509881422,
+            "RP.1": 0.011857707509881422,
+            "RR.1": 0.03162055335968379,
+            "XFC.1.4": 0.003952569169960474,
+            "XFC.3": 0.003952569169960474,
+            "XFG": 0.019762845849802372,
+            "XFG.1.1": 0.07509881422924901,
+            "XFG.1.1.1": 0.007905138339920948,
+            "XFG.10.4": 0.015810276679841896,
+            "XFG.14.1": 0.05138339920948617,
+            "XFG.14.1.1": 0.039525691699604744,
+            "XFG.14.1.4": 0.003952569169960474,
+            "XFG.17.2": 0.003952569169960474,
+            "XFG.17.2.1": 0.007905138339920948,
+            "XFG.2.5.1": 0.023715415019762844,
+            "XFG.22": 0.003952569169960474,
+            "XFG.22.3": 0.003952569169960474,
+            "XFG.23.1.2": 0.003952569169960474,
+            "XFG.23.1.3": 0.019762845849802372,
+            "XFG.26": 0.003952569169960474,
+            "XFG.28": 0.003952569169960474,
+            "XFG.3": 0.011857707509881422,
+            "XFG.3.1.12": 0.003952569169960474,
+            "XFG.3.10.2": 0.003952569169960474,
+            "XFG.3.16.1": 0.007905138339920948,
+            "XFG.3.18.1": 0.003952569169960474,
+            "XFG.3.4.1": 0.019762845849802372,
+            "XFG.3.4.3": 0.003952569169960474,
+            "XFG.3.6": 0.003952569169960474,
+            "XFG.30": 0.007905138339920948,
+            "XFG.4.1": 0.003952569169960474,
+            "XFG.5.1.4": 0.003952569169960474,
+            "XFG.5.2": 0.003952569169960474,
+            "XFG.5.2.3": 0.003952569169960474,
+            "XFG.6": 0.003952569169960474,
+            "XFG.6.2": 0.011857707509881422,
+            "XFG.6.2.2": 0.003952569169960474,
+            "XFG.6.3": 0.007905138339920948,
+            "XFG.6.5.1": 0.003952569169960474,
+            "XFG.6.7": 0.003952569169960474,
+            "XFG.6.8": 0.003952569169960474,
+            "XFG.8.1": 0.003952569169960474,
+            "XFG.9": 0.003952569169960474,
+            "XFG.9.1": 0.003952569169960474,
+            "XFG.9.3": 0.003952569169960474,
+            "XFJ.8.1": 0.003952569169960474,
+            "XFN": 0.003952569169960474,
+            "XFV": 0.023715415019762844,
+            "XFY": 0.007905138339920948,
+            "XFY.1": 0.003952569169960474,
+            "XFZ": 0.03162055335968379,
+            "XGA": 0.003952569169960474
+          },
+          "n_sequences": 253
+        },
+        {
+          "date": "2026-03-01",
+          "frequencies": {
+            "NB.1.8.1": 0.004310344827586207,
+            "PQ.10.1": 0.004310344827586207,
+            "PQ.10.1.2": 0.004310344827586207,
+            "PQ.13.1": 0.017241379310344827,
+            "PQ.15": 0.004310344827586207,
+            "PQ.17": 0.017241379310344827,
+            "PQ.2.1": 0.01293103448275862,
+            "PQ.2.1.2": 0.008620689655172414,
+            "PQ.2.1.3": 0.004310344827586207,
+            "PQ.2.1.6": 0.01293103448275862,
+            "PQ.2.1.7": 0.004310344827586207,
+            "PQ.2.4.2": 0.01293103448275862,
+            "PQ.2.7": 0.004310344827586207,
+            "PQ.2.8.1": 0.017241379310344827,
+            "PQ.31": 0.01293103448275862,
+            "PQ.32": 0.004310344827586207,
+            "PQ.39.1": 0.017241379310344827,
+            "PQ.4.1": 0.004310344827586207,
+            "PQ.41.1.1": 0.004310344827586207,
+            "PQ.43.1.1": 0.008620689655172414,
+            "PY.1.1.1": 0.004310344827586207,
+            "QF.2": 0.06896551724137931,
+            "QF.2.1": 0.02586206896551724,
+            "QF.2.2.1": 0.004310344827586207,
+            "QF.7": 0.01293103448275862,
+            "QK.2": 0.008620689655172414,
+            "QS.2": 0.004310344827586207,
+            "QT.3": 0.008620689655172414,
+            "QY.2": 0.008620689655172414,
+            "RC.3": 0.008620689655172414,
+            "RE.1.1.1": 0.004310344827586207,
+            "RE.2": 0.008620689655172414,
+            "RE.2.2.3": 0.004310344827586207,
+            "RE.2.3": 0.008620689655172414,
+            "RH.1": 0.004310344827586207,
+            "RK.1": 0.01293103448275862,
+            "RP.1": 0.008620689655172414,
+            "RP.2": 0.01293103448275862,
+            "RT.1": 0.008620689655172414,
+            "XFG": 0.008620689655172414,
+            "XFG.1.1": 0.16379310344827586,
+            "XFG.1.1.1": 0.021551724137931036,
+            "XFG.10.4": 0.02586206896551724,
+            "XFG.14.1": 0.04310344827586207,
+            "XFG.14.1.1": 0.021551724137931036,
+            "XFG.14.1.3": 0.004310344827586207,
+            "XFG.14.1.5": 0.008620689655172414,
+            "XFG.16": 0.004310344827586207,
+            "XFG.17.2.1": 0.017241379310344827,
+            "XFG.2.5.1": 0.021551724137931036,
+            "XFG.22": 0.004310344827586207,
+            "XFG.22.3": 0.008620689655172414,
+            "XFG.23.1.3": 0.021551724137931036,
+            "XFG.23.1.4": 0.008620689655172414,
+            "XFG.28": 0.004310344827586207,
+            "XFG.3": 0.008620689655172414,
+            "XFG.3.1": 0.004310344827586207,
+            "XFG.3.1.12": 0.004310344827586207,
+            "XFG.3.18.1": 0.01293103448275862,
+            "XFG.3.2": 0.004310344827586207,
+            "XFG.3.3.1": 0.004310344827586207,
+            "XFG.3.4.1": 0.017241379310344827,
+            "XFG.3.6": 0.008620689655172414,
+            "XFG.3.7.1": 0.004310344827586207,
+            "XFG.30": 0.004310344827586207,
+            "XFG.4": 0.008620689655172414,
+            "XFG.5": 0.004310344827586207,
+            "XFG.5.1.7": 0.004310344827586207,
+            "XFG.5.2": 0.008620689655172414,
+            "XFG.6": 0.004310344827586207,
+            "XFG.6.2": 0.017241379310344827,
+            "XFG.6.3": 0.004310344827586207,
+            "XFG.6.3.3": 0.004310344827586207,
+            "XFG.6.5.1": 0.008620689655172414,
+            "XFG.9": 0.004310344827586207,
+            "XFN": 0.004310344827586207,
+            "XFV": 0.021551724137931036,
+            "XFY": 0.004310344827586207,
+            "XFY.1": 0.01293103448275862,
+            "XFZ": 0.004310344827586207,
+            "XFZ.2": 0.008620689655172414,
+            "XGA": 0.004310344827586207
+          },
+          "n_sequences": 232
+        },
+        {
+          "date": "2026-03-15",
+          "frequencies": {
+            "MC.1": 0.007246376811594203,
+            "PE.1.4.2": 0.007246376811594203,
+            "PQ.17": 0.007246376811594203,
+            "PQ.17.11": 0.036231884057971016,
+            "PQ.2": 0.007246376811594203,
+            "PQ.2.1.7": 0.007246376811594203,
+            "PQ.2.8.1": 0.021739130434782608,
+            "PQ.31": 0.007246376811594203,
+            "PQ.39.1": 0.014492753623188406,
+            "PQ.43.1.1": 0.014492753623188406,
+            "QF.2": 0.036231884057971016,
+            "QF.2.1": 0.043478260869565216,
+            "QF.7": 0.014492753623188406,
+            "QM.1": 0.007246376811594203,
+            "QT.3": 0.007246376811594203,
+            "RC.1": 0.007246376811594203,
+            "RC.2": 0.007246376811594203,
+            "RC.3": 0.007246376811594203,
+            "RE.2": 0.028985507246376812,
+            "RE.2.3": 0.007246376811594203,
+            "RF.5": 0.007246376811594203,
+            "RK.1": 0.007246376811594203,
+            "RP.1": 0.014492753623188406,
+            "RP.2": 0.021739130434782608,
+            "XFG": 0.007246376811594203,
+            "XFG.1.1": 0.2028985507246377,
+            "XFG.1.1.1": 0.014492753623188406,
+            "XFG.10.4": 0.036231884057971016,
+            "XFG.14.1": 0.06521739130434782,
+            "XFG.14.1.1": 0.007246376811594203,
+            "XFG.14.1.8": 0.007246376811594203,
+            "XFG.17.2.1": 0.028985507246376812,
+            "XFG.2.5.1": 0.028985507246376812,
+            "XFG.22": 0.014492753623188406,
+            "XFG.22.3": 0.007246376811594203,
+            "XFG.23.1.3": 0.028985507246376812,
+            "XFG.23.1.4": 0.007246376811594203,
+            "XFG.3.14": 0.007246376811594203,
+            "XFG.3.16.1": 0.007246376811594203,
+            "XFG.3.18.1": 0.007246376811594203,
+            "XFG.3.4.1": 0.007246376811594203,
+            "XFG.3.4.6": 0.007246376811594203,
+            "XFG.3.6": 0.007246376811594203,
+            "XFG.4.1": 0.007246376811594203,
+            "XFG.5.2": 0.007246376811594203,
+            "XFG.6.2": 0.021739130434782608,
+            "XFG.6.3": 0.007246376811594203,
+            "XFG.6.5.1": 0.007246376811594203,
+            "XFG.8.1": 0.007246376811594203,
+            "XFG.8.5": 0.007246376811594203,
+            "XFG.9.1": 0.014492753623188406,
+            "XFV": 0.014492753623188406,
+            "XFY": 0.007246376811594203,
+            "XFY.1": 0.014492753623188406,
+            "XFZ": 0.028985507246376812,
+            "XFZ.2": 0.007246376811594203
+          },
+          "n_sequences": 138
+        },
+        {
+          "date": "2026-03-29",
+          "frequencies": {
+            "LF.7.11": 0.017543859649122806,
+            "LF.7.11.2": 0.005847953216374269,
+            "PE.1.4.2": 0.005847953216374269,
+            "PL.3": 0.005847953216374269,
+            "PQ.1.5": 0.005847953216374269,
+            "PQ.17": 0.023391812865497075,
+            "PQ.17.11": 0.005847953216374269,
+            "PQ.17.2": 0.005847953216374269,
+            "PQ.2": 0.005847953216374269,
+            "PQ.2.1": 0.005847953216374269,
+            "PQ.2.1.6": 0.023391812865497075,
+            "PQ.2.1.7": 0.005847953216374269,
+            "PQ.2.8.1": 0.023391812865497075,
+            "PQ.39.1": 0.005847953216374269,
+            "PQ.43.1.1": 0.017543859649122806,
+            "PQ.8.1": 0.005847953216374269,
+            "PY.1.1.1": 0.005847953216374269,
+            "QF.2": 0.005847953216374269,
+            "QF.2.1": 0.005847953216374269,
+            "QF.2.2.1": 0.005847953216374269,
+            "QF.7": 0.005847953216374269,
+            "QS.2": 0.005847953216374269,
+            "RC.1": 0.005847953216374269,
+            "RC.3": 0.005847953216374269,
+            "RE.1.1": 0.005847953216374269,
+            "RE.2": 0.06432748538011696,
+            "RE.2.2.3": 0.005847953216374269,
+            "RE.2.2.4": 0.005847953216374269,
+            "RK.1": 0.005847953216374269,
+            "RN.2": 0.005847953216374269,
+            "RP.1": 0.03508771929824561,
+            "XFG": 0.023391812865497075,
+            "XFG.1.1": 0.24561403508771928,
+            "XFG.1.1.1": 0.03508771929824561,
+            "XFG.10.4": 0.029239766081871343,
+            "XFG.14.1": 0.029239766081871343,
+            "XFG.14.1.1": 0.011695906432748537,
+            "XFG.14.1.4": 0.005847953216374269,
+            "XFG.17.2.1": 0.017543859649122806,
+            "XFG.2.5.1": 0.029239766081871343,
+            "XFG.22.3": 0.005847953216374269,
+            "XFG.23.1.3": 0.04678362573099415,
+            "XFG.26": 0.005847953216374269,
+            "XFG.3": 0.011695906432748537,
+            "XFG.3.1": 0.005847953216374269,
+            "XFG.3.1.3": 0.005847953216374269,
+            "XFG.3.3.1": 0.005847953216374269,
+            "XFG.3.4": 0.005847953216374269,
+            "XFG.3.4.1": 0.005847953216374269,
+            "XFG.3.4.3": 0.005847953216374269,
+            "XFG.5.1.7": 0.005847953216374269,
+            "XFG.6": 0.005847953216374269,
+            "XFG.6.2": 0.029239766081871343,
+            "XFG.6.3": 0.005847953216374269,
+            "XFG.6.5.1": 0.011695906432748537,
+            "XFG.9.1": 0.011695906432748537,
+            "XFJ.3.1.2": 0.005847953216374269,
+            "XFY": 0.005847953216374269,
+            "XFY.1": 0.005847953216374269,
+            "XFZ": 0.023391812865497075,
+            "XFZ.2": 0.011695906432748537
+          },
+          "n_sequences": 171
+        },
+        {
+          "date": "2026-04-12",
+          "frequencies": {
+            "LF.7.11.2": 0.00684931506849315,
+            "LF.7.11.4": 0.00684931506849315,
+            "NB.1.8.1": 0.00684931506849315,
+            "PQ.1.5": 0.00684931506849315,
+            "PQ.10.1": 0.00684931506849315,
+            "PQ.10.1.4": 0.00684931506849315,
+            "PQ.17": 0.0273972602739726,
+            "PQ.2": 0.00684931506849315,
+            "PQ.2.1": 0.00684931506849315,
+            "PQ.2.1.6": 0.0136986301369863,
+            "PQ.2.4.2": 0.00684931506849315,
+            "PQ.2.8.1": 0.04794520547945205,
+            "PQ.39.1": 0.00684931506849315,
+            "PQ.4.10.1": 0.00684931506849315,
+            "PQ.43.1.1": 0.00684931506849315,
+            "PQ.6": 0.00684931506849315,
+            "PQ.8.1": 0.00684931506849315,
+            "PY.1.1.1": 0.0136986301369863,
+            "QF.2.2.1": 0.00684931506849315,
+            "RC.3": 0.03424657534246575,
+            "RE.1": 0.00684931506849315,
+            "RE.1.1.2": 0.00684931506849315,
+            "RE.2": 0.0410958904109589,
+            "RE.2.1.1": 0.00684931506849315,
+            "RE.2.2": 0.00684931506849315,
+            "RE.2.2.3": 0.00684931506849315,
+            "RE.2.2.4": 0.00684931506849315,
+            "RF.4": 0.02054794520547945,
+            "RK.1": 0.0136986301369863,
+            "RP.1": 0.00684931506849315,
+            "RR.1": 0.00684931506849315,
+            "XFG.1.1": 0.3013698630136986,
+            "XFG.1.1.1": 0.0410958904109589,
+            "XFG.1.1.2": 0.0136986301369863,
+            "XFG.10.4": 0.00684931506849315,
+            "XFG.14.1": 0.0273972602739726,
+            "XFG.14.1.1": 0.0136986301369863,
+            "XFG.17.2.1": 0.00684931506849315,
+            "XFG.2.5.1": 0.00684931506849315,
+            "XFG.23.1.3": 0.0958904109589041,
+            "XFG.3": 0.00684931506849315,
+            "XFG.3.3": 0.0136986301369863,
+            "XFG.3.3.1": 0.00684931506849315,
+            "XFG.5.1": 0.00684931506849315,
+            "XFG.6": 0.00684931506849315,
+            "XFG.6.2": 0.00684931506849315,
+            "XFG.6.5.1": 0.00684931506849315,
+            "XFG.6.8": 0.00684931506849315,
+            "XFJ.3.1.2": 0.0273972602739726,
+            "XFY": 0.00684931506849315,
+            "XFZ": 0.0136986301369863,
+            "XFZ.1": 0.00684931506849315
+          },
+          "n_sequences": 146
+        },
+        {
+          "date": "2026-04-26",
+          "frequencies": {
+            "LF.7.11": 0.011764705882352941,
+            "NW.1.2.1": 0.011764705882352941,
+            "PQ.17": 0.03529411764705882,
+            "PQ.17.11": 0.011764705882352941,
+            "PQ.2.1.6": 0.011764705882352941,
+            "PQ.2.5": 0.023529411764705882,
+            "PQ.2.8.1": 0.03529411764705882,
+            "PY.1.1.1": 0.011764705882352941,
+            "RE.1": 0.011764705882352941,
+            "RE.1.1.1": 0.011764705882352941,
+            "RE.2": 0.047058823529411764,
+            "RE.2.2.3": 0.011764705882352941,
+            "RF.5": 0.011764705882352941,
+            "RH.1": 0.011764705882352941,
+            "RP.1": 0.08235294117647059,
+            "RR.1": 0.058823529411764705,
+            "XFG": 0.011764705882352941,
+            "XFG.1.1": 0.32941176470588235,
+            "XFG.1.1.1": 0.011764705882352941,
+            "XFG.14.1": 0.023529411764705882,
+            "XFG.14.1.1": 0.011764705882352941,
+            "XFG.23.1.3": 0.09411764705882353,
+            "XFG.3.3": 0.011764705882352941,
+            "XFG.3.3.1": 0.011764705882352941,
+            "XFG.4.1.3": 0.011764705882352941,
+            "XFG.6.2": 0.023529411764705882,
+            "XFJ.3.1.2": 0.047058823529411764,
+            "XFY": 0.011764705882352941
+          },
+          "n_sequences": 85
+        },
+        {
+          "date": "2026-05-10",
+          "frequencies": {
+            "PY.1.1.1": 0.1,
+            "RE.2.2.3": 0.1,
+            "RK.1": 0.1,
+            "RR.1": 0.2,
+            "XFG.1.1": 0.3,
+            "XFG.6.2": 0.1,
+            "XFG.6.2.2": 0.1
+          },
+          "n_sequences": 10
+        }
+      ],
+      "source_url": "https://nextstrain.org/charon/getDataset?prefix=ncov/open/global/6m"
+    }
+  },
+  "fetched_at": "2026-06-06T21:23:20.764383+00:00"
+}

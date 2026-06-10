@@ -36,7 +36,7 @@ function negBinLogPmf(n: number, alpha: number, beta: number): number {
 }
 
 export interface BOCPDResult {
-  /** Cumulative change-point probability P(τ ≤ t | n_{1:t}) */
+  /** Instantaneous change-point probability P(r_t = 0 | n_{1:t}) at each step */
   changePointProb: number[];
   /** Run-length mode at each time step */
   runLengthMode: number[];
@@ -92,20 +92,29 @@ export function runBOCPD(counts: number[], params: BOCPDParams = {}): BOCPDResul
     betas = [beta0, ...betas.map((b) => b + 1)];
     R = normR;
 
-    // 6. Cumulative change-point probability = P(r_t = 0)
+    // 6. Instantaneous change-point probability = P(r_t = 0)
     changePointProb.push(normR[0]);
 
     // 7. Run-length mode = argmax R
     runLengthMode.push(normR.indexOf(Math.max(...normR)));
   }
 
-  // Convert instantaneous CP probability to cumulative
-  const cumCpProb: number[] = [];
-  let cum = 0;
-  for (const p of changePointProb) {
-    cum = 1 - (1 - cum) * (1 - p);
-    cumCpProb.push(Math.min(cum, 1));
-  }
+  return { changePointProb, runLengthMode };
+}
 
-  return { changePointProb: cumCpProb, runLengthMode };
+/**
+ * Current soft alarm probability for a stream: the strongest change-point
+ * signal within the most recent `window` observations, i.e. the max
+ * instantaneous P(r_t = 0) over that window.
+ *
+ * The max (rather than a product/sum over the window) is deliberate: it lets a
+ * genuine recent regime shift stand out while NOT accumulating the per-step
+ * hazard baseline, which would otherwise drive a long quiet window toward a
+ * spurious high alarm. The first observation is excluded because P(r_0 = 0) = 1
+ * by construction.
+ */
+export function recentChangeAlarm(probs: number[], window = 4): number {
+  if (probs.length <= 1) return 0;
+  const recent = probs.slice(Math.max(1, probs.length - window));
+  return recent.length ? Math.min(1, Math.max(...recent)) : 0;
 }

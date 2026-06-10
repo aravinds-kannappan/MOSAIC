@@ -74,10 +74,27 @@ export function computeGenomicAnomalyScores(
   const allLineages = Array.from(
     new Set(snapshots.flatMap((s) => Object.keys(s.frequencies)))
   ).sort();
+  const L = allLineages.length;
 
-  /** Convert a snapshot's freq map to an ordered vector over allLineages */
-  const toVector = (snap: LineageSnapshot): number[] =>
-    allLineages.map((l) => snap.frequencies[l] ?? 0);
+  // A genomic anomaly is a *shift in the lineage distribution*. With a single
+  // lineage (or none) the distribution is degenerate, JSD is identically 0, and
+  // no shift is detectable — report a flat zero alarm rather than a spurious one.
+  if (L <= 1) {
+    return snapshots.slice(1).map((s) => ({
+      date: s.date,
+      jsd: 0,
+      alarmProb: 0,
+      topShiftingLineages: [],
+    }));
+  }
+
+  // Pre-compute the ordered, normalised frequency vector for every snapshot
+  // ONCE. (Doing this inside the baseline loop turns the cost quadratic in
+  // both the number of snapshots and lineages — billions of ops for a series
+  // with hundreds of lineages.)
+  const vectors: number[][] = snapshots.map((snap) =>
+    normalise(allLineages.map((l) => snap.frequencies[l] ?? 0))
+  );
 
   // Estimate baseline null distribution of JSD from inter-outbreak windows.
   // We use the empirical distribution of JSD scores from sequential snapshots
@@ -87,16 +104,18 @@ export function computeGenomicAnomalyScores(
 
   for (let t = 1; t < snapshots.length; t++) {
     const current = snapshots[t];
-    const currentVec = normalise(toVector(current));
+    const currentVec = vectors[t];
 
-    // Rolling 90-day baseline: average of all snapshots in [t-baselineDays, t-1]
-    const baselineSnaps = snapshots.slice(Math.max(0, t - baselineDays), t);
-    const baselineVec = normalise(
-      allLineages.map((_, i) =>
-        baselineSnaps.reduce((sum, s) => sum + (toVector(s)[i] ?? 0), 0) /
-        baselineSnaps.length
-      )
-    );
+    // Rolling baseline: average of all snapshots in [t-baselineDays, t-1]
+    const start = Math.max(0, t - baselineDays);
+    const span = t - start;
+    const baselineAvg = new Array<number>(L).fill(0);
+    for (let k = start; k < t; k++) {
+      const vec = vectors[k];
+      for (let i = 0; i < L; i++) baselineAvg[i] += vec[i];
+    }
+    for (let i = 0; i < L; i++) baselineAvg[i] /= span;
+    const baselineVec = normalise(baselineAvg);
 
     const jsd = jsDivergence(currentVec, baselineVec);
 
@@ -119,7 +138,7 @@ export function computeGenomicAnomalyScores(
     }
 
     // Top shifting lineages
-    const prevVec = normalise(toVector(snapshots[t - 1]));
+    const prevVec = vectors[t - 1];
     const deltas = allLineages.map((l, i) => ({
       lineage: l,
       delta: currentVec[i] - prevVec[i],

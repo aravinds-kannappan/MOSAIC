@@ -3,44 +3,74 @@
  *
  * Fetches real wastewater concentration data from the CDC National Wastewater
  * Surveillance System via the Socrata open API (no authentication required),
- * then runs Poisson-Gamma BOCPD to produce per-site change-point alarm probabilities.
+ * then runs Poisson-Gamma BOCPD to produce change-point alarm probabilities.
+ *
+ * The `2ew6-ywp6` dataset is the SARS-CoV-2 wastewater activity-level series.
+ * Every row is already SARS-CoV-2, keyed by `key_plot_id` (a composite site id
+ * such as `CDC_VERILY_md_2952_..._raw wastewater`) — there is NO standalone
+ * pathogen column to filter on. We therefore build a national time series by
+ * aggregating `percentile` (the site's current level vs. its own history)
+ * across all reporting sites per `date_end`, server-side via SoQL, which keeps
+ * the payload tiny and yields a dense daily series for change-point detection.
  *
  * Data source: https://data.cdc.gov/resource/2ew6-ywp6.json
  * Ref: MOSAIC paper §5.2 (Layer 2b)
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import { runBOCPD } from "@/lib/bocpd";
+import { runBOCPD, recentChangeAlarm } from "@/lib/bocpd";
 
 const NWSS_BASE = "https://data.cdc.gov/resource/2ew6-ywp6.json";
 const SOCRATA_APP_TOKEN = process.env.SOCRATA_APP_TOKEN ?? "";
 
-export const revalidate = 3600; // Cache for 1 hour (NWSS updates weekly)
+export const revalidate = 3600; // Cache for 1 hour (NWSS updates regularly)
+
+/** The 2ew6-ywp6 dataset only carries SARS-CoV-2. */
+function isCovid(pathogen: string): boolean {
+  const p = pathogen.toLowerCase().replace(/[^a-z0-9]/g, "");
+  return p.includes("sarscov2") || p.includes("covid") || p === "coronavirus";
+}
+
+interface AggregateRow {
+  date_end: string;
+  mean_pct: string;
+  mean_detect: string;
+  n: string;
+}
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const pathogen = searchParams.get("pathogen") ?? "SARS-CoV-2";
-  const state = searchParams.get("state") ?? null;
-  const limit = parseInt(searchParams.get("limit") ?? "2000", 10);
+  const state = searchParams.get("state") ?? searchParams.get("jurisdiction") ?? null;
 
-  // Build Socrata SoQL query
+  if (!isCovid(pathogen)) {
+    return NextResponse.json({
+      sites: [],
+      meta: {
+        pathogen,
+        state,
+        count: 0,
+        note: "CDC NWSS dataset 2ew6-ywp6 only provides SARS-CoV-2 wastewater activity; other pathogens are covered by the genomic and text streams.",
+        source: "CDC NWSS via Socrata API",
+      },
+    });
+  }
+
+  // Aggregate the national (or per-jurisdiction) daily series server-side.
+  // `percentile` / `detect_prop_15d` are stored as text, so cast with ::number.
   const params = new URLSearchParams({
-    $limit: String(Math.min(limit, 5000)),
+    $select:
+      "date_end,avg(percentile::number) as mean_pct,avg(detect_prop_15d::number) as mean_detect,count(*) as n",
+    $group: "date_end",
     $order: "date_end DESC",
-    key_plot_id: pathogen,
+    $limit: "200", // ~6 months of daily windows
   });
-
-  if (state) params.set("wwtp_jurisdiction", state);
-
-  // Fetch last ~1 year of data
-  const cutoff = new Date();
-  cutoff.setFullYear(cutoff.getFullYear() - 1);
-  params.set("$where", `date_end >= '${cutoff.toISOString().split("T")[0]}'`);
+  if (state) params.set("$where", `wwtp_jurisdiction='${state.replace(/'/g, "''")}'`);
 
   const headers: HeadersInit = { "Content-Type": "application/json" };
   if (SOCRATA_APP_TOKEN) headers["X-App-Token"] = SOCRATA_APP_TOKEN;
 
-  let raw: Record<string, string>[];
+  let raw: AggregateRow[];
   try {
     const res = await fetch(`${NWSS_BASE}?${params}`, {
       headers,
@@ -60,82 +90,75 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  if (!raw.length) {
-    return NextResponse.json({ sites: [], meta: { pathogen, state, count: 0 } });
-  }
+  // Sort chronologically (oldest → newest) for time-series detection
+  const series = raw
+    .map((r) => ({
+      date: r.date_end,
+      percentile: parseFloat(r.mean_pct),
+      detectProp: parseFloat(r.mean_detect),
+      n: parseInt(r.n ?? "0", 10),
+    }))
+    .filter((r) => r.date && !isNaN(r.percentile))
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
-  // Group by site (wwtp_id)
-  const bySite = new Map<string, typeof raw>();
-  for (const row of raw) {
-    const id = row.wwtp_id ?? row.key_plot_id ?? "unknown";
-    if (!bySite.has(id)) bySite.set(id, []);
-    bySite.get(id)!.push(row);
-  }
-
-  const sites = [];
-
-  for (const [siteId, rows] of bySite) {
-    // Sort chronologically
-    rows.sort((a, b) =>
-      new Date(a.date_end ?? "").getTime() - new Date(b.date_end ?? "").getTime()
-    );
-
-    // Extract concentration time series.
-    // The NWSS dataset uses 'detect_prop_15d' (detection proportion) and
-    // 'percentile' (national percentile) as the primary signal metrics.
-    // We use percentile/100 as a normalised 0-1 concentration proxy for BOCPD.
-    const timeSeries = rows
-      .map((r) => ({
-        date: r.date_end ?? r.date_start ?? "",
-        percentile: parseFloat(r.percentile ?? "0"),
-        detectProp: parseFloat(r.detect_prop_15d ?? "0"),
-        ptc15d: parseFloat(r.ptc_15d ?? "0"),
-      }))
-      .filter((r) => r.date && !isNaN(r.percentile));
-
-    if (timeSeries.length < 3) continue;
-
-    // Run BOCPD on detection proportion counts (scaled to integer-like counts)
-    // We discretise detect_prop_15d * 100 to pseudo-counts for the Poisson model
-    const pseudoCounts = timeSeries.map((r) =>
-      Math.round(Math.max(0, r.detectProp * 100))
-    );
-    const bocpdResult = runBOCPD(pseudoCounts, { meanRunLength: 12 }); // 12-week mean
-
-    const firstRow = rows[0];
-    sites.push({
-      siteId,
-      siteName: firstRow.wwtp_jurisdiction ?? siteId,
-      state: firstRow.wwtp_jurisdiction ?? firstRow.reporting_jurisdiction ?? "",
-      populationServed: parseInt(firstRow.population_served ?? "0", 10),
-      pathogen,
-      latestDate: timeSeries[timeSeries.length - 1].date,
-      latestPercentile: timeSeries[timeSeries.length - 1].percentile,
-      latestDetectProp: timeSeries[timeSeries.length - 1].detectProp,
-      latestPtc15d: timeSeries[timeSeries.length - 1].ptc15d,
-      /** P(change-point ≤ t) — wastewater soft alarm probability */
-      changePointProb: bocpdResult.changePointProb[bocpdResult.changePointProb.length - 1] ?? 0,
-      timeSeries: timeSeries.map((r, i) => ({
-        date: r.date,
-        percentile: r.percentile,
-        detectProp: r.detectProp,
-        ptc15d: r.ptc15d,
-        changePointProb: bocpdResult.changePointProb[i] ?? 0,
-      })),
+  if (series.length < 3) {
+    return NextResponse.json({
+      sites: [],
+      meta: { pathogen, state, count: 0, source: "CDC NWSS via Socrata API" },
     });
   }
 
-  // Sort by change-point probability descending
-  sites.sort((a, b) => b.changePointProb - a.changePointProb);
+  // Run BOCPD on the national mean percentile (0-100 → integer pseudo-counts).
+  // Percentile tracks each site's level vs. its own history, so a rising
+  // national mean is the wave-onset signal; detect_prop_15d saturates near 100
+  // and is a poorer change-point input.
+  const pseudoCounts = series.map((r) => Math.round(Math.max(0, r.percentile)));
+  const bocpd = runBOCPD(pseudoCounts, { meanRunLength: 30 });
+
+  // Each point's wastewater alarm blends two signals: an abrupt change-point
+  // (BOCPD) and sustained elevation. `percentile` is each site's current level
+  // vs. its own history, so a national mean above the 50th percentile already
+  // indicates above-typical circulation even without an abrupt jump.
+  const levelAlarm = (pct: number) => Math.min(1, Math.max(0, (pct - 50) / 40));
+  const blended = series.map((r, i) =>
+    1 - (1 - (bocpd.changePointProb[i] ?? 0)) * (1 - levelAlarm(r.percentile))
+  );
+
+  const latest = series[series.length - 1];
+  const siteName = state ?? "United States (national average)";
+
+  const site = {
+    siteId: state ? `NWSS-${state}` : "NWSS-US-NATIONAL",
+    siteName,
+    state: state ?? "US",
+    populationServed: 0,
+    pathogen: "SARS-CoV-2",
+    sitesReporting: latest.n,
+    latestDate: latest.date,
+    latestPercentile: latest.percentile,
+    latestDetectProp: latest.detectProp,
+    latestPtc15d: 0,
+    /** Wastewater soft alarm: blend of recent change-point and elevation */
+    changePointProb: recentChangeAlarm(blended, 14),
+    timeSeries: series.map((r, i) => ({
+      date: r.date,
+      percentile: r.percentile,
+      detectProp: r.detectProp,
+      ptc15d: 0,
+      changePointProb: blended[i],
+    })),
+  };
 
   return NextResponse.json({
-    sites,
+    sites: [site],
     meta: {
-      pathogen,
+      pathogen: "SARS-CoV-2",
       state,
-      count: sites.length,
-      source: "CDC NWSS via Socrata API",
-      sourceUrl: "https://data.cdc.gov/resource/2ew6-ywp6.json",
+      count: 1,
+      pointCount: series.length,
+      latestDate: latest.date,
+      source: "CDC NWSS via Socrata API (national daily aggregate of site percentiles)",
+      sourceUrl: NWSS_BASE,
       fetchedAt: new Date().toISOString(),
     },
   });
