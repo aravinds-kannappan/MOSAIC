@@ -1,5 +1,5 @@
 /**
- * CDC NWSS Wastewater API Route — thin wrapper over lib/streams#fetchWastewater.
+ * CDC NWSS Wastewater API Route, thin wrapper over lib/streams#fetchWastewater.
  *
  * Data source: https://data.cdc.gov/resource/2ew6-ywp6.json
  * Ref: MOSAIC paper §5.2 (Layer 2b)

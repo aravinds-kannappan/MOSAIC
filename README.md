@@ -1,14 +1,14 @@
-# MOSAIC — Multi-Modal Open Surveillance with AI-Driven Calibrated Inference
+# MOSAIC, Multi-Modal Open Surveillance with AI-Driven Calibrated Inference
 
 [![CI](https://github.com/aravinds-kannappan/MOSAIC/actions/workflows/ci.yml/badge.svg)](https://github.com/aravinds-kannappan/MOSAIC/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Deploy](https://img.shields.io/badge/Deploy-Vercel-black)](https://vercel.com/new)
 [![Paper](https://img.shields.io/badge/Paper-PDF-red)](paper/mosaic.pdf)
 
-> **A multi-modal Bayesian disease-intelligence system that fuses wastewater, genomic, and outbreak-text streams into a single calibrated probability — `P(Rₜ > 1)`, the probability that transmission is growing right now.**
+> **A multi-modal Bayesian disease-intelligence system that fuses wastewater, genomic, and outbreak-text streams into a single calibrated probability, `P(Rₜ > 1)`, the probability that transmission is growing right now.**
 
 MOSAIC turns three asynchronous public data feeds into one number a public-health
-decision-maker can act on, and — critically — **validates that the number is
+decision-maker can act on, and, critically, **validates that the number is
 calibrated**. On the real multi-year CDC wastewater record, the probability MOSAIC
 reports is well-calibrated (**ECE = 0.086**) and strongly discriminative
 (**AUROC = 0.917**). A full write-up with derivations and results is in
@@ -39,7 +39,7 @@ in-app **Research** page (`/research`).
 
 ## What the percentages mean
 
-Everything on the dashboard is expressed as **`P(Rₜ > 1)`** — the posterior
+Everything on the dashboard is expressed as **`P(Rₜ > 1)`**, the posterior
 probability that the effective reproduction number exceeds one, i.e. that the
 epidemic curve is **turning upward** for that pathogen and location *right now*.
 
@@ -48,9 +48,9 @@ epidemic curve is **turning upward** for that pathogen and location *right now*.
 - **100 %** → strong evidence transmission is growing.
 
 This is deliberately unitless and comparable across pathogens. It is also
-**falsifiable**, which is what lets us calibrate it: we checked, on 1,334
+**falsifiable**, which is what lets us calibrate it: I checked, on 1,334
 day-ahead forecasts from the real national wastewater record, whether activity
-actually rose when the model said it would. It did, at the stated rate —
+actually rose when the model said it would. It did, at the stated rate , 
 **when MOSAIC says 75 %, activity subsequently rises ~87 % of the time; when it
 says 15 %, ~6 % of the time** (a slight, benign under-confidence). See
 [Calibration & validation](#calibration--validation).
@@ -64,7 +64,7 @@ Two derived labels appear alongside the probability:
 | 🔴 **HIGH**      | `0.70 – 0.85`   | Likely growth |
 | 🟣 **CRITICAL**  | `≥ 0.85`        | Strong growth signal |
 
-Each alert also shows **stream contributions** — how much of the signal came
+Each alert also shows **stream contributions**, how much of the signal came
 from the text, wastewater, and genomic streams (an additive analogue of Shapley
 attribution).
 
@@ -74,13 +74,13 @@ attribution).
 
 Every major epidemic of the past two decades was preceded by signals detectable
 days to weeks before official declarations. The binding constraint on early
-warning is **not data availability** — wastewater is sampled routinely, genomes
+warning is **not data availability**, wastewater is sampled routinely, genomes
 are shared openly, and outbreak reports are published continuously. The
 constraint is:
 
-1. **Integration** — fusing three asynchronous, differently-scaled,
+1. **Integration**, fusing three asynchronous, differently-scaled,
    differently-noised streams into one coherent quantity, and
-2. **Calibration** — ensuring that when the system says "78 %," the event happens
+2. **Calibration**, ensuring that when the system says "78 %," the event happens
    about 78 % of the time.
 
 MOSAIC addresses both, and ships as a public, backend-free dashboard so the
@@ -107,7 +107,7 @@ Three design decisions make the lightweight tier robust on serverless hosts:
 - **In-process fusion, no HTTP self-calls.** Fusion endpoints (`alerts`,
   `signals`, `outbreak-probability`) compute the streams by calling shared
   functions in [`lib/streams.ts`](apps/web/lib/streams.ts) /
-  [`lib/fusion.ts`](apps/web/lib/fusion.ts) — they do **not** fetch their own
+  [`lib/fusion.ts`](apps/web/lib/fusion.ts), they do **not** fetch their own
   sibling routes over the deployment URL (which fails under cold-start URL
   resolution / deployment protection and was the original "no signal" bug).
 - **Server-side aggregation + bundled snapshots.** Wastewater is aggregated
@@ -128,20 +128,20 @@ Public APIs (live, no auth required)
         │            │            │
         ▼            ▼            ▼
 ┌──────────────────────────────────────────────────────────┐
-│ Layer 1 — Signal extraction                              │
+│ Layer 1, Signal extraction                              │
 │   WHO DON / ProMED → structured EpiEvents                │
 │   (regex + country resolver in lite; LLM in backend)     │
 ├──────────────────────────────────────────────────────────┤
-│ Layer 2 — Per-stream detectors                           │
+│ Layer 2, Per-stream detectors                           │
 │   2a BOCPD (Poisson-Gamma) on text event counts          │
 │   2b BOCPD + sustained-elevation on NWSS percentile      │
 │   2c Jensen-Shannon divergence on lineage frequencies    │
 ├──────────────────────────────────────────────────────────┤
-│ Layer 3 — Fusion                                         │
+│ Layer 3, Fusion                                         │
 │   P(Rₜ>1): noisy-or of present streams (lite)            │
 │            hierarchical NUTS posterior (backend)         │
 ├──────────────────────────────────────────────────────────┤
-│ Layer 4 — Calibrated dashboard                           │
+│ Layer 4, Calibrated dashboard                           │
 │   Today's Pulse · World Map · Signal Explorer ·          │
 │   Alert Feed · Calibration · Forecast · Research         │
 └──────────────────────────────────────────────────────────┘
@@ -154,7 +154,7 @@ Public APIs (live, no auth required)
 | **2b** | Change-point + level on wastewater | BOCPD + elevation noisy-or | `Rbeast` BEAST RJMCMC |
 | **2c** | Genomic lineage-shift anomaly | Jensen-Shannon divergence | `numpy` / `scipy` JSD |
 | **3** | Fuse into `P(Rₜ>1)` | renormalized noisy-or | NumPyro renewal + NUTS |
-| **4** | Calibrated dashboard | Next.js + Recharts | — |
+| **4** | Calibrated dashboard | Next.js + Recharts |, |
 
 ---
 
@@ -199,9 +199,9 @@ All public, no authentication required.
 | **Text alarm** | BOCPD change-point on dense daily report counts, weighted by recency (days since last report) and intensity (recent report volume). |
 | **Genomic alarm** | Empirical tail probability of the Jensen–Shannon divergence (JSD) of the 14-day lineage distribution vs. a 90-window baseline. |
 | **Stream contributions** | Normalized marginal evidence of each stream toward the fused probability (additive Shapley-style attribution). |
-| **ECE** | Expected Calibration Error — mean gap between predicted probability and observed frequency across reliability bins. `< 0.10` ⇒ well-calibrated. |
+| **ECE** | Expected Calibration Error, mean gap between predicted probability and observed frequency across reliability bins. `< 0.10` ⇒ well-calibrated. |
 | **Brier score** | Mean squared error of the probabilistic forecast (a strictly proper scoring rule). Lower is better. |
-| **AUROC** | Area under the ROC curve — rank discrimination between growth and non-growth days. `0.5` = chance, `1.0` = perfect. |
+| **AUROC** | Area under the ROC curve, rank discrimination between growth and non-growth days. `0.5` = chance, `1.0` = perfect. |
 
 ---
 
@@ -225,7 +225,7 @@ Full derivations are in the [paper](paper/mosaic.pdf); the essentials:
   distributions; degenerate single-lineage datasets correctly report no anomaly.
 - **EpiEstim** (Cori et al. 2013): conjugate Gamma posterior on `Rₜ`;
   `P(Rₜ>1) = 1 − F_Gamma(1; a′, b′)` evaluated with a **Wilson–Hilferty** normal
-  branch for large shape (a numerical fix — the naive series/continued-fraction
+  branch for large shape (a numerical fix, the naive series/continued-fraction
   expansions silently corrupt large-count series).
 
 **Fusion.** Lite tier: `P(Rₜ>1) = 1 − Πⱼ (1 − ωⱼ·aⱼ)` over the streams *present*
@@ -240,7 +240,7 @@ with a `√h`-widening 95 % band.
 
 ## Calibration & validation
 
-We treat `P(Rₜ>1)` as a probabilistic forecast and validate it on the **real**
+I treat `P(Rₜ>1)` as a probabilistic forecast and validate it on the **real**
 multi-year CDC NWSS national record (2021-12 → 2025-09): at each day compute
 `P(Rₜ>1)` from data up to that day, and label the outcome by whether activity
 actually rose over the next 14 days.
@@ -301,7 +301,7 @@ curl ".../api/v1/outbreak-probability?pathogen=SARS-CoV-2&location=US"
 
 ## Quick start
 
-### Option A — Live dashboard on Vercel (no backend)
+### Option A, Live dashboard on Vercel (no backend)
 
 1. Fork this repository.
 2. Import it at [vercel.com/new](https://vercel.com/new). The root `vercel.json`
@@ -310,7 +310,7 @@ curl ".../api/v1/outbreak-probability?pathogen=SARS-CoV-2&location=US"
    bundled genomic snapshots. Set `MOSAIC_API_URL` to enable the full NumPyro
    backend; otherwise the TypeScript tier runs everything.
 
-### Option B — Full stack with Docker
+### Option B, Full stack with Docker
 
 ```bash
 git clone https://github.com/aravinds-kannappan/MOSAIC.git
@@ -324,7 +324,7 @@ docker compose up
 | Dashboard | http://localhost:3000 |
 | REST API + OpenAPI docs | http://localhost:8000/docs |
 
-### Option C — Web app only, locally
+### Option C, Web app only, locally
 
 ```bash
 cd apps/web
@@ -336,7 +336,7 @@ npm run dev        # http://localhost:3000
 
 ## Reproducing the paper figures
 
-Every figure is generated from real data — the live CDC NWSS Socrata API, the
+Every figure is generated from real data, the live CDC NWSS Socrata API, the
 bundled Nextstrain snapshots, and the running MOSAIC API. Nothing is synthetic.
 
 ```bash
@@ -379,7 +379,7 @@ MOSAIC/
 
 MOSAIC is a **defensive** system built entirely on aggregate, de-identified,
 public data; no individual health records are processed. Outputs are
-population-level growth probabilities, not targeting information. We emphasize
+population-level growth probabilities, not targeting information. I emphasize
 calibration and uncertainty (which discourage over-reaction to weak signals) and
 open-source the methodology so its limits are transparent. The system is
 intended to augment, not replace, public-health judgement. See

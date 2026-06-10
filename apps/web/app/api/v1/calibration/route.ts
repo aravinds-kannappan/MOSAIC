@@ -1,5 +1,5 @@
 /**
- * Calibration API Route — reliability diagram + metrics.
+ * Calibration API Route, reliability diagram + metrics.
  *
  * If the Python backend is configured, returns its full NumPyro multi-stream
  * calibration. Otherwise computes a real retrospective reliability diagram by

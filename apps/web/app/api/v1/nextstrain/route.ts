@@ -1,5 +1,5 @@
 /**
- * Nextstrain Genomic Anomaly API Route — thin wrapper over lib/streams#fetchGenomic.
+ * Nextstrain Genomic Anomaly API Route, thin wrapper over lib/streams#fetchGenomic.
  *
  * Ref: MOSAIC paper §5.3; Hadfield et al. (2018) Bioinformatics 34(23), 4121–4123.
  */

@@ -1,13 +1,13 @@
 /**
- * MOSAIC Alerts API — Multi-Stream Fusion (thin wrapper over lib/fusion#computeAlerts).
+ * MOSAIC Alerts API, Multi-Stream Fusion (thin wrapper over lib/fusion#computeAlerts).
  *
- * The fusion combines the text, wastewater and genomic streams in-process — it
+ * The fusion combines the text, wastewater and genomic streams in-process, it
  * does NOT self-fetch sibling routes over HTTP, which fails on Vercel.
  *
  * When MOSAIC_API_URL is set (Python backend running), this route proxies to
  * the full NumPyro NUTS inference endpoint for calibrated MCMC posteriors.
  *
- * Ref: MOSAIC paper §6 (Layer 3 — Multi-Modal Bayesian Hierarchical Fusion)
+ * Ref: MOSAIC paper §6 (Layer 3, Multi-Modal Bayesian Hierarchical Fusion)
  */
 
 import { NextResponse } from "next/server";

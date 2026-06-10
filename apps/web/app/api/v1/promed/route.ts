@@ -1,11 +1,11 @@
 /**
- * ProMED-mail + WHO DON Text Signal API Route — thin wrapper over
+ * ProMED-mail + WHO DON Text Signal API Route, thin wrapper over
  * lib/streams#fetchText.
  *
  * When MOSAIC_API_URL is set (Python backend running), this route proxies to
  * the full LLM extractor endpoint instead.
  *
- * Ref: MOSAIC paper §4 (Layer 1 — LLM Signal Extractor)
+ * Ref: MOSAIC paper §4 (Layer 1, LLM Signal Extractor)
  */
 
 import { NextRequest, NextResponse } from "next/server";

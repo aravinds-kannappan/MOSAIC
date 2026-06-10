@@ -6,13 +6,12 @@
  * HTTP, so it works identically locally and on Vercel.
  *
  * The plotted window is anchored to the most recent data actually available
- * across the streams (which can lag wall-clock time — e.g. the CDC NWSS series
+ * across the streams (which can lag wall-clock time, e.g. the CDC NWSS series
  * currently ends in late 2025), so the chart always shows real signal instead
  * of an empty "last 90 days from today" window.
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import { runBOCPD } from "@/lib/bocpd";
 import { type SerialInterval, estimateRt, SERIAL_INTERVALS } from "@/lib/rt-estimation";
 import { fetchWastewater, fetchGenomic, fetchText } from "@/lib/streams";
 
@@ -143,8 +142,12 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  // Text alarm series: instantaneous BOCPD change-point probability on the dense
-  // daily ProMED/WHO event-count series for this pathogen.
+  // Text alarm series: a continuous report-intensity curve. Each WHO/ProMED
+  // report deposits weight that decays exponentially (half-life ~21 d), and the
+  // accumulated intensity is mapped to a probability by a saturating link. This
+  // is visible and interpretable for sparsely-reported pathogens (mpox, H5N1),
+  // unlike the raw instantaneous change-point probability which sits at the
+  // hazard floor between reports.
   if (textRes.status === "fulfilled") {
     const countsByPathogen = textRes.value.countsByPathogen;
     const key =
@@ -155,18 +158,25 @@ export async function GET(req: NextRequest) {
     const dates = Object.keys(counts).sort();
     if (dates.length) {
       const startDay = Math.floor(new Date(`${dates[0]}T00:00:00Z`).getTime() / DAY_MS);
-      const endDay = Math.floor(new Date(`${dates[dates.length - 1]}T00:00:00Z`).getTime() / DAY_MS);
+      // Run the decay to the latest data across all streams, so the curve reaches
+      // "now" and gently declines rather than cutting to zero after the last report.
+      const dayOf = (s: string) => Math.floor(new Date(`${s}T00:00:00Z`).getTime() / DAY_MS);
+      const otherDates = Array.from(dateMap.keys());
+      const maxOther = otherDates.length ? Math.max(...otherDates.map(dayOf)) : 0;
+      const endDay = Math.max(dayOf(dates[dates.length - 1]), maxOther);
       const series = new Array<number>(endDay - startDay + 1).fill(0);
       for (const [d, c] of Object.entries(counts)) {
         const idx = Math.floor(new Date(`${d}T00:00:00Z`).getTime() / DAY_MS) - startDay;
         if (idx >= 0 && idx < series.length) series[idx] += c;
       }
-      if (series.length >= 3) {
-        const cp = runBOCPD(series, { meanRunLength: 30 }).changePointProb;
-        for (let i = 0; i < series.length; i++) {
-          const d = new Date((startDay + i) * DAY_MS).toISOString().split("T")[0];
-          touch(d).pText = cp[i] ?? 0;
-        }
+      const decay = Math.exp(-1 / 21); // 21-day half-life-ish kernel
+      const scale = 1.5;
+      let intensity = 0;
+      for (let i = 0; i < series.length; i++) {
+        intensity = intensity * decay + series[i];
+        const pText = 1 - Math.exp(-intensity / scale);
+        const d = new Date((startDay + i) * DAY_MS).toISOString().split("T")[0];
+        touch(d).pText = pText;
       }
     }
   }
