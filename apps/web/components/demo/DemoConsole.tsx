@@ -1,26 +1,30 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import {
   LayoutDashboard, Bell, LineChart, Dna, FileText, Database, Activity, GitMerge,
-  ChevronDown, ChevronsLeft, ChevronsRight, Github, ArrowLeft, Search, Plus, Radio, MapPin,
+  ChevronDown, ChevronsLeft, ChevronsRight, Github, ArrowLeft, Radio, MapPin, Sparkles,
 } from "lucide-react";
 import { getSites, datasetMeta, type SiteState } from "@/lib/demo/sites";
 import { levelHex } from "./SiteLocatorMap";
 import { PathogenGrid } from "./PathogenGrid";
 import { PipelineSchematic } from "./PipelineSchematic";
+import { NewsFeed } from "./NewsFeed";
 import {
   SiteHeader, EarlyWarningBanner, EventLog, LineagePanel, StreamHealthPanel, BriefingCard, ForecastPanel,
 } from "./panels";
+import { Assistant } from "./Assistant";
 
-const SiteLocatorMap = dynamic(() => import("./SiteLocatorMap").then((m) => m.SiteLocatorMap), {
+const GlobalSiteMap = dynamic(() => import("./GlobalSiteMap").then((m) => m.GlobalSiteMap), {
   ssr: false,
   loading: () => <div className="h-[280px] animate-pulse rounded-lg bg-muted/20" />,
 });
 
 type Section = "overview" | "alerts" | "forecasting" | "lineages" | "fusion" | "briefings" | "streams" | "dataroom";
+
+const REGION_ORDER = ["United States", "Americas", "Europe", "Asia-Pacific", "Middle East", "Africa"];
 
 const NAV: { group: string; items: { id: Section; label: string; icon: React.ElementType; badge?: boolean }[] }[] = [
   { group: "Monitor", items: [
@@ -59,6 +63,7 @@ export function DemoConsole({ initialSiteId }: { initialSiteId?: string }) {
   const [section, setSection] = useState<Section>("overview");
   const [collapsed, setCollapsed] = useState(false);
   const [pickerOpen, setPickerOpen] = useState(false);
+  const [assistantOpen, setAssistantOpen] = useState(false);
   const [refreshAt, setRefreshAt] = useState<string>("");
 
   const site = sites.find((s) => s.id === selectedId) ?? sites[0];
@@ -72,7 +77,19 @@ export function DemoConsole({ initialSiteId }: { initialSiteId?: string }) {
     return () => clearInterval(iv);
   }, []);
 
-  useEffect(() => { setSection("overview"); }, [selectedId]);
+  // ⌘K / Ctrl-K opens the assistant
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setAssistantOpen((o) => !o);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
+  const pickSite = useCallback((id: string) => { setSelectedId(id); setSection("overview"); }, []);
 
   return (
     <div className="dark flex h-screen flex-col overflow-hidden bg-background text-foreground">
@@ -97,20 +114,25 @@ export function DemoConsole({ initialSiteId }: { initialSiteId?: string }) {
                 <div className="fixed inset-0 z-10" onClick={() => setPickerOpen(false)} />
                 <div className="absolute left-0 top-full z-20 mt-1 max-h-[70vh] w-80 overflow-y-auto rounded-lg border border-border/60 bg-popover p-1 shadow-2xl">
                   <p className="px-2 py-1.5 text-[10px] uppercase tracking-wider text-muted-foreground">
-                    {sites.length} sewershed sites · sorted by P(Rt&gt;1)
+                    {sites.length} sites · {new Set(sites.map((s) => s.country)).size} countries · by P(Rt&gt;1)
                   </p>
-                  {sites.map((s) => (
-                    <button
-                      key={s.id}
-                      onClick={() => { setSelectedId(s.id); setPickerOpen(false); }}
-                      className={`flex w-full items-center justify-between gap-2 rounded-md px-2 py-1.5 text-left text-xs hover:bg-muted ${s.id === selectedId ? "bg-muted" : ""}`}
-                    >
-                      <div className="flex min-w-0 items-center gap-2">
-                        <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: levelHex(s.level) }} />
-                        <span className="truncate">{s.label}</span>
-                      </div>
-                      <span className="shrink-0 font-mono text-[10px] text-muted-foreground">{(s.pOutbreak * 100).toFixed(0)}%</span>
-                    </button>
+                  {REGION_ORDER.filter((r) => sites.some((s) => s.region === r)).map((region) => (
+                    <div key={region}>
+                      <p className="px-2 pb-1 pt-2 text-[9px] font-semibold uppercase tracking-wider text-muted-foreground/60">{region}</p>
+                      {sites.filter((s) => s.region === region).map((s) => (
+                        <button
+                          key={s.id}
+                          onClick={() => { pickSite(s.id); setPickerOpen(false); }}
+                          className={`flex w-full items-center justify-between gap-2 rounded-md px-2 py-1.5 text-left text-xs hover:bg-muted ${s.id === selectedId ? "bg-muted" : ""}`}
+                        >
+                          <div className="flex min-w-0 items-center gap-2">
+                            <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: levelHex(s.level) }} />
+                            <span className="truncate">{s.label}</span>
+                          </div>
+                          <span className="shrink-0 font-mono text-[10px] text-muted-foreground">{(s.pOutbreak * 100).toFixed(0)}%</span>
+                        </button>
+                      ))}
+                    </div>
                   ))}
                 </div>
               </>
@@ -129,8 +151,11 @@ export function DemoConsole({ initialSiteId }: { initialSiteId?: string }) {
             <span className="font-mono">{alertCount}</span>
             <span className="hidden text-muted-foreground sm:inline">alerts</span>
           </span>
-          <span className="hidden items-center gap-1.5 rounded-md border border-amber-500/40 bg-amber-500/10 px-2.5 py-1.5 text-[11px] text-amber-300 lg:flex">
-            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-amber-400" /> SIM
+          <span
+            title="Live: CDC NWSS wastewater (US sites) + WHO/ProMED outbreak news. Modeled for the demo: international sites, non-COVID pathogen panels, and lineage mixes (flagged 'sim')."
+            className="hidden items-center gap-1.5 rounded-md border border-amber-500/40 bg-amber-500/10 px-2.5 py-1.5 text-[11px] text-amber-300 lg:flex"
+          >
+            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-amber-400" /> DEMO
           </span>
           <a href="https://github.com/aravinds-kannappan/MOSAIC" target="_blank" rel="noopener noreferrer" className="rounded-md border border-border/60 bg-background p-1.5 text-muted-foreground hover:text-foreground">
             <Github className="h-3.5 w-3.5" />
@@ -145,8 +170,8 @@ export function DemoConsole({ initialSiteId }: { initialSiteId?: string }) {
         {/* ---------- Sidebar ---------- */}
         <aside className={`hidden shrink-0 flex-col justify-between border-r border-border/60 bg-card/30 transition-all sm:flex ${collapsed ? "w-14" : "w-56"}`}>
           <nav className="flex-1 overflow-y-auto px-2 py-3">
-            <button className={`mb-3 flex w-full items-center gap-2 rounded-md border border-border/60 bg-background px-2.5 py-2 text-xs text-muted-foreground hover:text-foreground ${collapsed ? "justify-center" : ""}`}>
-              <Search className="h-3.5 w-3.5" />
+            <button onClick={() => setAssistantOpen(true)} className={`mb-3 flex w-full items-center gap-2 rounded-md border border-primary/30 bg-primary/10 px-2.5 py-2 text-xs text-primary hover:bg-primary/15 ${collapsed ? "justify-center" : ""}`}>
+              <Sparkles className="h-3.5 w-3.5" />
               {!collapsed && <><span>Assistant</span><span className="ml-auto font-mono text-[10px]">⌘K</span></>}
             </button>
             {NAV.map((g) => (
@@ -196,8 +221,8 @@ export function DemoConsole({ initialSiteId }: { initialSiteId?: string }) {
                   <Card title="Recent activity" action={<button onClick={() => setSection("alerts")} className="text-[10px] text-primary hover:underline">View all</button>}>
                     <EventLog events={site.events.slice(0, 4)} compact />
                   </Card>
-                  <Card title="Sewershed network" action={<span className="flex items-center gap-1 text-[10px] text-muted-foreground"><MapPin className="h-3 w-3" /> {sites.length} sites</span>}>
-                    <SiteLocatorMap sites={sites} selectedId={selectedId} onSelect={setSelectedId} height={240} />
+                  <Card title="Global sewershed network" action={<span className="flex items-center gap-1 text-[10px] text-muted-foreground"><MapPin className="h-3 w-3" /> {sites.length} sites · {new Set(sites.map((s) => s.country)).size} countries</span>}>
+                    <GlobalSiteMap sites={sites} selectedId={selectedId} onSelect={setSelectedId} height={240} />
                   </Card>
                 </div>
               </div>
@@ -206,7 +231,10 @@ export function DemoConsole({ initialSiteId }: { initialSiteId?: string }) {
             {section === "alerts" && (
               <div className="space-y-5">
                 <SiteHeader site={site} />
-                <Card title={`Alert & event log — ${site.events.length} entries`}><EventLog events={site.events} /></Card>
+                <Card title={`Outbreak news — ${site.country}`}>
+                  <NewsFeed iso={site.iso} place={site.country} />
+                </Card>
+                <Card title={`Detector & event log — ${site.events.length} entries`}><EventLog events={site.events} /></Card>
               </div>
             )}
 
@@ -330,17 +358,27 @@ export function DemoConsole({ initialSiteId }: { initialSiteId?: string }) {
       {/* ---------- Bottom status bar ---------- */}
       <footer className="flex h-7 shrink-0 items-center justify-between border-t border-border/60 bg-card/40 px-3 text-[10px] text-muted-foreground">
         <div className="flex items-center gap-3">
-          <span className="flex items-center gap-1"><span className="h-1.5 w-1.5 animate-pulse rounded-full bg-amber-400" /> SIM · live demo</span>
+          <span className="flex items-center gap-1"><span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" /> Live: CDC NWSS · WHO · ProMED</span>
           <span className="hidden sm:inline">Last refresh {refreshAt || "—"}</span>
         </div>
         <div className="flex items-center gap-3">
-          <span className="hidden font-mono md:inline">⌘K assistant</span>
-          <span className="hidden font-mono md:inline">⌘P navigate</span>
-          <button className="flex items-center gap-1 rounded bg-emerald-500/15 px-2 py-0.5 text-emerald-300 hover:bg-emerald-500/25">
-            <Plus className="h-3 w-3" /> Log event
+          <button onClick={() => setAssistantOpen(true)} className="hidden font-mono hover:text-foreground md:inline">⌘K assistant</button>
+          <span className="hidden font-mono md:inline">{sites.length} sites · {new Set(sites.map((s) => s.country)).size} countries</span>
+          <button onClick={() => setAssistantOpen(true)} className="flex items-center gap-1 rounded bg-primary/15 px-2 py-0.5 text-primary hover:bg-primary/25">
+            <Sparkles className="h-3 w-3" /> Ask MOSAIC
           </button>
         </div>
       </footer>
+
+      <Assistant
+        open={assistantOpen}
+        onClose={() => setAssistantOpen(false)}
+        sites={sites}
+        site={site}
+        section={section}
+        onNavigate={(sec, siteId) => { if (siteId) setSelectedId(siteId); setSection(sec); }}
+        onSelectSite={(siteId) => setSelectedId(siteId)}
+      />
     </div>
   );
 }

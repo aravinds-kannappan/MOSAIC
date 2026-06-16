@@ -30,7 +30,7 @@ export function SiteHeader({ site }: { site: SiteState }) {
             <h1 className="text-lg font-semibold text-foreground sm:text-xl">{site.label}</h1>
           </div>
           <p className="mt-0.5 text-xs text-muted-foreground">
-            <span className="font-mono">NWSS WWTP-{site.wwtpId}</span>
+            <span className="font-mono">{site.international ? `SITE ${site.wwtpId}` : `NWSS WWTP-${site.wwtpId}`}</span>
             <span className="mx-1.5">·</span>
             {site.county}, {site.jurisdiction}
             <span className="mx-1.5">·</span>

@@ -8,7 +8,7 @@ import { getSites } from "@/lib/demo/sites";
 import { levelHex } from "@/components/demo/SiteLocatorMap";
 import { Sparkline } from "@/components/demo/Sparkline";
 
-const SiteLocatorMap = dynamic(() => import("@/components/demo/SiteLocatorMap").then((m) => m.SiteLocatorMap), {
+const GlobalSiteMap = dynamic(() => import("@/components/demo/GlobalSiteMap").then((m) => m.GlobalSiteMap), {
   ssr: false,
   loading: () => <div className="h-[260px] animate-pulse rounded-lg bg-white/5" />,
 });
@@ -36,11 +36,11 @@ export function LivePreview() {
         {/* map */}
         <div className="lg:col-span-3">
           <div className="mb-2 flex items-center justify-between">
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Sewershed network · P(Rt&gt;1)</span>
-            <span className="text-[10px] text-slate-500">{sites.length} sites</span>
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Global sewershed network · P(Rt&gt;1)</span>
+            <span className="text-[10px] text-slate-500">{sites.length} sites · {new Set(sites.map((s) => s.country)).size} countries</span>
           </div>
           <div className="rounded-lg border border-slate-700/50 bg-slate-900/40 p-2">
-            <SiteLocatorMap sites={sites} selectedId={selectedId} onSelect={setSelectedId} height={260} />
+            <GlobalSiteMap sites={sites} selectedId={selectedId} onSelect={setSelectedId} height={260} />
           </div>
         </div>
 

@@ -32,6 +32,10 @@ export interface RawSite {
   first_sample_date: string;
   key_plot_id: string;
   sample_location: string;
+  country?: string;
+  iso?: string;
+  international?: boolean;
+  region?: string;
 }
 
 export interface PathogenPanel {
@@ -88,6 +92,10 @@ export interface SiteState {
   shortLabel: string;
   county: string;
   jurisdiction: string;
+  country: string;
+  iso: string;
+  international: boolean;
+  region: string;
   lat: number;
   lon: number;
   populationServed: number;
@@ -209,6 +217,7 @@ function buildSite(raw: RawSite): SiteState {
   const realDelta = raw.ptc_15d ?? 0;
   const realDetect = raw.detect_prop_15d ?? 100;
 
+  const isReal = !raw.international;
   const panels: PathogenPanel[] = PATHOGENS.map((p) => {
     if (p.key === "sars2") {
       const value = raw.percentile;
@@ -220,7 +229,7 @@ function buildSite(raw: RawSite): SiteState {
         deltaPct: realDelta,
         detectProp: realDetect,
         trendLabel: trendLabel(value, p.threshold, realDelta),
-        level, series: buildSeries(rng, value, realDelta), real: true,
+        level, series: buildSeries(rng, value, realDelta), real: isReal,
       };
     }
     // modelled off-season respiratory / enteric targets
@@ -261,7 +270,7 @@ function buildSite(raw: RawSite): SiteState {
 
   // stream health
   const streams: StreamHealth[] = [
-    { name: "Wastewater", source: "CDC NWSS · Socrata 2ew6-ywp6", status: "ok", latencyHours: 6 + Math.round(rng() * 30), detail: `${raw.sample_location} · ${raw.population_served.toLocaleString()} served` },
+    { name: "Wastewater", source: isReal ? "CDC NWSS · Socrata 2ew6-ywp6" : "Global wastewater network (modeled)", status: "ok", latencyHours: 6 + Math.round(rng() * 30), detail: `${raw.sample_location} · ${raw.population_served.toLocaleString()} served` },
     { name: "Genomic", source: "Nextstrain open data", status: rng() > 0.85 ? "stale" : "ok", latencyHours: 24 + Math.round(rng() * 90), detail: `${lineages.length} lineages tracked` },
     { name: "Outbreak text", source: "WHO DON · ProMED-mail", status: "ok", latencyHours: 2 + Math.round(rng() * 10), detail: "NLP-extracted epi events" },
     { name: "Fusion", source: "Bayesian hierarchical model", status: "ok", latencyHours: 1, detail: "calibrated posterior · ECE 0.086" },
@@ -284,6 +293,10 @@ function buildSite(raw: RawSite): SiteState {
     shortLabel: raw.label.split(/[,(]/)[0].trim(),
     county: raw.county,
     jurisdiction: raw.jurisdiction,
+    country: raw.country ?? "United States",
+    iso: raw.iso ?? "US",
+    international: raw.international ?? false,
+    region: raw.region ?? "United States",
     lat: raw.lat,
     lon: raw.lon,
     populationServed: raw.population_served,

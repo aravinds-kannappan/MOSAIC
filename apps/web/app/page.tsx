@@ -208,8 +208,8 @@ export default function LandingPage() {
             See the whole surveillance picture, live.
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-[15px] text-muted-foreground">
-            Explore real sewershed sites across the US — fused posteriors, lineage mixes, and
-            auto-generated briefings. No signup required.
+            Explore sewershed sites across the globe — fused posteriors, live WHO/ProMED outbreak news,
+            lineage mixes, auto-generated briefings, and a built-in Claude assistant. No signup required.
           </p>
           <Link href="/demo" className="mt-8 inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90">
             Launch the live demo <ArrowRight className="h-4 w-4" />
