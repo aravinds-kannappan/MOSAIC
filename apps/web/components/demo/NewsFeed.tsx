@@ -56,7 +56,7 @@ export function NewsFeed({ iso, place }: { iso: string; place: string }) {
             ? "Loading live reports…"
             : scope === "country"
               ? `Current outbreak reports for ${place}`
-              : `No active country-specific reports — showing global outbreak news`}
+              : `No active country-specific reports, showing global outbreak news`}
         </span>
         <span className="rounded bg-emerald-500/10 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-emerald-300">live · WHO · ProMED</span>
       </div>

@@ -11,7 +11,7 @@
  * [t-τ+1, t] is Gamma(a + Σ I_t, b + Σ Λ_t) where Λ_t is the total
  * infectiousness at time t.
  *
- * Ref: Cori et al. (2013). Am J Epidemiology 178(9), 1505–1512.
+ * Ref: Cori et al. (2013). Am J Epidemiology 178(9), 1505-1512.
  */
 
 /** Discretised Gamma serial interval distribution */
@@ -74,7 +74,7 @@ export interface RtEstimate {
   median: number;
   lower95: number;
   upper95: number;
-  /** P(R_t > 1) — the key outbreak signal */
+  /** P(R_t > 1), the key outbreak signal */
   pOutbreak: number;
 }
 

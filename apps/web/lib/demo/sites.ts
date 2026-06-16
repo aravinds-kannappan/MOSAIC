@@ -7,7 +7,7 @@
  *
  * NWSS only publishes a SARS-CoV-2 activity level per site, so the additional
  * pathogen targets (influenza, RSV, norovirus, mpox, measles) and the per-site
- * genomic lineage mix are MODELLED here for the demo — deterministically seeded
+ * genomic lineage mix are MODELLED here for the demo, deterministically seeded
  * from the site id so every reader sees the same console. This mirrors the
  * "SIM" mode in comparable operator demos: real backbone, simulated panels.
  */
@@ -42,15 +42,15 @@ export interface PathogenPanel {
   key: string;
   name: string;
   short: string;
-  /** Wastewater Viral Activity Level (0–100 percentile, NWSS-style) */
+  /** Wastewater Viral Activity Level (0-100 percentile, NWSS-style) */
   value: number;
-  /** Elevated-activity alert threshold on the same 0–100 scale */
+  /** Elevated-activity alert threshold on the same 0-100 scale */
   threshold: number;
   /** value as a % of the alert threshold */
   pctOfThreshold: number;
   /** 15-day percent change in activity */
   deltaPct: number;
-  /** proportion of sites/samples with detectable signal (0–100) */
+  /** proportion of sites/samples with detectable signal (0-100) */
   detectProp: number;
   /** rough time-to-threshold-crossing label at the current trend */
   trendLabel: string;
@@ -121,6 +121,14 @@ export interface SiteState {
   briefing: string;
   /** fused-posterior history for the forecasting chart */
   posteriorSeries: { day: number; p: number }[];
+  /** normalized per-stream contribution to the fused posterior (sums to 1) */
+  streamContrib: { wastewater: number; genomic: number; text: number };
+  /** stacked lineage frequencies over rolling windows (for the area chart) */
+  lineageHistory: Array<Record<string, number | string>>;
+  /** genomic divergence (JSD) anomaly timeline */
+  jsdSeries: Array<{ day: number; jsd: number; alarm: number }>;
+  /** recommended actions for the daily briefing */
+  actions: string[];
 }
 
 /* ----------------------------- seeded RNG ----------------------------- */
@@ -286,6 +294,43 @@ function buildSite(raw: RawSite): SiteState {
   });
   posteriorSeries[posteriorSeries.length - 1].p = pOutbreak;
 
+  // Per-stream contribution to the fused posterior (normalized).
+  const sars = panels[0];
+  const wRaw = clamp(sars.value / 100, 0, 1);
+  const gRaw = clamp((lineages[0]?.delta ?? 0) * 4 + 0.25, 0.05, 1);
+  const tRaw = clamp(events.filter((e) => e.stream === "text").length * 0.25 + 0.3, 0.05, 1);
+  const cSum = wRaw + gRaw + tRaw || 1;
+  const streamContrib = { wastewater: wRaw / cSum, genomic: gRaw / cSum, text: tRaw / cSum };
+
+  // Lineage frequencies over 14 rolling windows, ending at the current mix.
+  const nWeeks = 14;
+  const startWeights = lineages.map(() => rng() + 0.1);
+  const sW = startWeights.reduce((a, b) => a + b, 0);
+  const lineageHistory: Array<Record<string, number | string>> = [];
+  for (let w = 0; w < nWeeks; w++) {
+    const t = w / (nWeeks - 1);
+    const row: Record<string, number | string> = { week: `W-${nWeeks - 1 - w}` };
+    let total = 0;
+    const raw = lineages.map((l, i) => {
+      const from = startWeights[i] / sW;
+      const v = Math.max(0.001, from * (1 - t) + l.frequency * t + (rng() - 0.5) * 0.04);
+      total += v;
+      return v;
+    });
+    lineages.forEach((l, i) => { row[l.name] = Math.round((raw[i] / total) * 1000) / 1000; });
+    lineageHistory.push(row);
+  }
+
+  // Genomic divergence (JSD) anomaly timeline, 45 days.
+  const jsdSeries = Array.from({ length: 45 }, (_, i) => {
+    const spike = Math.exp(-Math.pow(i - 33, 2) / 30) * (gRaw * 0.25);
+    const jsd = clamp(0.03 + Math.abs(Math.sin(i / 7 + hashSeed(raw.id) % 5)) * 0.04 + spike + (rng() - 0.5) * 0.015, 0, 0.5);
+    return { day: i - 44, jsd: Math.round(jsd * 1000) / 1000, alarm: clamp(1 / (1 + Math.exp(-(jsd - 0.09) / 0.02)), 0, 1) };
+  });
+
+  // Recommended actions for the briefing.
+  const actions = buildActions(level, sars, panels, lineages[0]);
+
   return {
     id: raw.id,
     wwtpId: raw.wwtp_id,
@@ -319,7 +364,30 @@ function buildSite(raw: RawSite): SiteState {
     streams,
     briefing,
     posteriorSeries,
+    streamContrib,
+    lineageHistory,
+    jsdSeries,
+    actions,
   };
+}
+
+function buildActions(
+  level: SignalLevel, sars: PathogenPanel, panels: PathogenPanel[], topLineage?: Lineage,
+): string[] {
+  const out: string[] = [];
+  if (level === "CRITICAL" || level === "HIGH") {
+    out.push("Brief the jurisdiction's epidemiology team and pre-position rapid-test and reporting capacity.");
+    out.push("Increase wastewater sampling cadence at this sewershed to twice weekly.");
+  } else if (level === "MODERATE") {
+    out.push("Flag for watch-list review at the next surveillance standup.");
+  } else {
+    out.push("No action required; continue routine weekly sampling.");
+  }
+  const elevated = panels.filter((p) => (p.level === "HIGH" || p.level === "CRITICAL") && p.key !== "sars2");
+  if (elevated.length) out.push(`Cross-check clinical syndromic data for ${elevated.map((p) => p.name).join(", ")}.`);
+  if (topLineage && topLineage.delta > 0.04) out.push(`Confirm the ${topLineage.name} lineage rise with targeted sequencing.`);
+  if (sars.deltaPct > 25) out.push("Issue a provisional growth advisory; the wastewater signal is rising fast.");
+  return out;
 }
 
 function buildEvents(
@@ -330,7 +398,7 @@ function buildEvents(
   if (sars.deltaPct > 15) {
     ev.push({
       id: `${raw.id}-cp`, kind: "change-point", stream: "wastewater",
-      title: `BOCPD change-point detected — SARS-CoV-2`,
+      title: `BOCPD change-point detected, SARS-CoV-2`,
       detail: `Activity up ${sars.deltaPct.toFixed(0)}% over 15 d at ${raw.label}; sustained elevation flag raised.`,
       daysAgo: 1 + Math.floor(rng() * 3), level: level === "LOW" ? "MODERATE" : level,
     });
@@ -339,7 +407,7 @@ function buildEvents(
   if (topLin && Math.abs(topLin.delta) > 0.04) {
     ev.push({
       id: `${raw.id}-lin`, kind: "lineage-shift", stream: "genomic",
-      title: `Lineage shift — ${topLin.name} ${topLin.delta > 0 ? "rising" : "declining"}`,
+      title: `Lineage shift, ${topLin.name} ${topLin.delta > 0 ? "rising" : "declining"}`,
       detail: `KL-divergence anomaly on lineage frequencies; ${topLin.name} now ${(topLin.frequency * 100).toFixed(0)}% of sampled sequences.`,
       daysAgo: 2 + Math.floor(rng() * 5), level: "MODERATE",
     });

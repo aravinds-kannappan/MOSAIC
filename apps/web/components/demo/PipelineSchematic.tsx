@@ -12,7 +12,7 @@ interface Stage {
 }
 
 /**
- * The MOSAIC inference pipeline, rendered as a stage-by-stage schematic —
+ * The MOSAIC inference pipeline, rendered as a stage-by-stage schematic -
  * the surveillance analog of a treatment-plant process diagram. When a `site`
  * is supplied it shows that site's live values flowing through each stage.
  */
@@ -51,7 +51,7 @@ export function PipelineSchematic({ site }: { site?: SiteState }) {
       icon: BellRing, label: "Calibrate → alert", sub: "P(Rt > 1)", accent: "text-amber-400",
       rows: [
         { k: "Isotonic ECE", v: "0.086" },
-        { k: "P(Rt>1)", v: site ? `${(site.pOutbreak * 100).toFixed(0)}%` : "—" },
+        { k: "P(Rt>1)", v: site ? `${(site.pOutbreak * 100).toFixed(0)}%` : "-" },
         { k: "Lead time", v: site ? `${site.leadDays} d` : "68 d" },
       ],
     },

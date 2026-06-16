@@ -52,7 +52,7 @@ export interface LineageSnapshot {
 export interface GenomicAnomalyResult {
   date: string;
   jsd: number;
-  /** P(A >= jsd | null) — soft alarm probability */
+  /** P(A >= jsd | null), soft alarm probability */
   alarmProb: number;
   /** Top lineages driving the shift (top 3 by |Δfreq|) */
   topShiftingLineages: Array<{ lineage: string; delta: number }>;
@@ -78,7 +78,7 @@ export function computeGenomicAnomalyScores(
 
   // A genomic anomaly is a *shift in the lineage distribution*. With a single
   // lineage (or none) the distribution is degenerate, JSD is identically 0, and
-  // no shift is detectable — report a flat zero alarm rather than a spurious one.
+  // no shift is detectable, report a flat zero alarm rather than a spurious one.
   if (L <= 1) {
     return snapshots.slice(1).map((s) => ({
       date: s.date,
@@ -90,7 +90,7 @@ export function computeGenomicAnomalyScores(
 
   // Pre-compute the ordered, normalised frequency vector for every snapshot
   // ONCE. (Doing this inside the baseline loop turns the cost quadratic in
-  // both the number of snapshots and lineages — billions of ops for a series
+  // both the number of snapshots and lineages, billions of ops for a series
   // with hundreds of lineages.)
   const vectors: number[][] = snapshots.map((snap) =>
     normalise(allLineages.map((l) => snap.frequencies[l] ?? 0))

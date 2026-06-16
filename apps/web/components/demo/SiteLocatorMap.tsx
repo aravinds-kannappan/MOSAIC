@@ -53,7 +53,7 @@ export function SiteLocatorMap({ sites, selectedId, onSelect, height = 280 }: Pr
             <Marker key={s.id} coordinates={[s.lon, s.lat]} onClick={() => onSelect(s.id)} style={{ default: { cursor: "pointer" } }}>
               {selected && <circle r={r + 5} fill="none" stroke={c} strokeWidth={1.2} opacity={0.6} />}
               <circle r={r} fill={c} fillOpacity={selected ? 0.95 : 0.7} stroke="#0a0f1e" strokeWidth={0.8}>
-                <title>{`${s.label} — P(Rt>1) ${(s.pOutbreak * 100).toFixed(0)}%`}</title>
+                <title>{`${s.label}, P(Rt>1) ${(s.pOutbreak * 100).toFixed(0)}%`}</title>
               </circle>
             </Marker>
           );

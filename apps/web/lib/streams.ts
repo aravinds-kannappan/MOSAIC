@@ -21,7 +21,7 @@ import bundledNextstrain from "@/data/nextstrain_lineage_snapshots.json";
 const FETCH_TIMEOUT_MS = 8000;
 
 /* ------------------------------------------------------------------ */
-/* Wastewater — CDC NWSS                                               */
+/* Wastewater, CDC NWSS                                               */
 /* ------------------------------------------------------------------ */
 
 const NWSS_BASE = "https://data.cdc.gov/resource/2ew6-ywp6.json";
@@ -190,7 +190,7 @@ export async function fetchWastewater(opts: {
 }
 
 /* ------------------------------------------------------------------ */
-/* Genomic — Nextstrain                                               */
+/* Genomic, Nextstrain                                               */
 /* ------------------------------------------------------------------ */
 
 const NEXTSTRAIN_URLS: Record<string, string> = {
@@ -341,7 +341,7 @@ export async function fetchGenomic(pathogen: string): Promise<GenomicResult> {
 }
 
 /* ------------------------------------------------------------------ */
-/* Text — WHO DON + ProMED                                            */
+/* Text, WHO DON + ProMED                                            */
 /* ------------------------------------------------------------------ */
 
 const WHO_DON_API =
@@ -548,7 +548,7 @@ export async function fetchText(): Promise<TextResult> {
       whoCount: whoResult.status === "fulfilled" ? whoResult.value.length : 0,
       promedCount: promedResult.status === "fulfilled" ? promedResult.value.length : 0,
       errors,
-      note: "Regex extraction only — deploy Python backend with Ollama for full LLM extraction (MOSAIC Layer 1)",
+      note: "Regex extraction only, deploy Python backend with Ollama for full LLM extraction (MOSAIC Layer 1)",
       fetchedAt: new Date().toISOString(),
     },
   };

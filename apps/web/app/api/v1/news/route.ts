@@ -1,5 +1,5 @@
 /**
- * MOSAIC News API — live outbreak text for a given location.
+ * MOSAIC News API, live outbreak text for a given location.
  *
  * Pulls the real WHO Disease Outbreak News + ProMED-mail text streams (via
  * lib/streams#fetchText) and filters the NLP-extracted events to a country
@@ -8,8 +8,8 @@
  * the selected sewershed's country.
  *
  * Query params:
- *   iso   — ISO-A2 country code to filter by (e.g. US, GB, JP). Optional.
- *   limit — max items (default 15).
+ *   iso  , ISO-A2 country code to filter by (e.g. US, GB, JP). Optional.
+ *   limit, max items (default 15).
  */
 
 import { NextResponse } from "next/server";
@@ -30,7 +30,7 @@ export async function GET(req: Request) {
 
     const local = iso ? all.filter((e) => e.extracted.locationIso === iso) : all;
     // If a specific country has no current reports, fall back to global recent
-    // items so the panel is never empty — flagged via `scope`.
+    // items so the panel is never empty, flagged via `scope`.
     const scope = iso && local.length === 0 ? "global" : iso ? "country" : "global";
     const chosen = (scope === "country" ? local : all).slice(0, limit);
 

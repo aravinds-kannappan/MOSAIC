@@ -46,7 +46,7 @@ export function GlobalSiteMap({ sites, selectedId, onSelect, height = 300 }: Pro
               <Marker key={s.id} coordinates={[s.lon, s.lat]} onClick={() => onSelect(s.id)} style={{ default: { cursor: "pointer" } }}>
                 {selected && <circle r={r + 4} fill="none" stroke={c} strokeWidth={1} opacity={0.6} />}
                 <circle r={r} fill={c} fillOpacity={selected ? 0.95 : 0.72} stroke="#0a0f1e" strokeWidth={0.6}>
-                  <title>{`${s.label} — P(Rt>1) ${(s.pOutbreak * 100).toFixed(0)}%`}</title>
+                  <title>{`${s.label}, P(Rt>1) ${(s.pOutbreak * 100).toFixed(0)}%`}</title>
                 </circle>
               </Marker>
             );

@@ -9,7 +9,7 @@ export function generateStaticParams() {
 export function generateMetadata({ params }: { params: { id: string } }): Metadata {
   const site = getSite(params.id);
   return {
-    title: site ? `${site.label} — MOSAIC surveillance console` : "MOSAIC surveillance console",
+    title: site ? `${site.label}, MOSAIC surveillance console` : "MOSAIC surveillance console",
     description: "Per-sewershed wastewater pathogen surveillance with fused outbreak posteriors.",
   };
 }

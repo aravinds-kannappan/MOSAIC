@@ -197,7 +197,7 @@ export function WorldMap({ data, onCountryClick, selectedCountry }: WorldMapProp
        Pathogens ({popover.point.pathogens.length})
       </p>
       <p className="text-[11px] text-foreground leading-snug">
-       {popover.point.pathogens.join(", ") || "—"}
+       {popover.point.pathogens.join(", ") || "-"}
       </p>
      </div>
      <p className="mt-1.5 text-[9px] text-primary/80">Full per-stream breakdown below ↓</p>

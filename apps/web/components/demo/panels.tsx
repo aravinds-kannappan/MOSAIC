@@ -1,11 +1,11 @@
 "use client";
 
 import {
-  AreaChart, Area, XAxis, YAxis, ReferenceLine, ResponsiveContainer, Tooltip,
+  AreaChart, Area, LineChart, Line, XAxis, YAxis, ReferenceLine, ResponsiveContainer, Tooltip,
 } from "recharts";
 import {
   Droplets, Dna, Newspaper, GitMerge, CircleCheck, CircleAlert, CircleSlash,
-  Clock, Users, TrendingUp, Activity,
+  Clock, Users, TrendingUp, Activity, CheckCircle2,
 } from "lucide-react";
 import { Sparkline } from "./Sparkline";
 import { levelHex } from "./SiteLocatorMap";
@@ -52,7 +52,7 @@ export function SiteHeader({ site }: { site: SiteState }) {
 export function EarlyWarningBanner({ site }: { site: SiteState }) {
   const stats = [
     { icon: TrendingUp, value: `${(site.pOutbreak * 100).toFixed(0)}%`, label: "P(Rt > 1) fused posterior" },
-    { icon: Activity, value: site.rt.toFixed(2), label: `Rt  [${site.rtLow.toFixed(2)}–${site.rtHigh.toFixed(2)}]` },
+    { icon: Activity, value: site.rt.toFixed(2), label: `Rt  [${site.rtLow.toFixed(2)}-${site.rtHigh.toFixed(2)}]` },
     { icon: Users, value: site.populationServed.toLocaleString(), label: "population under surveillance" },
     { icon: Clock, value: `${site.leadDays} d`, label: "median early-warning lead" },
   ];
@@ -63,7 +63,7 @@ export function EarlyWarningBanner({ site }: { site: SiteState }) {
           <p className="text-[11px] font-semibold uppercase tracking-wider text-primary">Early warning</p>
           <p className="mt-1 text-xs text-muted-foreground">
             Clinical case data confirms an outbreak only after people seek care. MOSAIC reads the
-            wastewater first — flagging growth roughly {site.leadDays} days ahead.
+            wastewater first, flagging growth roughly {site.leadDays} days ahead.
           </p>
         </div>
         <div className="grid grid-cols-2 gap-x-8 gap-y-3 sm:grid-cols-4">
@@ -198,7 +198,7 @@ export function BriefingCard({ site }: { site: SiteState }) {
           <p className="text-[10px] text-muted-foreground">Rt median</p>
         </div>
         <div>
-          <p className="font-mono text-base font-semibold text-foreground">{site.lineages[0]?.name ?? "—"}</p>
+          <p className="font-mono text-base font-semibold text-foreground">{site.lineages[0]?.name ?? "-"}</p>
           <p className="text-[10px] text-muted-foreground">dominant lineage</p>
         </div>
       </div>
@@ -240,5 +240,95 @@ export function ForecastPanel({ site }: { site: SiteState }) {
         the 50% decision threshold; the vertical marker is today.
       </p>
     </div>
+  );
+}
+
+/* -------------------------- Stream contribution ----------------------- */
+
+export function StreamContribution({ site }: { site: SiteState }) {
+  const rows = [
+    { key: "wastewater", label: "Wastewater", sub: "BOCPD change-point", color: "#34d399", v: site.streamContrib.wastewater },
+    { key: "genomic", label: "Genomic", sub: "KL divergence", color: "#a78bfa", v: site.streamContrib.genomic },
+    { key: "text", label: "Outbreak text", sub: "NLP + change-point", color: "#38bdf8", v: site.streamContrib.text },
+  ];
+  return (
+    <div className="space-y-3">
+      {rows.map((r) => (
+        <div key={r.key}>
+          <div className="mb-1 flex items-center justify-between text-[12px]">
+            <span className="text-foreground">{r.label} <span className="text-[10px] text-muted-foreground">/ {r.sub}</span></span>
+            <span className="font-mono text-muted-foreground">{(r.v * 100).toFixed(0)}%</span>
+          </div>
+          <div className="h-2 w-full overflow-hidden rounded-full bg-muted/40">
+            <div className="h-full rounded-full" style={{ width: `${r.v * 100}%`, backgroundColor: r.color }} />
+          </div>
+        </div>
+      ))}
+      <p className="pt-1 text-[11px] leading-relaxed text-muted-foreground">
+        Share of the fused posterior attributable to each stream at this site. Independent streams that
+        agree raise confidence; a single dominant stream is treated more cautiously.
+      </p>
+    </div>
+  );
+}
+
+/* -------------------------- Lineage trend chart ----------------------- */
+
+const TREND_COLORS = ["#38bdf8", "#a78bfa", "#34d399", "#fbbf24", "#f87171", "#22d3ee", "#f472b6", "#94a3b8"];
+
+export function LineageTrendChart({ site }: { site: SiteState }) {
+  const keys = site.lineages.map((l) => l.name);
+  return (
+    <div className="h-64 w-full">
+      <ResponsiveContainer width="100%" height="100%">
+        <AreaChart data={site.lineageHistory} margin={{ top: 8, right: 8, left: -16, bottom: 0 }} stackOffset="expand">
+          <XAxis dataKey="week" tick={{ fontSize: 9, fill: "hsl(215 20% 60%)" }} stroke="hsl(217 33% 20%)" interval={1} />
+          <YAxis tick={{ fontSize: 9, fill: "hsl(215 20% 60%)" }} tickFormatter={(v) => `${(v * 100).toFixed(0)}%`} stroke="hsl(217 33% 20%)" />
+          <Tooltip
+            contentStyle={{ background: "hsl(222 44% 9%)", border: "1px solid hsl(217 33% 20%)", borderRadius: 8, fontSize: 11 }}
+            formatter={(v: number, n: string) => [`${(v * 100).toFixed(0)}%`, n]}
+          />
+          {keys.map((k, i) => (
+            <Area key={k} type="monotone" dataKey={k} stackId="1" stroke={TREND_COLORS[i % TREND_COLORS.length]} fill={TREND_COLORS[i % TREND_COLORS.length]} fillOpacity={0.7} />
+          ))}
+        </AreaChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
+/* ------------------------- Genomic anomaly chart ---------------------- */
+
+export function GenomicAnomalyChart({ site }: { site: SiteState }) {
+  return (
+    <div className="h-48 w-full">
+      <ResponsiveContainer width="100%" height="100%">
+        <LineChart data={site.jsdSeries} margin={{ top: 8, right: 12, left: -12, bottom: 0 }}>
+          <XAxis dataKey="day" tick={{ fontSize: 10, fill: "hsl(215 20% 60%)" }} tickFormatter={(d) => (d === 0 ? "now" : `${d}d`)} stroke="hsl(217 33% 20%)" />
+          <YAxis tick={{ fontSize: 10, fill: "hsl(215 20% 60%)" }} stroke="hsl(217 33% 20%)" />
+          <Tooltip
+            contentStyle={{ background: "hsl(222 44% 9%)", border: "1px solid hsl(217 33% 20%)", borderRadius: 8, fontSize: 11 }}
+            formatter={(v: number) => [v.toFixed(3), "JSD"]}
+          />
+          <ReferenceLine y={0.09} stroke="#fbbf24" strokeDasharray="3 3" />
+          <Line type="monotone" dataKey="jsd" stroke="#a78bfa" strokeWidth={2} dot={false} />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
+/* ------------------------- Recommended actions ------------------------ */
+
+export function RecommendedActions({ actions }: { actions: string[] }) {
+  return (
+    <ul className="space-y-2">
+      {actions.map((a, i) => (
+        <li key={i} className="flex gap-2.5 text-[13px] text-foreground">
+          <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+          <span className="leading-relaxed">{a}</span>
+        </li>
+      ))}
+    </ul>
   );
 }

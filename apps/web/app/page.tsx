@@ -8,7 +8,7 @@ import { PipelineSchematic } from "@/components/demo/PipelineSchematic";
 
 const STREAMS = [
   { icon: Droplets, name: "Wastewater", color: "text-emerald-600", source: "CDC NWSS",
-    desc: "Viral activity levels from treatment-plant sewersheds — a population-scale signal that doesn't depend on who seeks care or gets tested." },
+    desc: "Viral activity levels from treatment-plant sewersheds, a population-scale signal that doesn't depend on who seeks care or gets tested." },
   { icon: Dna, name: "Genomic", color: "text-violet-600", source: "Nextstrain",
     desc: "Lineage frequencies tracked over time; a KL-divergence jump flags an emerging variant before it dominates." },
   { icon: Newspaper, name: "Outbreak text", color: "text-sky-600", source: "WHO DON · ProMED",
@@ -20,7 +20,7 @@ const CAPABILITIES = [
   { icon: Dna, title: "Genomic lineage tracking", desc: "Rolling lineage frequencies and divergence-based anomaly scores for emerging variants." },
   { icon: Newspaper, title: "Outbreak text mining", desc: "Structured epi events extracted from WHO DON and ProMED with novelty detection." },
   { icon: GitMerge, title: "Bayesian fusion", desc: "A hierarchical model combines the streams into a single fused outbreak posterior, P(Rt>1)." },
-  { icon: Gauge, title: "Calibrated forecasting", desc: "Isotonic calibration so a stated 70% means 70% — validated across four historical outbreaks." },
+  { icon: Gauge, title: "Calibrated forecasting", desc: "Isotonic calibration so a stated 70% means 70%, validated across four historical outbreaks." },
   { icon: FileText, title: "Daily briefings", desc: "Auto-generated, per-site situation reports an epidemiologist can act on in minutes." },
 ];
 
@@ -28,7 +28,7 @@ const STATS = [
   { v: "0.086", l: "Expected calibration error", s: "ECE < 0.10 ⇒ well-calibrated" },
   { v: "0.917", l: "AUROC", s: "strong growth discrimination" },
   { v: "68 d", l: "Median lead time", s: "ahead of clinical confirmation" },
-  { v: "1,334", l: "Day-ahead forecasts", s: "real CDC NWSS record, 2021–25" },
+  { v: "1,334", l: "Day-ahead forecasts", s: "real CDC NWSS record, 2021-25" },
 ];
 
 function Nav() {
@@ -73,7 +73,7 @@ export default function LandingPage() {
             </h1>
             <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
               MOSAIC fuses wastewater, genomic, and outbreak-news signals into a single calibrated
-              outbreak posterior — giving epidemiologists a population-scale early warning weeks before
+              outbreak posterior, giving epidemiologists a population-scale early warning weeks before
               clinical case data catches up.
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
@@ -190,7 +190,7 @@ export default function LandingPage() {
           <figure className="rounded-xl border border-border bg-card p-3">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/research/fig_calibration.png" alt="Reliability diagram" className="w-full rounded-lg bg-white" />
-            <figcaption className="mt-2 text-[11px] text-muted-foreground">Reliability diagram — predicted vs. observed outbreak frequency (ECE 0.086).</figcaption>
+            <figcaption className="mt-2 text-[11px] text-muted-foreground">Reliability diagram, predicted vs. observed outbreak frequency (ECE 0.086).</figcaption>
           </figure>
           <figure className="rounded-xl border border-border bg-card p-3">
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -208,7 +208,7 @@ export default function LandingPage() {
             See the whole surveillance picture, live.
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-[15px] text-muted-foreground">
-            Explore sewershed sites across the globe — fused posteriors, live WHO/ProMED outbreak news,
+            Explore sewershed sites across the globe, fused posteriors, live WHO/ProMED outbreak news,
             lineage mixes, auto-generated briefings, and a built-in Claude assistant. No signup required.
           </p>
           <Link href="/demo" className="mt-8 inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90">

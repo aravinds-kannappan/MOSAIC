@@ -1,5 +1,5 @@
 /**
- * MOSAIC assistant — a Claude-powered agent that explains the surveillance
+ * MOSAIC assistant, a Claude-powered agent that explains the surveillance
  * console and navigates it on the user's behalf.
  *
  * Uses the Anthropic SDK (claude-opus-4-8) with streaming + tool use. Two tools
@@ -45,7 +45,7 @@ MOSAIC (Multi-modal Open Surveillance with AI-driven Calibrated inference) is an
 A hierarchical Bayesian / learned-logistic model fuses these, with EpiEstim Rt estimation, and isotonic calibration so probabilities mean what they say.
 
 KEY METRICS (explain plainly when asked)
-- P(Rt>1): the fused posterior probability the effective reproduction number exceeds 1 — i.e. the outbreak is growing. The headline number.
+- P(Rt>1): the fused posterior probability the effective reproduction number exceeds 1, i.e. the outbreak is growing. The headline number.
 - Rt: effective reproduction number (avg secondary cases per case); >1 means growth.
 - WVAL (0-100): wastewater viral activity level, a percentile vs the site's own history; 80 is the elevated-alert threshold.
 - %Δ15d: 15-day percent change in activity.

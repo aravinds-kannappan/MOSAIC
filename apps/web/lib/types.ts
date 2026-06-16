@@ -2,7 +2,7 @@ export type AlertLevel = "LOW" | "MODERATE" | "HIGH" | "CRITICAL";
 
 export interface OutbreakSignal {
   date: string;
-  /** P(R_t > 1) — fused posterior probability */
+  /** P(R_t > 1), fused posterior probability */
   p_outbreak: number;
   p_outbreak_lower: number;
   p_outbreak_upper: number;

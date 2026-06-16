@@ -26,7 +26,7 @@ export function LivePreview() {
         <span className="h-2.5 w-2.5 rounded-full bg-red-400/70" />
         <span className="h-2.5 w-2.5 rounded-full bg-amber-400/70" />
         <span className="h-2.5 w-2.5 rounded-full bg-emerald-400/70" />
-        <span className="ml-3 font-mono text-[11px] text-slate-400">mosaic — surveillance console</span>
+        <span className="ml-3 font-mono text-[11px] text-slate-400">mosaic, surveillance console</span>
         <span className="ml-auto flex items-center gap-1.5 rounded border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-[10px] text-amber-300">
           <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-amber-400" /> LIVE
         </span>

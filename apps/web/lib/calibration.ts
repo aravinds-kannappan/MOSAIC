@@ -10,7 +10,7 @@
  * vs. observed frequency yields a reliability diagram, the Expected Calibration
  * Error (ECE), the Brier score and the AUROC.
  *
- * All numbers are computed from real public data — nothing is synthetic.
+ * All numbers are computed from real public data, nothing is synthetic.
  *
  * NOTE: this calibrates the lightweight EpiEstim renewal estimator used by the
  * Vercel deployment. The full multi-stream NumPyro renewal-equation posterior

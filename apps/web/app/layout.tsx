@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
- title: "MOSAIC — Wastewater pathogen intelligence for public health",
+ title: "MOSAIC, Wastewater pathogen intelligence for public health",
  description:
   "MOSAIC turns wastewater, genomic, and outbreak-news signals into calibrated, early outbreak warnings for epidemiologists. Open source.",
  keywords: [
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
  ],
  authors: [{ name: "MOSAIC" }],
  openGraph: {
-  title: "MOSAIC — Wastewater pathogen intelligence",
+  title: "MOSAIC, Wastewater pathogen intelligence",
   description: "Calibrated multi-modal disease surveillance, open source.",
   type: "website",
  },
