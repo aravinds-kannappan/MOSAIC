@@ -2,22 +2,47 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&display=swap");
 
 @layer base {
+  /* Light theme = marketing site (Effluent-style, editorial) */
   :root {
+    --background: 40 30% 99%;
+    --foreground: 222 38% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 38% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 38% 11%;
+    --primary: 196 80% 38%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 20% 96%;
+    --secondary-foreground: 222 38% 11%;
+    --muted: 210 24% 96%;
+    --muted-foreground: 215 16% 42%;
+    --accent: 196 80% 38%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 214 22% 89%;
+    --input: 214 22% 89%;
+    --ring: 196 80% 38%;
+    --radius: 0.5rem;
+  }
+
+  /* Dark theme = the surveillance operations console (demo) */
+  .dark {
     --background: 222 47% 6%;
     --foreground: 210 40% 96%;
-    --card: 222 47% 9%;
+    --card: 222 44% 9%;
     --card-foreground: 210 40% 96%;
-    --popover: 222 47% 9%;
+    --popover: 222 44% 9%;
     --popover-foreground: 210 40% 96%;
     --primary: 199 89% 56%;
     --primary-foreground: 222 47% 6%;
     --secondary: 217 33% 17%;
     --secondary-foreground: 210 40% 96%;
     --muted: 217 33% 13%;
-    --muted-foreground: 215 20% 55%;
+    --muted-foreground: 215 20% 60%;
     --accent: 199 89% 56%;
     --accent-foreground: 222 47% 6%;
     --destructive: 0 84% 60%;
@@ -38,11 +63,11 @@
   }
 
   ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 7px;
+    height: 7px;
   }
   ::-webkit-scrollbar-track {
-    @apply bg-muted;
+    @apply bg-transparent;
   }
   ::-webkit-scrollbar-thumb {
     @apply bg-border rounded-full;
@@ -52,6 +77,10 @@
 @layer components {
   .glass-card {
     @apply bg-card/80 backdrop-blur-sm border border-border/50 rounded-lg;
+  }
+
+  .font-display {
+    font-family: "Newsreader", Georgia, serif;
   }
 
   .stream-badge-text {
@@ -79,5 +108,21 @@
 
   .probability-ring {
     @apply relative inline-flex items-center justify-center;
+  }
+}
+
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.4s ease-in-out;
+  }
+  @keyframes fadeIn {
+    0% { opacity: 0; transform: translateY(4px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, hsl(var(--border) / 0.45) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(var(--border) / 0.45) 1px, transparent 1px);
+    background-size: 56px 56px;
   }
 }
