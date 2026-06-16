@@ -134,23 +134,38 @@ export interface SiteState {
   /** rank by P(Rt>1) within the monitored network (1 = highest) */
   rank: number;
   networkSize: number;
-  /** plain-language, location-specific interpretation of the numbers */
-  interpretation: SiteInterpretation;
+  /** contextual signals beyond the three fusion streams */
+  drivers: Driver[];
+  /** factors currently pushing risk up or down at this site */
+  riskFactors: { aggravating: string[]; mitigating: string[] };
+  /** variant characteristics for the top circulating lineages */
+  variants: VariantTrait[];
+  /** forward scenario bands for the forecasting view */
+  scenarios: { low: number; expected: number; high: number; daysToThreshold: number | null };
 }
 
-export interface SiteInterpretation {
-  /** one-line analyst headline for this city */
-  headline: string;
-  /** what the current signal means here */
-  assessment: string;
-  /** why it matters: impact framing for this population */
-  soWhat: string;
-  /** specific things to watch at this site */
-  watch: string[];
-  /** how this site compares to the rest of the network */
-  comparison: string;
-  /** short contextual lead lines, one per console tab */
-  tab: { forecasting: string; lineages: string; fusion: string; briefings: string; streams: string };
+export interface Driver {
+  key: string;
+  label: string;
+  /** 0-100 indicator value */
+  value: number;
+  unit: string;
+  /** recent change, signed */
+  delta: number;
+  /** whether the current reading raises (bad), is neutral (watch), or lowers (good) outbreak risk */
+  status: "good" | "watch" | "bad";
+  /** one-line read on what this signal contributes */
+  note: string;
+}
+
+export interface VariantTrait {
+  name: string;
+  frequency: number;
+  /** relative weekly growth advantage, percent */
+  growthAdvantage: number;
+  /** modeled immune-escape index 0-100 */
+  immuneEscape: number;
+  note: string;
 }
 
 /* ----------------------------- seeded RNG ----------------------------- */
@@ -412,72 +427,119 @@ function buildSite(raw: RawSite): SiteState {
     jsdSeries,
     actions,
     cityName: raw.label.split(/[,(]/)[0].trim().replace(/ County$/, ""),
+    drivers: buildDrivers(raw, rng, level, sars, lineages),
+    variants: buildVariants(lineages, rng),
+    scenarios: buildScenarios(pOutbreak, sars, rng),
     // filled in by the network pass in getSites()
     rank: 0,
     networkSize: 0,
-    interpretation: {
-      headline: "", assessment: "", soWhat: "", watch: [], comparison: "",
-      tab: { forecasting: "", lineages: "", fusion: "", briefings: "", streams: "" },
+    riskFactors: { aggravating: [], mitigating: [] },
+  };
+}
+
+/* ----------------------- additional context signals ------------------- */
+
+/** Context signals beyond the three fusion streams: clinical, capacity,
+ * mobility, climate, immunity. Modeled deterministically; they give the
+ * console (and the assistant) more dimensions than the headline probability. */
+function buildDrivers(
+  raw: RawSite, rng: () => number, level: SignalLevel, sars: PathogenPanel, lineages: Lineage[],
+): Driver[] {
+  const region = raw.region ?? "United States";
+  const riskUp = sars.value / 100; // proxy for current pressure
+  const northern = raw.lat >= 0;
+  // June: northern hemisphere is off-season for respiratory; southern is winter.
+  const respiratorySeason = northern ? 0.35 : 0.8;
+  const developed = region === "United States" || region === "Europe" || region === "Asia-Pacific";
+
+  const clinical = clamp(20 + riskUp * 55 + (rng() - 0.5) * 18, 2, 100);
+  const positivity = clamp(3 + riskUp * 22 + (rng() - 0.5) * 6, 0.5, 40);
+  const icuHeadroom = clamp(70 - riskUp * 45 + (rng() - 0.5) * 20, 5, 95);
+  const mobility = clamp(35 + Math.log10(raw.population_served) * 8 + (rng() - 0.5) * 18, 5, 100);
+  const climate = clamp(respiratorySeason * 100 + regionBias("dengue", region) * 0.6 + (rng() - 0.5) * 14, 5, 100);
+  const vaccination = clamp((developed ? 72 : 52) + (rng() - 0.5) * 22, 25, 95);
+
+  const d = (v: number) => Math.round((rng() - 0.45) * 24);
+  return [
+    {
+      key: "clinical", label: "Clinical syndromic", value: Math.round(clinical), unit: "ED/ILI index", delta: d(clinical),
+      status: clinical > 65 ? "bad" : clinical > 40 ? "watch" : "good",
+      note: clinical > 65 ? "Emergency-department respiratory visits are already elevated, an independent confirmation of the wastewater signal." : clinical > 40 ? "Syndromic visits are mid-range; not yet corroborating a surge." : "Clinical visits remain at baseline, lagging behind any wastewater move as expected.",
     },
-  };
+    {
+      key: "positivity", label: "Test positivity", value: Math.round(positivity), unit: "%", delta: d(positivity),
+      status: positivity > 18 ? "bad" : positivity > 8 ? "watch" : "good",
+      note: positivity > 18 ? "High positivity suggests testing is missing cases; true incidence likely exceeds reports." : "Positivity is within a normal band for routine testing.",
+    },
+    {
+      key: "icu", label: "ICU headroom", value: Math.round(icuHeadroom), unit: "% free", delta: -d(icuHeadroom),
+      status: icuHeadroom < 20 ? "bad" : icuHeadroom < 40 ? "watch" : "good",
+      note: icuHeadroom < 20 ? "Critical-care capacity is tight; even a modest wave would strain hospitals here." : icuHeadroom < 40 ? "Capacity buffer is shrinking; worth watching alongside the growth signal." : "Hospitals have ample capacity to absorb a near-term rise.",
+    },
+    {
+      key: "mobility", label: "Travel inflow", value: Math.round(mobility), unit: "connectivity", delta: d(mobility),
+      status: mobility > 70 ? "watch" : "good",
+      note: mobility > 70 ? "High inbound connectivity raises importation risk for novel variants and pathogens." : "Moderate connectivity; importation pressure is limited.",
+    },
+    {
+      key: "climate", label: "Climate suitability", value: Math.round(climate), unit: "index", delta: d(climate),
+      status: climate > 65 ? "bad" : climate > 40 ? "watch" : "good",
+      note: climate > 65 ? "Current conditions favor transmission of the dominant local pathogens." : "Seasonal conditions are not currently favorable to transmission.",
+    },
+    {
+      key: "vaccination", label: "Immunity coverage", value: Math.round(vaccination), unit: "%", delta: Math.round((rng() - 0.5) * 4),
+      status: vaccination < 50 ? "bad" : vaccination < 65 ? "watch" : "good",
+      note: vaccination < 50 ? "Low population immunity means a given amount of circulation translates into more severe disease." : "Coverage provides a meaningful buffer against severe outcomes.",
+    },
+  ];
 }
 
-/** Location-specific interpretation, computed with network context. */
-function buildInterpretation(s: SiteState, medianP: number, n: number): SiteInterpretation {
-  const p = Math.round(s.pOutbreak * 100);
-  const pop = s.populationServed.toLocaleString();
-  const ratio = medianP > 0 ? s.pOutbreak / medianP : 1;
-  const elevated = s.panels.filter((x) => (x.level === "HIGH" || x.level === "CRITICAL") && x.key !== "sars2");
+function buildVariants(lineages: Lineage[], rng: () => number): VariantTrait[] {
+  return lineages.slice(0, 4).map((l) => {
+    const growthAdvantage = Math.round(l.delta * 80 + (rng() - 0.3) * 6);
+    const immuneEscape = Math.round(clamp(30 + l.delta * 200 + rng() * 30, 5, 95));
+    return {
+      name: l.name,
+      frequency: l.frequency,
+      growthAdvantage,
+      immuneEscape,
+      note: growthAdvantage > 6 ? "Outcompeting co-circulating lineages; likely to dominate soon." : growthAdvantage < -3 ? "Losing share; on the way out." : "Roughly holding its share of the local mix.",
+    };
+  });
+}
+
+function buildScenarios(p: number, sars: PathogenPanel, rng: () => number): { low: number; expected: number; high: number; daysToThreshold: number | null } {
+  const momentum = sars.deltaPct / 100;
+  const expected = clamp(p + momentum * 0.18, 0.01, 0.99);
+  const low = clamp(expected - 0.12 - rng() * 0.05, 0.01, 0.99);
+  const high = clamp(expected + 0.14 + rng() * 0.06, 0.01, 0.99);
+  // crude days until the wastewater target crosses its threshold at current trend
+  let daysToThreshold: number | null = null;
+  if (sars.deltaPct > 2 && sars.value < sars.threshold) {
+    daysToThreshold = Math.max(1, Math.round(((sars.threshold - sars.value) / Math.max(1, sars.deltaPct)) * 15));
+  }
+  return { low, expected, high, daysToThreshold };
+}
+
+function buildRiskFactors(s: SiteState): { aggravating: string[]; mitigating: string[] } {
+  const agg: string[] = [];
+  const mit: string[] = [];
   const sars = s.panels[0];
-  const top = s.lineages[0];
-
-  const headline =
-    s.level === "CRITICAL" ? `${s.cityName} is showing a strong, active growth signal.`
-    : s.level === "HIGH" ? `${s.cityName} warrants attention: transmission is probably rising.`
-    : s.level === "MODERATE" ? `${s.cityName} is on watch, with early signs of growth.`
-    : `${s.cityName} is at baseline, with no strong growth signal.`;
-
-  const assessment =
-    `The fused model puts the probability that transmission is rising at ${p}% (Rt around ${s.rt.toFixed(2)}), ` +
-    `${sars.deltaPct > 4 ? "and the wastewater signal is climbing" : sars.deltaPct < -4 ? "and the wastewater signal is easing" : "with the wastewater signal roughly flat"} ` +
-    `(${sars.deltaPct >= 0 ? "+" : ""}${sars.deltaPct.toFixed(0)}% over 15 days). ` +
-    (elevated.length ? `Beyond SARS-CoV-2, ${elevated.map((e) => e.name).join(" and ")} ${elevated.length > 1 ? "are" : "is"} above the local alert threshold.` : `No other tracked pathogen is above threshold here this cycle.`);
-
-  const soWhat =
-    `This catchment serves about ${pop} people, so a ${p}% growth probability is not abstract: at the current trajectory it buys roughly ${s.leadDays} days of warning before cases would surface in ${s.cityName}'s clinics and emergency departments. ` +
-    (s.level === "CRITICAL" || s.level === "HIGH"
-      ? `For a population this size that lead is the window to staff up, restock testing, and brief clinicians before a wave rather than during one.`
-      : s.level === "MODERATE"
-        ? `That lead is currently a planning buffer, not a trigger, but it is the moment to confirm the signal before it hardens.`
-        : `There is nothing to act on today; the value of monitoring here is catching the turn early if it comes.`);
-
-  const comparison =
-    `Its growth probability is ${ratio.toFixed(1)}x the network median and it ranks #${s.rank} of ${n} monitored sites worldwide.`;
-
-  const watch: string[] = [];
-  if (sars.deltaPct > 20) watch.push(`SARS-CoV-2 activity is rising fast (${sars.deltaPct.toFixed(0)}% / 15d); expect ED pressure to follow in roughly two weeks.`);
-  for (const e of elevated) watch.push(`${e.name} is at ${e.value.toFixed(0)} versus a threshold of ${e.threshold}; cross-check syndromic data.`);
-  if (top && top.delta > 0.04) watch.push(`${top.name} is gaining share of sequenced samples; an immune-escape variant can lead even the wastewater concentration.`);
-  if (watch.length === 0) watch.push(`No specific escalations; continue routine weekly sampling and watch for a sustained turn in the wastewater trend.`);
-
-  const denguePanel = s.panels.find((x) => x.key === "dengue");
-  const tab = {
-    forecasting: `For ${s.cityName}, the posterior is ${s.pOutbreak >= 0.5 ? "above" : "below"} the 50% decision line; the ${s.leadDays}-day lead is what this view is buying back for a metro of ${pop}.`,
-    lineages: `${top ? `${top.name} dominates the local mix here` : "The local lineage mix is stable"}, which matters because a rising minor lineage in ${s.cityName} can signal escape before concentrations move.`,
-    fusion: `At ${s.cityName} the signal is led by ${dominantStream(s.streamContrib)}; agreement across independent streams is why this ${p}% can be acted on.`,
-    briefings: `This briefing is written for ${s.cityName} specifically: ${s.level === "LOW" ? "a routine, no-action cycle" : "an active cycle that needs a decision"}.`,
-    streams: `${s.cityName}'s coverage is about ${(s.populationServed / 1000).toFixed(0)}k people; ${denguePanel && denguePanel.value > denguePanel.threshold * 0.8 ? "note dengue is locally relevant given the region" : "stream freshness here is the main data-quality lever"}.`,
-  };
-
-  return { headline, assessment, soWhat, watch, comparison, tab };
+  if (sars.deltaPct > 15) agg.push(`SARS-CoV-2 wastewater rising ${sars.deltaPct.toFixed(0)}% over 15 days`);
+  else if (sars.deltaPct < -10) mit.push(`SARS-CoV-2 wastewater easing ${Math.abs(sars.deltaPct).toFixed(0)}% over 15 days`);
+  for (const d of s.drivers) {
+    if (d.status === "bad") agg.push(`${d.label} at ${d.value}${d.unit === "%" ? "%" : ""} (${d.key === "icu" ? "low capacity" : "elevated"})`);
+    if (d.status === "good" && (d.key === "icu" || d.key === "vaccination")) mit.push(`${d.label} healthy at ${d.value}${d.unit === "%" ? "%" : ""}`);
+  }
+  const elevated = s.panels.filter((p) => (p.level === "HIGH" || p.level === "CRITICAL") && p.key !== "sars2");
+  for (const e of elevated) agg.push(`${e.name} above its alert threshold`);
+  const v = s.variants[0];
+  if (v && v.growthAdvantage > 6) agg.push(`${v.name} gaining ~${v.growthAdvantage}%/week share`);
+  if (agg.length === 0) agg.push("No active aggravating factors this cycle");
+  if (mit.length === 0) mit.push("Standard seasonal and immunity backdrop");
+  return { aggravating: agg.slice(0, 5), mitigating: mit.slice(0, 4) };
 }
 
-function dominantStream(c: { wastewater: number; genomic: number; text: number }): string {
-  const m = Math.max(c.wastewater, c.genomic, c.text);
-  if (m === c.wastewater) return "the wastewater stream";
-  if (m === c.genomic) return "the genomic stream";
-  return "the outbreak-text stream";
-}
 
 function buildActions(
   level: SignalLevel, sars: PathogenPanel, panels: PathogenPanel[], topLineage?: Lineage,
@@ -579,12 +641,10 @@ export function getSites(): SiteState[] {
   if (_cache) return _cache;
   const raws = (sitesData as { sites: RawSite[] }).sites;
   const built = raws.map(buildSite).sort((a, b) => b.pOutbreak - a.pOutbreak);
-  const ps = built.map((s) => s.pOutbreak).sort((a, b) => a - b);
-  const median = ps.length ? ps[Math.floor(ps.length / 2)] : 0.2;
   built.forEach((s, i) => {
     s.rank = i + 1;
     s.networkSize = built.length;
-    s.interpretation = buildInterpretation(s, median, built.length);
+    s.riskFactors = buildRiskFactors(s);
   });
   _cache = built;
   return _cache;

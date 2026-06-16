@@ -15,7 +15,8 @@ import { PipelineSchematic } from "./PipelineSchematic";
 import { NewsFeed } from "./NewsFeed";
 import {
   SiteHeader, EarlyWarningBanner, EventLog, LineagePanel, StreamHealthPanel, BriefingCard, ForecastPanel,
-  StreamContribution, LineageTrendChart, GenomicAnomalyChart, RecommendedActions, AssessmentCard, TabContext,
+  StreamContribution, LineageTrendChart, GenomicAnomalyChart, RecommendedActions,
+  DriversPanel, RiskFactors, VariantTraits, ScenarioBands,
 } from "./panels";
 import { Assistant } from "./Assistant";
 import { CalibrationPanel } from "@/components/dashboard/CalibrationPanel";
@@ -211,8 +212,16 @@ export function DemoConsole({ initialSiteId }: { initialSiteId?: string }) {
             {section === "overview" && (
               <div className="space-y-5">
                 <SiteHeader site={site} />
-                <AssessmentCard site={site} />
                 <EarlyWarningBanner site={site} />
+                <Card
+                  title="Drivers & context"
+                  action={<span className="text-[10px] text-muted-foreground">beyond the 3 fusion streams · rank #{site.rank} of {site.networkSize}</span>}
+                >
+                  <DriversPanel site={site} />
+                  <div className="mt-4 border-t border-border/50 pt-4">
+                    <RiskFactors site={site} />
+                  </div>
+                </Card>
                 <PathogenGrid panels={site.panels} />
                 <Card title="MOSAIC inference pipeline"><PipelineSchematic site={site} /></Card>
                 <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
@@ -245,7 +254,6 @@ export function DemoConsole({ initialSiteId }: { initialSiteId?: string }) {
             {section === "forecasting" && (
               <div className="space-y-5">
                 <SiteHeader site={site} />
-                <TabContext text={site.interpretation.tab.forecasting} />
                 <div className="grid grid-cols-2 gap-5 sm:grid-cols-4">
                   {[
                     { v: `${(site.pOutbreak * 100).toFixed(0)}%`, l: "P(Rt>1) now" },
@@ -261,7 +269,10 @@ export function DemoConsole({ initialSiteId }: { initialSiteId?: string }) {
                 </div>
                 <Card title="Fused outbreak posterior, P(Rt > 1)"><ForecastPanel site={site} /></Card>
                 <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+                  <Card title="14-day scenario bands"><ScenarioBands site={site} /></Card>
                   <Card title="What is driving the signal"><StreamContribution site={site} /></Card>
+                </div>
+                <div className="grid grid-cols-1 gap-5">
                   <Card title="Per-target trajectory">
                     <div className="space-y-3">
                       {site.panels.slice(0, 5).map((p) => {
@@ -296,9 +307,11 @@ export function DemoConsole({ initialSiteId }: { initialSiteId?: string }) {
             {section === "lineages" && (
               <div className="space-y-5">
                 <SiteHeader site={site} />
-                <TabContext text={site.interpretation.tab.lineages} />
                 <Card title="Lineage composition over time" action={<span className="text-[10px] text-muted-foreground">Nextstrain, rolling 14-window</span>}>
                   <LineageTrendChart site={site} />
+                </Card>
+                <Card title="Variant characteristics" action={<span className="text-[10px] text-muted-foreground">growth advantage &amp; immune escape</span>}>
+                  <VariantTraits site={site} />
                 </Card>
                 <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
                   <Card title="Current mix & week-over-week shift"><LineagePanel lineages={site.lineages} /></Card>
@@ -320,7 +333,6 @@ export function DemoConsole({ initialSiteId }: { initialSiteId?: string }) {
             {section === "fusion" && (
               <div className="space-y-5">
                 <SiteHeader site={site} />
-                <TabContext text={site.interpretation.tab.fusion} />
                 <Card title="Multi-modal Bayesian fusion"><PipelineSchematic site={site} /></Card>
                 <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
                   <Card title="Stream contribution at this site"><StreamContribution site={site} /></Card>
@@ -356,7 +368,6 @@ export function DemoConsole({ initialSiteId }: { initialSiteId?: string }) {
             {section === "briefings" && (
               <div className="space-y-5">
                 <SiteHeader site={site} />
-                <TabContext text={site.interpretation.tab.briefings} />
                 <BriefingCard site={site} />
                 <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
                   <Card title="Recommended actions"><RecommendedActions actions={site.actions} /></Card>
@@ -382,8 +393,10 @@ export function DemoConsole({ initialSiteId }: { initialSiteId?: string }) {
             {section === "streams" && (
               <div className="space-y-5">
                 <SiteHeader site={site} />
-                <TabContext text={site.interpretation.tab.streams} />
                 <Card title="Surveillance stream health"><StreamHealthPanel streams={site.streams} /></Card>
+                <Card title="Additional monitored signals" action={<span className="text-[10px] text-muted-foreground">context inputs beyond the 3 fusion streams</span>}>
+                  <DriversPanel site={site} />
+                </Card>
                 <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
                   {[
                     { label: "Wastewater coverage", v: `${(site.populationServed / 1000).toFixed(0)}k`, sub: "population sampled by this sewershed", color: "#34d399" },

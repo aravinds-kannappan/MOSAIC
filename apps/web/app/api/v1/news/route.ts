@@ -19,10 +19,37 @@ import { fetchText } from "@/lib/streams";
 
 export const dynamic = "force-dynamic";
 
-const HEALTH_TERMS =
-  '(outbreak OR virus OR influenza OR flu OR measles OR dengue OR cholera OR COVID OR ' +
-  'wastewater OR "public health" OR hospital OR polio OR "bird flu" OR norovirus OR ' +
-  'RSV OR pertussis OR hepatitis OR epidemic OR infection OR disease)';
+// Disease and outbreak terms only, so the feed is about disease activity in the
+// city rather than general local news.
+const DISEASE_TERMS =
+  '(outbreak OR epidemic OR "disease outbreak" OR measles OR dengue OR cholera OR ' +
+  'influenza OR "flu cases" OR COVID OR "covid cases" OR coronavirus OR norovirus OR ' +
+  'RSV OR polio OR poliovirus OR "bird flu" OR "avian flu" OR H5N1 OR pertussis OR ' +
+  '"whooping cough" OR hepatitis OR mpox OR monkeypox OR "wastewater surveillance" OR ' +
+  '"public health emergency" OR "cases reported" OR "viral" OR "infectious disease")';
+
+// Title must mention an actual disease/outbreak concept to be kept.
+const DISEASE_MATCH: Array<[RegExp, string]> = [
+  [/\bmeasles\b/i, "Measles"],
+  [/\bdengue\b/i, "Dengue"],
+  [/\bcholera\b/i, "Cholera"],
+  [/\b(covid|coronavirus|sars-cov-2)\b/i, "COVID-19"],
+  [/\b(influenza|\bflu\b)\b/i, "Influenza"],
+  [/\bnorovirus\b/i, "Norovirus"],
+  [/\brsv\b/i, "RSV"],
+  [/\b(polio|poliovirus)\b/i, "Polio"],
+  [/\b(h5n1|bird flu|avian flu)\b/i, "H5N1"],
+  [/\b(pertussis|whooping cough)\b/i, "Pertussis"],
+  [/\bhepatitis\b/i, "Hepatitis"],
+  [/\b(mpox|monkeypox)\b/i, "Mpox"],
+  [/\b(outbreak|epidemic|infectious disease|public health emergency)\b/i, "Outbreak"],
+  [/\b(virus|viral|infection|pathogen|wastewater)\b/i, "Disease"],
+];
+
+function matchDisease(title: string): string | null {
+  for (const [re, label] of DISEASE_MATCH) if (re.test(title)) return label;
+  return null;
+}
 
 const xml = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: "@_" });
 
@@ -35,7 +62,7 @@ interface RssItem {
 }
 
 async function fetchCityMedia(city: string, limit: number) {
-  const query = `"${city}" ${HEALTH_TERMS}`;
+  const query = `"${city}" ${DISEASE_TERMS}`;
   const url =
     `https://news.google.com/rss/search?q=${encodeURIComponent(query)}` +
     `&hl=en-US&gl=US&ceid=US:en`;
@@ -50,7 +77,7 @@ async function fetchCityMedia(city: string, limit: number) {
   const raw = parsed?.rss?.channel?.item;
   const items = Array.isArray(raw) ? raw : raw ? [raw] : [];
   const seen = new Set<string>();
-  const out: Array<{ id: string; title: string; source: string; url: string; date: string; kind: "media" }> = [];
+  const out: Array<{ id: string; title: string; source: string; url: string; date: string; disease: string; kind: "media" }> = [];
   for (const it of items) {
     if (!it.title || !it.link) continue;
     const sourceName = typeof it.source === "object" ? it.source?.["#text"] ?? "" : it.source ?? "";
@@ -58,6 +85,9 @@ async function fetchCityMedia(city: string, limit: number) {
     const title = sourceName && it.title.endsWith(` - ${sourceName}`)
       ? it.title.slice(0, -(sourceName.length + 3))
       : it.title.replace(/ - [^-]+$/, "");
+    // Keep only items that are actually about a disease/outbreak.
+    const disease = matchDisease(title);
+    if (!disease) continue;
     const key = title.toLowerCase().slice(0, 60);
     if (seen.has(key)) continue;
     seen.add(key);
@@ -67,6 +97,7 @@ async function fetchCityMedia(city: string, limit: number) {
       source: sourceName || "Google News",
       url: it.link,
       date: it.pubDate ? new Date(it.pubDate).toISOString() : new Date().toISOString(),
+      disease,
       kind: "media",
     });
     if (out.length >= limit) break;
@@ -78,7 +109,7 @@ export async function GET(req: Request) {
   const url = new URL(req.url);
   const iso = (url.searchParams.get("iso") ?? "").toUpperCase();
   const city = (url.searchParams.get("city") ?? "").trim();
-  const limit = Math.min(20, parseInt(url.searchParams.get("limit") ?? "12", 10) || 12);
+  const limit = Math.min(10, parseInt(url.searchParams.get("limit") ?? "10", 10) || 10);
 
   const [mediaRes, textRes] = await Promise.allSettled([
     city ? fetchCityMedia(city, limit) : Promise.resolve([]),

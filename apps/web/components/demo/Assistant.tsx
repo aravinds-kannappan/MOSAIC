@@ -45,12 +45,32 @@ export function Assistant({ open, onClose, sites, site, section, onNavigate, onS
     setBusy(true);
     setMessages((m) => [...m, { role: "assistant", content: "" }]);
 
+    const elevated = site.panels.filter((p) => p.level === "HIGH" || p.level === "CRITICAL");
     const context = {
       siteLabel: site.label,
       siteId: site.id,
       country: site.country,
       section,
-      siteAssessment: `${site.interpretation.headline} ${site.interpretation.assessment} ${site.interpretation.soWhat} ${site.interpretation.comparison}`,
+      active: {
+        city: site.cityName,
+        level: site.level,
+        pOutbreak: site.pOutbreak,
+        rt: site.rt,
+        rtCi: [site.rtLow, site.rtHigh],
+        leadDays: site.leadDays,
+        rank: site.rank,
+        networkSize: site.networkSize,
+        populationServed: site.populationServed,
+        international: site.international,
+        sars: { value: site.panels[0].value, deltaPct: site.panels[0].deltaPct },
+        elevatedTargets: elevated.map((p) => ({ name: p.name, value: p.value, threshold: p.threshold, deltaPct: p.deltaPct })),
+        drivers: site.drivers.map((d) => ({ label: d.label, value: d.value, unit: d.unit, status: d.status, delta: d.delta })),
+        riskFactors: site.riskFactors,
+        topLineage: site.variants[0] ? { name: site.variants[0].name, growthAdvantage: site.variants[0].growthAdvantage, immuneEscape: site.variants[0].immuneEscape } : null,
+        scenarios: site.scenarios,
+        streamContrib: site.streamContrib,
+      },
+      topSites: [...sites].slice(0, 6).map((s) => ({ label: s.label, pOutbreak: s.pOutbreak, level: s.level })),
       sites: sites.map((s) => ({ id: s.id, label: s.label, country: s.country, pOutbreak: s.pOutbreak, level: s.level })),
     };
 

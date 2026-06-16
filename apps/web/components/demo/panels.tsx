@@ -11,52 +11,130 @@ import { Sparkline } from "./Sparkline";
 import { levelHex } from "./SiteLocatorMap";
 import type { SiteState, LogEvent, StreamHealth, Lineage } from "@/lib/demo/sites";
 
-/* ----------------------------- Assessment ----------------------------- */
+/* -------------------- Drivers and context (extra signals) ------------- */
 
-export function AssessmentCard({ site }: { site: SiteState }) {
-  const c = levelHex(site.level);
-  const it = site.interpretation;
+const DRIVER_COLOR = { good: "#34d399", watch: "#fbbf24", bad: "#f87171" };
+
+export function DriversPanel({ site }: { site: SiteState }) {
   return (
-    <div className="rounded-xl border-l-2 bg-card/50 p-5" style={{ borderLeftColor: c, borderTop: "1px solid hsl(var(--border)/0.6)", borderRight: "1px solid hsl(var(--border)/0.6)", borderBottom: "1px solid hsl(var(--border)/0.6)" }}>
-      <div className="flex items-center justify-between gap-3">
-        <h3 className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: c }}>Assessment, {site.cityName}</h3>
-        <div className="flex items-center gap-2 text-[10px]">
-          <span className="rounded-full border border-border/60 px-2 py-0.5 text-muted-foreground">Rank #{site.rank} of {site.networkSize}</span>
-          <span className="rounded-full px-2 py-0.5 font-medium" style={{ backgroundColor: `${c}22`, color: c }}>{site.statusLabel}</span>
-        </div>
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      {site.drivers.map((d) => {
+        const c = DRIVER_COLOR[d.status];
+        return (
+          <div key={d.key} className="rounded-lg border border-border/50 bg-card/40 p-3">
+            <div className="flex items-start justify-between gap-2">
+              <span className="text-[12px] text-foreground">{d.label}</span>
+              <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: c }} title={d.status} />
+            </div>
+            <div className="mt-1 flex items-baseline gap-1.5">
+              <span className="font-mono text-xl font-semibold" style={{ color: c }}>{d.value}</span>
+              <span className="text-[10px] text-muted-foreground">{d.unit}</span>
+              {Math.abs(d.delta) >= 1 && (
+                <span className={`ml-auto text-[10px] ${d.delta > 0 ? "text-red-400" : "text-emerald-400"}`}>
+                  {d.delta > 0 ? "+" : ""}{d.delta}
+                </span>
+              )}
+            </div>
+            <p className="mt-1.5 text-[10px] leading-relaxed text-muted-foreground">{d.note}</p>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+export function RiskFactors({ site }: { site: SiteState }) {
+  const { aggravating, mitigating } = site.riskFactors;
+  return (
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <div>
+        <p className="mb-2 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-red-300">
+          <TrendingUp className="h-3.5 w-3.5" /> Raising risk
+        </p>
+        <ul className="space-y-1.5">
+          {aggravating.map((a, i) => (
+            <li key={i} className="flex gap-2 text-[12px] leading-relaxed text-foreground">
+              <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-red-400" /><span>{a}</span>
+            </li>
+          ))}
+        </ul>
       </div>
-      <p className="mt-2 text-[15px] font-medium leading-snug text-foreground">{it.headline}</p>
-      <p className="mt-2 text-[13px] leading-relaxed text-muted-foreground">{it.assessment}</p>
-      <div className="mt-3 rounded-lg bg-background/60 p-3">
-        <p className="text-[10px] font-semibold uppercase tracking-wider text-primary">So what</p>
-        <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground">{it.soWhat}</p>
-      </div>
-      <div className="mt-3 grid gap-3 sm:grid-cols-2">
-        <div>
-          <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">What to watch</p>
-          <ul className="mt-1.5 space-y-1.5">
-            {it.watch.map((w, i) => (
-              <li key={i} className="flex gap-2 text-[12px] leading-relaxed text-foreground">
-                <span className="mt-1 h-1 w-1 shrink-0 rounded-full" style={{ backgroundColor: c }} />
-                <span>{w}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div>
-          <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">In context</p>
-          <p className="mt-1.5 text-[12px] leading-relaxed text-muted-foreground">{it.comparison}</p>
-        </div>
+      <div>
+        <p className="mb-2 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-emerald-300">
+          <CircleCheck className="h-3.5 w-3.5" /> Lowering risk
+        </p>
+        <ul className="space-y-1.5">
+          {mitigating.map((m, i) => (
+            <li key={i} className="flex gap-2 text-[12px] leading-relaxed text-foreground">
+              <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-emerald-400" /><span>{m}</span>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );
 }
 
-/** A short interpretive lead line shown at the top of a tab. */
-export function TabContext({ text }: { text: string }) {
+/* ------------------------- Variant characteristics -------------------- */
+
+export function VariantTraits({ site }: { site: SiteState }) {
   return (
-    <div className="rounded-lg border border-primary/20 bg-primary/5 px-4 py-2.5 text-[12px] leading-relaxed text-muted-foreground">
-      {text}
+    <div className="overflow-x-auto">
+      <table className="w-full text-[12px]">
+        <thead>
+          <tr className="border-b border-border/60 text-left text-[10px] uppercase tracking-wide text-muted-foreground">
+            <th className="py-2 pr-3 font-medium">Lineage</th>
+            <th className="py-2 pr-3 text-right font-medium">Share</th>
+            <th className="py-2 pr-3 text-right font-medium">Growth adv.</th>
+            <th className="py-2 pr-3 text-right font-medium">Immune escape</th>
+            <th className="py-2 font-medium">Read</th>
+          </tr>
+        </thead>
+        <tbody>
+          {site.variants.map((v) => (
+            <tr key={v.name} className="border-b border-border/40 last:border-0">
+              <td className="py-2 pr-3 font-mono text-foreground">{v.name}</td>
+              <td className="py-2 pr-3 text-right text-muted-foreground">{(v.frequency * 100).toFixed(0)}%</td>
+              <td className={`py-2 pr-3 text-right font-mono ${v.growthAdvantage > 0 ? "text-red-400" : "text-emerald-400"}`}>{v.growthAdvantage > 0 ? "+" : ""}{v.growthAdvantage}%/wk</td>
+              <td className="py-2 pr-3 text-right text-muted-foreground">{v.immuneEscape}/100</td>
+              <td className="py-2 text-muted-foreground">{v.note}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+/* --------------------------- Scenario bands --------------------------- */
+
+export function ScenarioBands({ site }: { site: SiteState }) {
+  const s = site.scenarios;
+  const rows = [
+    { label: "Optimistic", v: s.low, c: "#34d399", note: "transmission stalls or eases from here" },
+    { label: "Expected", v: s.expected, c: levelHex(site.level), note: "current trend continues" },
+    { label: "Pessimistic", v: s.high, c: "#f87171", note: "growth accelerates with the season/variant" },
+  ];
+  return (
+    <div>
+      <div className="space-y-3">
+        {rows.map((r) => (
+          <div key={r.label}>
+            <div className="mb-1 flex items-center justify-between text-[12px]">
+              <span className="text-foreground">{r.label} <span className="text-[10px] text-muted-foreground">/ {r.note}</span></span>
+              <span className="font-mono" style={{ color: r.c }}>{(r.v * 100).toFixed(0)}%</span>
+            </div>
+            <div className="h-2 w-full overflow-hidden rounded-full bg-muted/40">
+              <div className="h-full rounded-full" style={{ width: `${r.v * 100}%`, backgroundColor: r.c }} />
+            </div>
+          </div>
+        ))}
+      </div>
+      <p className="mt-3 text-[11px] leading-relaxed text-muted-foreground">
+        {s.daysToThreshold != null
+          ? `At the current trend the wastewater signal would cross its elevated threshold in about ${s.daysToThreshold} days.`
+          : "The wastewater signal is not on track to cross its elevated threshold at the current trend."}
+      </p>
     </div>
   );
 }

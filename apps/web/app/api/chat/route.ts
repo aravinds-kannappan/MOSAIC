@@ -32,7 +32,8 @@ interface ChatContext {
   siteId: string;
   country: string;
   section: string;
-  siteAssessment?: string;
+  active?: Record<string, unknown>;
+  topSites?: Array<{ label: string; pOutbreak: number; level: string }>;
   sites: SiteLite[];
 }
 
@@ -65,12 +66,21 @@ CONSOLE SECTIONS
 - streams: surveillance stream health + provenance.
 - dataroom: data sources and links.
 
-YOUR BEHAVIOR
-- Be concise and precise. You are talking to public-health professionals.
-- When the user asks to go somewhere, see something, or open a view/site, CALL the navigate or select_site tool, then confirm in one short sentence.
-- When asked to explain a metric or what's happening at a site, answer directly using the context provided.
-- Never invent specific numbers beyond what's in the context; if you don't have a figure, say so or navigate the user to where it's shown.
-- Do not use markdown headers; keep replies short (1-4 sentences) unless asked to elaborate.`;
+HOW TO REASON (this is the important part)
+You are an analyst, not a label-reader. Do NOT just restate the dashboard's numbers back. The user can already see the percentage. Your value is synthesis and judgment:
+- Connect signals into a mechanism. Example: "wastewater up 30% while ICU headroom is only 18% and population immunity is 48% means a modest wave would hit hospitals hard here, so this is more urgent than the 62% alone suggests."
+- Reason about WHY, not just WHAT. Why might genomic lead wastewater here? What would make you more or less worried? What is the most likely explanation for divergence between streams?
+- Weigh the additional context signals (clinical syndromic, test positivity, ICU headroom, travel inflow, climate suitability, immunity coverage) against the three fusion streams. These often change the interpretation of the same probability.
+- Compare to the network and to the site's own trend. Put the number in context (rank, vs median, rising/falling).
+- Be calibrated about uncertainty. Distinguish a strong corroborated signal from a single noisy stream. Say what you do not know.
+- Give a recommendation or a "what I would watch next," not a summary, when the question invites it.
+- Quantify when you can, using the provided context; do not fabricate numbers that are not given, but you MAY reason qualitatively beyond them.
+
+STYLE
+- Talk to public-health professionals: precise, substantive, no fluff, no hype, no marketing.
+- Default to 2 to 5 sentences of actual analysis. Go longer only when the question genuinely needs it. Never pad.
+- No markdown headers. Plain prose or a short bullet list when listing factors.
+- When the user asks to open, show, go to, or view something, CALL navigate or select_site, then add one sentence of substance (not just "done").`;
 
 function buildSystem(ctx: ChatContext): string {
   const siteList = ctx.sites
@@ -81,7 +91,10 @@ function buildSystem(ctx: ChatContext): string {
 CURRENT CONTEXT
 - Active site: ${ctx.siteLabel} (id: ${ctx.siteId}), country: ${ctx.country}
 - Active section: ${ctx.section}
-- Current assessment for this site: ${ctx.siteAssessment ?? "n/a"}
+- Live data for the active site (JSON, use this to reason; do not just read it back):
+${ctx.active ? JSON.stringify(ctx.active) : "n/a"}
+- Highest-risk sites in the network right now:
+${(ctx.topSites ?? []).map((s) => `  ${s.label}: P(Rt>1)=${(s.pOutbreak * 100).toFixed(0)}% (${s.level})`).join("\n") || "  n/a"}
 
 AVAILABLE SITES (id | label | country | P(Rt>1) | level):
 ${siteList}
@@ -143,11 +156,12 @@ export async function POST(req: Request) {
         for (let i = 0; i < 4; i++) {
           const s = client.messages.stream({
             model: MODEL,
-            max_tokens: 1024,
+            max_tokens: 2048,
             system,
             tools: TOOLS,
             messages,
-            output_config: { effort: "low" },
+            thinking: { type: "adaptive" },
+            output_config: { effort: "medium" },
           });
 
           s.on("text", (delta) => send({ type: "text", text: delta }));

@@ -127,8 +127,8 @@ The console at `/demo` opens on a site (top by `P(Rt > 1)`) and exposes eight se
 
 | Section | What it shows |
 |---------|---------------|
-| Overview | A location-specific Assessment that states, in plain language, what the numbers mean for this city and why they matter (the "so what"), with rank in the network and what to watch. Then the site header, early-warning banner, per-pathogen signal cards across 14 targets (SARS-CoV-2, influenza A and B, RSV, norovirus, mpox, measles, dengue, cholera, polio, hepatitis A, H5N1, pertussis, rotavirus, regionally adjusted), the inference pipeline with live values, circulating lineages, the daily briefing, recent activity, and the global site map. |
-| Alerts | Real, live news contextualized to the specific city: multi-outlet local coverage via Google News search, plus WHO and ProMED official reports for the country, plus the detector and event log. Fetched at view time. |
+| Overview | Site header, early-warning banner, a Drivers and context panel that adds six signals beyond the three fusion streams (clinical syndromic visits, test positivity, ICU headroom, travel inflow, climate suitability, immunity coverage) with the factors currently raising or lowering risk, per-pathogen signal cards across 14 targets (SARS-CoV-2, influenza A and B, RSV, norovirus, mpox, measles, dengue, cholera, polio, hepatitis A, H5N1, pertussis, rotavirus, regionally adjusted), the inference pipeline with live values, circulating lineages, the daily briefing, recent activity, and the global site map. |
+| Alerts | Real, live news contextualized to the specific city and filtered to disease and outbreak coverage only: the top 10 disease stories for the city from many outlets via Google News search (each tagged with the disease), plus WHO and ProMED official reports for the country, plus the detector and event log. Fetched at view time. |
 | Forecasting | The fused `P(Rt > 1)` posterior over a 45-day history and 14-day projection, a stream-contribution breakdown, per-target trajectories, and an explainer of why wastewater leads clinical data. |
 | Lineages | A stacked lineage-composition area chart over rolling windows, the current mix with week-over-week shifts, and a genomic anomaly (JSD) timeline with the alarm threshold. |
 | Fusion | The multi-stream pipeline, the per-stream contribution at this site, the method write-up, and a live reliability diagram from the real calibration computation. |
@@ -142,7 +142,7 @@ The console at `/demo` opens on a site (top by `P(Rt > 1)`) and exposes eight se
 
 The console ships with a Claude-powered assistant (model `claude-opus-4-8`), opened with the sidebar button, the bottom-bar "Ask MOSAIC", or Cmd/Ctrl-K. It does two jobs:
 
-- **Explains.** It is briefed on MOSAIC's purpose, the three streams, every metric, and the data provenance, so it can answer "what does P(Rt>1) mean" or "summarize this site's situation" precisely and concisely.
+- **Reasons, rather than restating.** It runs with adaptive thinking and is given the active site's full context (the three streams plus the six additional signals, the risk factors, the dominant variant, scenario bands, and how the site ranks in the network). It is instructed to synthesize a mechanism and a judgment, for example connecting a rising wastewater signal to low ICU headroom and low immunity to argue a case is more urgent than the headline percentage alone implies, rather than reading numbers back.
 - **Navigates.** It is given two tools, `navigate` and `select_site`, so a request like "show me forecasting" or "which site has the highest outbreak risk, take me there" actually drives the console.
 
 It streams over [`/api/chat`](apps/web/app/api/chat/route.ts) using the Anthropic SDK with tool use, and requires `ANTHROPIC_API_KEY` in the deployment environment. Without the key the endpoint returns a clear 503 and the UI degrades gracefully.

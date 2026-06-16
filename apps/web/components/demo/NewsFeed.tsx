@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { ExternalLink, Newspaper, Globe, RefreshCw, Building2 } from "lucide-react";
 
-interface MediaItem { id: string; title: string; source: string; url: string; date: string }
+interface MediaItem { id: string; title: string; source: string; url: string; date: string; disease?: string }
 interface OfficialItem extends MediaItem { snippet?: string; pathogen?: string | null; country?: string | null; cases?: number | null; novelty?: boolean }
 
 function timeAgo(iso: string): string {
@@ -25,7 +25,7 @@ export function NewsFeed({ city, iso, place }: { city: string; iso: string; plac
   useEffect(() => {
     let active = true;
     setLoading(true);
-    fetch(`/api/v1/news?city=${encodeURIComponent(city)}&iso=${encodeURIComponent(iso)}&limit=12`)
+    fetch(`/api/v1/news?city=${encodeURIComponent(city)}&iso=${encodeURIComponent(iso)}&limit=10`)
       .then((r) => r.json())
       .then((d) => {
         if (!active) return;
@@ -52,9 +52,9 @@ export function NewsFeed({ city, iso, place }: { city: string; iso: string; plac
       <div>
         <div className="mb-3 flex items-center justify-between">
           <span className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-            <Building2 className="h-3.5 w-3.5 text-sky-400" /> Local &amp; media coverage, {city}
+            <Building2 className="h-3.5 w-3.5 text-sky-400" /> Top disease coverage, {city}
           </span>
-          <span className="rounded bg-sky-500/10 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-sky-300">live · multi-outlet news</span>
+          <span className="rounded bg-sky-500/10 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-sky-300">live · multi-outlet</span>
         </div>
         {media.length === 0 ? (
           <div className="flex items-center gap-2 rounded-lg border border-border/50 bg-card/40 p-4 text-[12px] text-muted-foreground">
@@ -74,6 +74,7 @@ export function NewsFeed({ city, iso, place }: { city: string; iso: string; plac
                   </div>
                   <div className="mt-1 flex items-center gap-2 text-[10px] text-muted-foreground">
                     <span className="rounded bg-secondary px-1.5 py-px font-medium">{n.source}</span>
+                    {n.disease && <span className="rounded bg-sky-400/10 px-1.5 py-px text-sky-300">{n.disease}</span>}
                     <span className="ml-auto">{timeAgo(n.date)}</span>
                   </div>
                 </div>
