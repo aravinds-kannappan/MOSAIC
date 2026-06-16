@@ -11,6 +11,56 @@ import { Sparkline } from "./Sparkline";
 import { levelHex } from "./SiteLocatorMap";
 import type { SiteState, LogEvent, StreamHealth, Lineage } from "@/lib/demo/sites";
 
+/* ----------------------------- Assessment ----------------------------- */
+
+export function AssessmentCard({ site }: { site: SiteState }) {
+  const c = levelHex(site.level);
+  const it = site.interpretation;
+  return (
+    <div className="rounded-xl border-l-2 bg-card/50 p-5" style={{ borderLeftColor: c, borderTop: "1px solid hsl(var(--border)/0.6)", borderRight: "1px solid hsl(var(--border)/0.6)", borderBottom: "1px solid hsl(var(--border)/0.6)" }}>
+      <div className="flex items-center justify-between gap-3">
+        <h3 className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: c }}>Assessment, {site.cityName}</h3>
+        <div className="flex items-center gap-2 text-[10px]">
+          <span className="rounded-full border border-border/60 px-2 py-0.5 text-muted-foreground">Rank #{site.rank} of {site.networkSize}</span>
+          <span className="rounded-full px-2 py-0.5 font-medium" style={{ backgroundColor: `${c}22`, color: c }}>{site.statusLabel}</span>
+        </div>
+      </div>
+      <p className="mt-2 text-[15px] font-medium leading-snug text-foreground">{it.headline}</p>
+      <p className="mt-2 text-[13px] leading-relaxed text-muted-foreground">{it.assessment}</p>
+      <div className="mt-3 rounded-lg bg-background/60 p-3">
+        <p className="text-[10px] font-semibold uppercase tracking-wider text-primary">So what</p>
+        <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground">{it.soWhat}</p>
+      </div>
+      <div className="mt-3 grid gap-3 sm:grid-cols-2">
+        <div>
+          <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">What to watch</p>
+          <ul className="mt-1.5 space-y-1.5">
+            {it.watch.map((w, i) => (
+              <li key={i} className="flex gap-2 text-[12px] leading-relaxed text-foreground">
+                <span className="mt-1 h-1 w-1 shrink-0 rounded-full" style={{ backgroundColor: c }} />
+                <span>{w}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">In context</p>
+          <p className="mt-1.5 text-[12px] leading-relaxed text-muted-foreground">{it.comparison}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** A short interpretive lead line shown at the top of a tab. */
+export function TabContext({ text }: { text: string }) {
+  return (
+    <div className="rounded-lg border border-primary/20 bg-primary/5 px-4 py-2.5 text-[12px] leading-relaxed text-muted-foreground">
+      {text}
+    </div>
+  );
+}
+
 /* ------------------------------ Site header --------------------------- */
 
 export function SiteHeader({ site }: { site: SiteState }) {

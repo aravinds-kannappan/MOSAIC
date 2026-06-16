@@ -32,6 +32,7 @@ interface ChatContext {
   siteId: string;
   country: string;
   section: string;
+  siteAssessment?: string;
   sites: SiteLite[];
 }
 
@@ -52,11 +53,11 @@ KEY METRICS (explain plainly when asked)
 - ECE 0.086 / AUROC 0.917 / 68-day median lead: validation results across Omicron, mpox, polio, H5N1.
 
 DATA HONESTY
-US sites use REAL CDC NWSS data (site, population served, SARS-CoV-2 activity, 15-day change). The Alerts view shows REAL live WHO/ProMED outbreak news. International sites and the extra pathogen panels (flu, RSV, norovirus, mpox, measles) and per-site lineage mixes are MODELLED for the demo. Be upfront about this if asked.
+US sites use REAL CDC NWSS data (site, population served, SARS-CoV-2 activity, 15-day change). The Alerts view shows REAL live news: city-specific coverage from Google News (many outlets) plus WHO/ProMED official reports. The panel tracks 14 pathogen targets (SARS-CoV-2, influenza A/B, RSV, norovirus, mpox, measles, dengue, cholera, polio, hepatitis A, H5N1, pertussis, rotavirus), regionally adjusted; international sites, the non-COVID panels, and per-site lineage mixes are MODELLED for the demo. Be upfront about this if asked. Every site's Overview has an "Assessment" that gives the location-specific so-what; lean on that framing when explaining a site.
 
 CONSOLE SECTIONS
 - overview: site header, early-warning banner, pathogen cards, pipeline, lineages, briefing, map.
-- alerts: live WHO/ProMED outbreak news for the site's country + detector event log.
+- alerts: live city-specific media coverage (Google News, many outlets) plus WHO/ProMED official reports, + detector event log.
 - forecasting: fused P(Rt>1) posterior chart.
 - lineages: genomic lineage surveillance.
 - fusion: how the multi-stream Bayesian model works.
@@ -80,6 +81,7 @@ function buildSystem(ctx: ChatContext): string {
 CURRENT CONTEXT
 - Active site: ${ctx.siteLabel} (id: ${ctx.siteId}), country: ${ctx.country}
 - Active section: ${ctx.section}
+- Current assessment for this site: ${ctx.siteAssessment ?? "n/a"}
 
 AVAILABLE SITES (id | label | country | P(Rt>1) | level):
 ${siteList}

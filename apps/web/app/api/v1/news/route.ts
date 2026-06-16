@@ -1,68 +1,126 @@
 /**
- * MOSAIC News API, live outbreak text for a given location.
+ * MOSAIC News API, contextualized for a specific city.
  *
- * Pulls the real WHO Disease Outbreak News + ProMED-mail text streams (via
- * lib/streams#fetchText) and filters the NLP-extracted events to a country
- * (ISO-A2). This is the same text stream that feeds the fusion model, surfaced
- * directly so the demo's Alerts view shows current, real-world reporting for
- * the selected sewershed's country.
+ * Returns two real, live feeds:
+ *   1. media    - city-specific health/outbreak coverage from many outlets,
+ *                 via Google News RSS search (free, no key, diverse media).
+ *   2. official - WHO Disease Outbreak News + ProMED-mail for the city's
+ *                 country (the same NLP-extracted text stream that feeds fusion).
  *
  * Query params:
- *   iso  , ISO-A2 country code to filter by (e.g. US, GB, JP). Optional.
- *   limit, max items (default 15).
+ *   city    - city name to contextualize on (e.g. "Tokyo", "Dallas"). Required for media.
+ *   iso     - ISO-A2 country code for the official reports filter.
+ *   limit   - max items per feed (default 12).
  */
 
 import { NextResponse } from "next/server";
+import { XMLParser } from "fast-xml-parser";
 import { fetchText } from "@/lib/streams";
 
 export const dynamic = "force-dynamic";
 
+const HEALTH_TERMS =
+  '(outbreak OR virus OR influenza OR flu OR measles OR dengue OR cholera OR COVID OR ' +
+  'wastewater OR "public health" OR hospital OR polio OR "bird flu" OR norovirus OR ' +
+  'RSV OR pertussis OR hepatitis OR epidemic OR infection OR disease)';
+
+const xml = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: "@_" });
+
+interface RssItem {
+  title?: string;
+  link?: string;
+  guid?: string | { "#text"?: string };
+  pubDate?: string;
+  source?: string | { "#text"?: string };
+}
+
+async function fetchCityMedia(city: string, limit: number) {
+  const query = `"${city}" ${HEALTH_TERMS}`;
+  const url =
+    `https://news.google.com/rss/search?q=${encodeURIComponent(query)}` +
+    `&hl=en-US&gl=US&ceid=US:en`;
+  const res = await fetch(url, {
+    headers: { "User-Agent": "Mozilla/5.0 (compatible; MOSAIC/1.0)" },
+    signal: AbortSignal.timeout(9000),
+    next: { revalidate: 1800 },
+  });
+  if (!res.ok) throw new Error(`Google News RSS ${res.status}`);
+  const body = await res.text();
+  const parsed = xml.parse(body) as { rss?: { channel?: { item?: RssItem | RssItem[] } } };
+  const raw = parsed?.rss?.channel?.item;
+  const items = Array.isArray(raw) ? raw : raw ? [raw] : [];
+  const seen = new Set<string>();
+  const out: Array<{ id: string; title: string; source: string; url: string; date: string; kind: "media" }> = [];
+  for (const it of items) {
+    if (!it.title || !it.link) continue;
+    const sourceName = typeof it.source === "object" ? it.source?.["#text"] ?? "" : it.source ?? "";
+    // Google News titles end with " - Source"; strip it for a clean headline.
+    const title = sourceName && it.title.endsWith(` - ${sourceName}`)
+      ? it.title.slice(0, -(sourceName.length + 3))
+      : it.title.replace(/ - [^-]+$/, "");
+    const key = title.toLowerCase().slice(0, 60);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push({
+      id: typeof it.guid === "object" ? it.guid?.["#text"] ?? it.link : it.guid ?? it.link,
+      title,
+      source: sourceName || "Google News",
+      url: it.link,
+      date: it.pubDate ? new Date(it.pubDate).toISOString() : new Date().toISOString(),
+      kind: "media",
+    });
+    if (out.length >= limit) break;
+  }
+  return out;
+}
+
 export async function GET(req: Request) {
   const url = new URL(req.url);
   const iso = (url.searchParams.get("iso") ?? "").toUpperCase();
-  const limit = Math.min(40, parseInt(url.searchParams.get("limit") ?? "15", 10) || 15);
+  const city = (url.searchParams.get("city") ?? "").trim();
+  const limit = Math.min(20, parseInt(url.searchParams.get("limit") ?? "12", 10) || 12);
 
-  try {
-    const text = await fetchText();
-    const all = [...text.events].sort(
+  const [mediaRes, textRes] = await Promise.allSettled([
+    city ? fetchCityMedia(city, limit) : Promise.resolve([]),
+    fetchText(),
+  ]);
+
+  const media = mediaRes.status === "fulfilled" ? mediaRes.value : [];
+
+  let official: Array<Record<string, unknown>> = [];
+  let officialScope: "country" | "global" = "global";
+  if (textRes.status === "fulfilled") {
+    const all = [...textRes.value.events].sort(
       (a, b) => (Date.parse(b.pubDate) || 0) - (Date.parse(a.pubDate) || 0)
     );
-
     const local = iso ? all.filter((e) => e.extracted.locationIso === iso) : all;
-    // If a specific country has no current reports, fall back to global recent
-    // items so the panel is never empty, flagged via `scope`.
-    const scope = iso && local.length === 0 ? "global" : iso ? "country" : "global";
-    const chosen = (scope === "country" ? local : all).slice(0, limit);
-
-    const items = chosen.map((e) => ({
+    officialScope = iso && local.length > 0 ? "country" : "global";
+    official = (officialScope === "country" ? local : all).slice(0, limit).map((e) => ({
       id: e.id,
       title: e.title,
-      snippet: e.description.slice(0, 240),
+      snippet: e.description.slice(0, 200),
       source: e.source,
       url: e.link,
       date: e.pubDate,
       pathogen: e.extracted.pathogen,
       country: e.extracted.location,
-      iso: e.extracted.locationIso,
       cases: e.extracted.caseCount,
-      deaths: e.extracted.deathCount,
       novelty: e.extracted.noveltyFlag,
+      kind: "official",
     }));
-
-    return NextResponse.json({
-      items,
-      meta: {
-        iso: iso || null,
-        scope,
-        count: items.length,
-        sources: ["WHO Disease Outbreak News", "ProMED-mail"],
-        fetchedAt: new Date().toISOString(),
-      },
-    });
-  } catch (err) {
-    return NextResponse.json(
-      { items: [], meta: { error: "text stream unavailable", detail: String(err) } },
-      { status: 200 }
-    );
   }
+
+  return NextResponse.json({
+    media,
+    official,
+    meta: {
+      city: city || null,
+      iso: iso || null,
+      officialScope,
+      mediaCount: media.length,
+      officialCount: official.length,
+      sources: ["Google News (multi-outlet)", "WHO Disease Outbreak News", "ProMED-mail"],
+      fetchedAt: new Date().toISOString(),
+    },
+  });
 }

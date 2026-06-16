@@ -15,7 +15,7 @@ import { PipelineSchematic } from "./PipelineSchematic";
 import { NewsFeed } from "./NewsFeed";
 import {
   SiteHeader, EarlyWarningBanner, EventLog, LineagePanel, StreamHealthPanel, BriefingCard, ForecastPanel,
-  StreamContribution, LineageTrendChart, GenomicAnomalyChart, RecommendedActions,
+  StreamContribution, LineageTrendChart, GenomicAnomalyChart, RecommendedActions, AssessmentCard, TabContext,
 } from "./panels";
 import { Assistant } from "./Assistant";
 import { CalibrationPanel } from "@/components/dashboard/CalibrationPanel";
@@ -211,6 +211,7 @@ export function DemoConsole({ initialSiteId }: { initialSiteId?: string }) {
             {section === "overview" && (
               <div className="space-y-5">
                 <SiteHeader site={site} />
+                <AssessmentCard site={site} />
                 <EarlyWarningBanner site={site} />
                 <PathogenGrid panels={site.panels} />
                 <Card title="MOSAIC inference pipeline"><PipelineSchematic site={site} /></Card>
@@ -234,8 +235,8 @@ export function DemoConsole({ initialSiteId }: { initialSiteId?: string }) {
             {section === "alerts" && (
               <div className="space-y-5">
                 <SiteHeader site={site} />
-                <Card title={`Outbreak news, ${site.country}`}>
-                  <NewsFeed iso={site.iso} place={site.country} />
+                <Card title={`Outbreak news for ${site.cityName}`}>
+                  <NewsFeed city={site.cityName} iso={site.iso} place={site.country} />
                 </Card>
                 <Card title={`Detector & event log, ${site.events.length} entries`}><EventLog events={site.events} /></Card>
               </div>
@@ -244,6 +245,7 @@ export function DemoConsole({ initialSiteId }: { initialSiteId?: string }) {
             {section === "forecasting" && (
               <div className="space-y-5">
                 <SiteHeader site={site} />
+                <TabContext text={site.interpretation.tab.forecasting} />
                 <div className="grid grid-cols-2 gap-5 sm:grid-cols-4">
                   {[
                     { v: `${(site.pOutbreak * 100).toFixed(0)}%`, l: "P(Rt>1) now" },
@@ -294,6 +296,7 @@ export function DemoConsole({ initialSiteId }: { initialSiteId?: string }) {
             {section === "lineages" && (
               <div className="space-y-5">
                 <SiteHeader site={site} />
+                <TabContext text={site.interpretation.tab.lineages} />
                 <Card title="Lineage composition over time" action={<span className="text-[10px] text-muted-foreground">Nextstrain, rolling 14-window</span>}>
                   <LineageTrendChart site={site} />
                 </Card>
@@ -317,6 +320,7 @@ export function DemoConsole({ initialSiteId }: { initialSiteId?: string }) {
             {section === "fusion" && (
               <div className="space-y-5">
                 <SiteHeader site={site} />
+                <TabContext text={site.interpretation.tab.fusion} />
                 <Card title="Multi-modal Bayesian fusion"><PipelineSchematic site={site} /></Card>
                 <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
                   <Card title="Stream contribution at this site"><StreamContribution site={site} /></Card>
@@ -352,6 +356,7 @@ export function DemoConsole({ initialSiteId }: { initialSiteId?: string }) {
             {section === "briefings" && (
               <div className="space-y-5">
                 <SiteHeader site={site} />
+                <TabContext text={site.interpretation.tab.briefings} />
                 <BriefingCard site={site} />
                 <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
                   <Card title="Recommended actions"><RecommendedActions actions={site.actions} /></Card>
@@ -377,6 +382,7 @@ export function DemoConsole({ initialSiteId }: { initialSiteId?: string }) {
             {section === "streams" && (
               <div className="space-y-5">
                 <SiteHeader site={site} />
+                <TabContext text={site.interpretation.tab.streams} />
                 <Card title="Surveillance stream health"><StreamHealthPanel streams={site.streams} /></Card>
                 <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
                   {[

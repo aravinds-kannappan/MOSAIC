@@ -129,6 +129,28 @@ export interface SiteState {
   jsdSeries: Array<{ day: number; jsd: number; alarm: number }>;
   /** recommended actions for the daily briefing */
   actions: string[];
+  /** city name for news queries (no county/state suffix) */
+  cityName: string;
+  /** rank by P(Rt>1) within the monitored network (1 = highest) */
+  rank: number;
+  networkSize: number;
+  /** plain-language, location-specific interpretation of the numbers */
+  interpretation: SiteInterpretation;
+}
+
+export interface SiteInterpretation {
+  /** one-line analyst headline for this city */
+  headline: string;
+  /** what the current signal means here */
+  assessment: string;
+  /** why it matters: impact framing for this population */
+  soWhat: string;
+  /** specific things to watch at this site */
+  watch: string[];
+  /** how this site compares to the rest of the network */
+  comparison: string;
+  /** short contextual lead lines, one per console tab */
+  tab: { forecasting: string; lineages: string; fusion: string; briefings: string; streams: string };
 }
 
 /* ----------------------------- seeded RNG ----------------------------- */
@@ -164,7 +186,28 @@ const PATHOGENS = [
   { key: "noro", name: "Norovirus", short: "Noro", base: 22, threshold: 70 },
   { key: "mpox", name: "Mpox (MPXV)", short: "Mpox", base: 9, threshold: 50 },
   { key: "measles", name: "Measles (MeV)", short: "Measles", base: 4, threshold: 40 },
+  { key: "dengue", name: "Dengue", short: "Dengue", base: 16, threshold: 60 },
+  { key: "cholera", name: "Cholera", short: "Cholera", base: 6, threshold: 45 },
+  { key: "polio", name: "Poliovirus", short: "Polio", base: 3, threshold: 35 },
+  { key: "hepa", name: "Hepatitis A", short: "Hep A", base: 9, threshold: 55 },
+  { key: "h5n1", name: "Avian flu (H5N1)", short: "H5N1", base: 5, threshold: 40 },
+  { key: "pertussis", name: "Pertussis", short: "Pertussis", base: 12, threshold: 55 },
+  { key: "rota", name: "Rotavirus", short: "Rota", base: 14, threshold: 60 },
 ];
+
+/** Region-specific endemicity bumps so each city's panel reflects its geography. */
+function regionBias(key: string, region: string): number {
+  const tropical = region === "Asia-Pacific" || region === "Africa" || region === "Americas";
+  switch (key) {
+    case "dengue": return tropical ? 24 : -8;
+    case "cholera": return region === "Africa" ? 20 : region === "Asia-Pacific" ? 10 : -3;
+    case "hepa": return region === "Africa" || region === "Asia-Pacific" ? 9 : 0;
+    case "polio": return region === "Asia-Pacific" || region === "Africa" || region === "Middle East" ? 7 : 0;
+    case "rota": return tropical ? 8 : 0;
+    case "measles": return region === "Europe" || region === "Africa" ? 6 : 0;
+    default: return 0;
+  }
+}
 
 const LINEAGE_POOL = ["KP.3.1.1", "XEC", "LB.1", "KP.2.3", "JN.1", "MV.1", "MC.1", "XDV.1"];
 
@@ -240,9 +283,9 @@ function buildSite(raw: RawSite): SiteState {
         level, series: buildSeries(rng, value, realDelta), real: isReal,
       };
     }
-    // modelled off-season respiratory / enteric targets
+    // modelled targets, seasonally and regionally adjusted
     const jitter = (rng() - 0.5) * 18;
-    const value = clamp((p.base ?? 10) + jitter + (raw.percentile - 55) * 0.15, 1, 100);
+    const value = clamp((p.base ?? 10) + jitter + (raw.percentile - 55) * 0.15 + regionBias(p.key, raw.region ?? "United States"), 1, 100);
     const deltaPct = Math.round((rng() - 0.55) * 60);
     const detect = clamp(20 + value * 0.7 + (rng() - 0.5) * 20, 0, 100);
     const level = levelOf(value, p.threshold);
@@ -368,7 +411,72 @@ function buildSite(raw: RawSite): SiteState {
     lineageHistory,
     jsdSeries,
     actions,
+    cityName: raw.label.split(/[,(]/)[0].trim().replace(/ County$/, ""),
+    // filled in by the network pass in getSites()
+    rank: 0,
+    networkSize: 0,
+    interpretation: {
+      headline: "", assessment: "", soWhat: "", watch: [], comparison: "",
+      tab: { forecasting: "", lineages: "", fusion: "", briefings: "", streams: "" },
+    },
   };
+}
+
+/** Location-specific interpretation, computed with network context. */
+function buildInterpretation(s: SiteState, medianP: number, n: number): SiteInterpretation {
+  const p = Math.round(s.pOutbreak * 100);
+  const pop = s.populationServed.toLocaleString();
+  const ratio = medianP > 0 ? s.pOutbreak / medianP : 1;
+  const elevated = s.panels.filter((x) => (x.level === "HIGH" || x.level === "CRITICAL") && x.key !== "sars2");
+  const sars = s.panels[0];
+  const top = s.lineages[0];
+
+  const headline =
+    s.level === "CRITICAL" ? `${s.cityName} is showing a strong, active growth signal.`
+    : s.level === "HIGH" ? `${s.cityName} warrants attention: transmission is probably rising.`
+    : s.level === "MODERATE" ? `${s.cityName} is on watch, with early signs of growth.`
+    : `${s.cityName} is at baseline, with no strong growth signal.`;
+
+  const assessment =
+    `The fused model puts the probability that transmission is rising at ${p}% (Rt around ${s.rt.toFixed(2)}), ` +
+    `${sars.deltaPct > 4 ? "and the wastewater signal is climbing" : sars.deltaPct < -4 ? "and the wastewater signal is easing" : "with the wastewater signal roughly flat"} ` +
+    `(${sars.deltaPct >= 0 ? "+" : ""}${sars.deltaPct.toFixed(0)}% over 15 days). ` +
+    (elevated.length ? `Beyond SARS-CoV-2, ${elevated.map((e) => e.name).join(" and ")} ${elevated.length > 1 ? "are" : "is"} above the local alert threshold.` : `No other tracked pathogen is above threshold here this cycle.`);
+
+  const soWhat =
+    `This catchment serves about ${pop} people, so a ${p}% growth probability is not abstract: at the current trajectory it buys roughly ${s.leadDays} days of warning before cases would surface in ${s.cityName}'s clinics and emergency departments. ` +
+    (s.level === "CRITICAL" || s.level === "HIGH"
+      ? `For a population this size that lead is the window to staff up, restock testing, and brief clinicians before a wave rather than during one.`
+      : s.level === "MODERATE"
+        ? `That lead is currently a planning buffer, not a trigger, but it is the moment to confirm the signal before it hardens.`
+        : `There is nothing to act on today; the value of monitoring here is catching the turn early if it comes.`);
+
+  const comparison =
+    `Its growth probability is ${ratio.toFixed(1)}x the network median and it ranks #${s.rank} of ${n} monitored sites worldwide.`;
+
+  const watch: string[] = [];
+  if (sars.deltaPct > 20) watch.push(`SARS-CoV-2 activity is rising fast (${sars.deltaPct.toFixed(0)}% / 15d); expect ED pressure to follow in roughly two weeks.`);
+  for (const e of elevated) watch.push(`${e.name} is at ${e.value.toFixed(0)} versus a threshold of ${e.threshold}; cross-check syndromic data.`);
+  if (top && top.delta > 0.04) watch.push(`${top.name} is gaining share of sequenced samples; an immune-escape variant can lead even the wastewater concentration.`);
+  if (watch.length === 0) watch.push(`No specific escalations; continue routine weekly sampling and watch for a sustained turn in the wastewater trend.`);
+
+  const denguePanel = s.panels.find((x) => x.key === "dengue");
+  const tab = {
+    forecasting: `For ${s.cityName}, the posterior is ${s.pOutbreak >= 0.5 ? "above" : "below"} the 50% decision line; the ${s.leadDays}-day lead is what this view is buying back for a metro of ${pop}.`,
+    lineages: `${top ? `${top.name} dominates the local mix here` : "The local lineage mix is stable"}, which matters because a rising minor lineage in ${s.cityName} can signal escape before concentrations move.`,
+    fusion: `At ${s.cityName} the signal is led by ${dominantStream(s.streamContrib)}; agreement across independent streams is why this ${p}% can be acted on.`,
+    briefings: `This briefing is written for ${s.cityName} specifically: ${s.level === "LOW" ? "a routine, no-action cycle" : "an active cycle that needs a decision"}.`,
+    streams: `${s.cityName}'s coverage is about ${(s.populationServed / 1000).toFixed(0)}k people; ${denguePanel && denguePanel.value > denguePanel.threshold * 0.8 ? "note dengue is locally relevant given the region" : "stream freshness here is the main data-quality lever"}.`,
+  };
+
+  return { headline, assessment, soWhat, watch, comparison, tab };
+}
+
+function dominantStream(c: { wastewater: number; genomic: number; text: number }): string {
+  const m = Math.max(c.wastewater, c.genomic, c.text);
+  if (m === c.wastewater) return "the wastewater stream";
+  if (m === c.genomic) return "the genomic stream";
+  return "the outbreak-text stream";
 }
 
 function buildActions(
@@ -470,7 +578,15 @@ let _cache: SiteState[] | null = null;
 export function getSites(): SiteState[] {
   if (_cache) return _cache;
   const raws = (sitesData as { sites: RawSite[] }).sites;
-  _cache = raws.map(buildSite).sort((a, b) => b.pOutbreak - a.pOutbreak);
+  const built = raws.map(buildSite).sort((a, b) => b.pOutbreak - a.pOutbreak);
+  const ps = built.map((s) => s.pOutbreak).sort((a, b) => a - b);
+  const median = ps.length ? ps[Math.floor(ps.length / 2)] : 0.2;
+  built.forEach((s, i) => {
+    s.rank = i + 1;
+    s.networkSize = built.length;
+    s.interpretation = buildInterpretation(s, median, built.length);
+  });
+  _cache = built;
   return _cache;
 }
 

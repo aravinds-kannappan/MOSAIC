@@ -127,8 +127,8 @@ The console at `/demo` opens on a site (top by `P(Rt > 1)`) and exposes eight se
 
 | Section | What it shows |
 |---------|---------------|
-| Overview | Site header with status and lead time, an early-warning banner, the per-pathogen signal cards (SARS-CoV-2, influenza, RSV, norovirus, mpox, measles) against alert thresholds, the inference pipeline with live values, circulating lineages, the daily briefing, recent activity, and the global site map. |
-| Alerts | Live WHO and ProMED outbreak news filtered to the site's country, plus the detector and event log. This is real text-stream data fetched at view time. |
+| Overview | A location-specific Assessment that states, in plain language, what the numbers mean for this city and why they matter (the "so what"), with rank in the network and what to watch. Then the site header, early-warning banner, per-pathogen signal cards across 14 targets (SARS-CoV-2, influenza A and B, RSV, norovirus, mpox, measles, dengue, cholera, polio, hepatitis A, H5N1, pertussis, rotavirus, regionally adjusted), the inference pipeline with live values, circulating lineages, the daily briefing, recent activity, and the global site map. |
+| Alerts | Real, live news contextualized to the specific city: multi-outlet local coverage via Google News search, plus WHO and ProMED official reports for the country, plus the detector and event log. Fetched at view time. |
 | Forecasting | The fused `P(Rt > 1)` posterior over a 45-day history and 14-day projection, a stream-contribution breakdown, per-target trajectories, and an explainer of why wastewater leads clinical data. |
 | Lineages | A stacked lineage-composition area chart over rolling windows, the current mix with week-over-week shifts, and a genomic anomaly (JSD) timeline with the alarm threshold. |
 | Fusion | The multi-stream pipeline, the per-stream contribution at this site, the method write-up, and a live reliability diagram from the real calibration computation. |
@@ -159,6 +159,7 @@ All public, no authentication required.
 | Nextstrain lineages | bundled `nextstrain_lineage_snapshots.json` | Pre-computed biweekly lineage frequencies; live `charon` fallback for other pathogens. |
 | WHO Disease Outbreak News | `cms.who.int/api/hubs/diseaseoutbreaknews` | Queried newest-first; surfaced live in the Alerts tab via `/api/v1/news`. |
 | ProMED | `promedmail.org/api/posts` | Current posts API, queried best-effort with hard timeouts. |
+| Google News | `news.google.com/rss/search` | City-specific, multi-outlet health and outbreak coverage parsed from the RSS search feed for the selected sewershed. |
 
 A note on staleness: public feeds lag and freeze. MOSAIC anchors all analysis windows to the latest available data, not to wall-clock time, so the dashboard always shows real signal.
 
@@ -236,7 +237,7 @@ Served by the Next.js app (lite tier) or proxied to the Python backend when `MOS
 | `GET /api/v1/nwss?pathogen=SARS-CoV-2&state=` | National or per-jurisdiction wastewater series and alarm. |
 | `GET /api/v1/nextstrain?pathogen=sars-cov-2` | Genomic JSD anomaly series and top lineages. |
 | `GET /api/v1/promed` | Extracted WHO/ProMED events and per-pathogen daily counts. |
-| `GET /api/v1/news?iso=US&limit=15` | Live WHO and ProMED outbreak news filtered by country, for the console's Alerts tab. |
+| `GET /api/v1/news?city=Dallas&iso=US&limit=12` | Live city-specific media coverage (Google News) plus WHO and ProMED official reports, for the console's Alerts tab. |
 | `GET /api/v1/calibration` | Reliability diagram and ECE, Brier, AUROC. |
 | `GET /api/v1/health` | Per-stream status and data freshness. |
 | `POST /api/chat` | Streaming MOSAIC assistant (Anthropic SDK, tool use). Requires `ANTHROPIC_API_KEY`. |

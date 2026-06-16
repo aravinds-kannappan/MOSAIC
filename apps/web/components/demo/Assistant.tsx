@@ -50,6 +50,7 @@ export function Assistant({ open, onClose, sites, site, section, onNavigate, onS
       siteId: site.id,
       country: site.country,
       section,
+      siteAssessment: `${site.interpretation.headline} ${site.interpretation.assessment} ${site.interpretation.soWhat} ${site.interpretation.comparison}`,
       sites: sites.map((s) => ({ id: s.id, label: s.label, country: s.country, pOutbreak: s.pOutbreak, level: s.level })),
     };
 
