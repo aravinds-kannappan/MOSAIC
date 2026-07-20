@@ -63,39 +63,32 @@ with AI-Driven Calibrated Inference\par}
 
 \begin{center}{\scshape\bfseries Abstract}\end{center}
 \begin{center}\begin{minipage}{0.86\textwidth}\small\noindent
-\textbf{Background and objective.} Pandemic early warning fails less often from a
-lack of data than from a lack of integration and calibration. Wastewater viral
-load, pathogen genomes, and outbreak text reports arrive on different cadences,
-in different units, and with different noise processes, and the probabilities
-ultimately shown to decision-makers are almost never validated. My objective is
-to fuse these three public, authentication-free streams into a single calibrated
-and falsifiable quantity, the posterior probability that the instantaneous
-reproduction number exceeds one, $\Prob(\Rt>1)$, which is the probability that
-transmission is currently growing.
-\\[3pt]
-\textbf{Methods.} I specify a renewal-equation latent-incidence model with
-stream-specific observation kernels (negative-binomial for wastewater, Poisson
-for text-event counts, Dirichlet--multinomial for lineage frequencies) and derive
-each detector from first principles: a Poisson--Gamma Bayesian online
-change-point detector with a windowed-maximum alarm, a Jensen--Shannon
-genomic-anomaly detector with a rolling null, an EpiEstim reproduction-number
-estimator, and a fusion rule that reduces, in the full backend, to a hierarchical
-posterior sampled by the No-U-Turn Sampler. I validate $\Prob(\Rt>1)$ as a
-prospective probabilistic forecast of realised growth on the multi-year CDC
-National Wastewater Surveillance System record.
-\\[3pt]
-\textbf{Results.} Over $N{=}1{,}334$ day-ahead forecasts the system attains an
-Expected Calibration Error of $0.086$, a Brier score of $0.124$, and an AUROC of
-$0.917$; a Murphy decomposition attributes the Brier score to a small reliability
-term ($0.010$) and a large resolution term ($0.136$), so the forecasts are both
-well calibrated and discriminative, and the growth probability leads national wave
-peaks by a median of $68$ days. I also surface and correct a numerical defect in
-the reproduction-number tail probability that silently corrupts large-count
-series.
-\\[3pt]
-\textbf{Conclusion.} An explicit, falsifiable target quantity together with a
-faithful backend-free deployment is a practical route to trustworthy open early
-warning.
+Pandemic early warning fails less often from a lack of data than from a lack of
+integration and calibration. Wastewater viral load, pathogen genomes, and
+outbreak text reports arrive on different cadences, in different units, and with
+different noise processes, and the probabilities ultimately shown to
+decision-makers are almost never validated. I fuse these three public,
+authentication-free streams into a single calibrated and falsifiable quantity,
+the posterior probability that the instantaneous reproduction number exceeds one,
+$\Prob(\Rt>1)$, the probability that transmission is currently growing. I specify
+a renewal-equation latent-incidence model with stream-specific observation
+kernels (negative-binomial for wastewater, Poisson for text-event counts,
+Dirichlet--multinomial for lineage frequencies) and derive each detector from
+first principles: a Poisson--Gamma Bayesian online change-point detector with a
+windowed-maximum alarm, a Jensen--Shannon genomic-anomaly detector with a rolling
+null, an EpiEstim reproduction-number estimator, and a fusion rule that reduces,
+in the full backend, to a hierarchical posterior sampled by the No-U-Turn Sampler.
+I validate $\Prob(\Rt>1)$ as a prospective probabilistic forecast of realised
+growth on the multi-year CDC National Wastewater Surveillance System record: over
+$N{=}1{,}334$ day-ahead forecasts the system attains an Expected Calibration Error
+of $0.086$, a Brier score of $0.124$, and an AUROC of $0.917$; a Murphy
+decomposition attributes the Brier score to a small reliability term ($0.010$) and
+a large resolution term ($0.136$), so the forecasts are both well calibrated and
+discriminative, and the growth probability leads national wave peaks by a median
+of $68$ days. I also surface and correct a numerical defect in the
+reproduction-number tail probability that silently corrupts large-count series. An
+explicit, falsifiable target quantity together with a faithful backend-free
+deployment is a practical route to trustworthy open early warning.
 \\[6pt]
 \textbf{Github:}~\github
 \end{minipage}\end{center}
@@ -1117,7 +1110,7 @@ leads each wave.}
 I evaluate the served probability against realised growth (\S\ref{sec:calmethod})
 over $N=1{,}334$ day-ahead forecasts. The system attains
 \[
-\textbf{ECE}=0.086,\quad \textbf{Brier}=0.124,\quad \textbf{AUROC}=0.917,
+\mathrm{ECE}=0.086,\quad \mathrm{Brier}=0.124,\quad \mathrm{AUROC}=0.917,
 \]
 with base growth rate $0.486$ and mean forecast $0.503$. The reliability curve
 (Figure~\ref{fig:cal}, left; bins in Table~\ref{tab:bins}) tracks the diagonal:
