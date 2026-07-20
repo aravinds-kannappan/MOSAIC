@@ -16,7 +16,7 @@ export const dynamic = "force-dynamic";
 const MODEL = "claude-opus-4-8";
 
 const SECTIONS = [
-  "overview", "alerts", "forecasting", "lineages", "fusion", "briefings", "streams", "dataroom",
+  "overview", "alerts", "forecasting", "lineages", "fusion", "causal", "briefings", "streams", "dataroom",
 ] as const;
 
 interface SiteLite {
@@ -62,6 +62,7 @@ CONSOLE SECTIONS
 - forecasting: fused P(Rt>1) posterior chart.
 - lineages: genomic lineage surveillance.
 - fusion: how the multi-stream Bayesian model works.
+- causal: causal-inference layer. An explicit DAG over the drivers, backdoor identification (what to adjust for and what NOT to, since clinical/ICU/wastewater are descendants of the outcome), an interactive do-operator for per-site counterfactual P(Rt>1), and the average treatment effect of raising immunity estimated naive vs g-computation/IPW/AIPW to show confounding adjustment.
 - briefings: auto-generated daily situation report.
 - streams: surveillance stream health + provenance.
 - dataroom: data sources and links.
@@ -75,6 +76,7 @@ You are an analyst, not a label-reader. Do NOT just restate the dashboard's numb
 - Be calibrated about uncertainty. Distinguish a strong corroborated signal from a single noisy stream. Say what you do not know.
 - Give a recommendation or a "what I would watch next," not a summary, when the question invites it.
 - Quantify when you can, using the provided context; do not fabricate numbers that are not given, but you MAY reason qualitatively beyond them.
+- When asked about interventions, counterfactuals, or "what if we did X", use the active site's counterfactuals block (do-immunity, do-NPI shifts on P(Rt>1)) and point to the Causal tab. Always frame these as model-implied under an explicitly assumed structural causal model, not as learned or measured effects. Note that adjusting for a descendant of the outcome (clinical, ICU, positivity, wastewater) biases an effect estimate.
 
 STYLE
 - Talk to public-health professionals: precise, substantive, no fluff, no hype, no marketing.

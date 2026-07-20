@@ -3,8 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import { Sparkles, X, ArrowUp, Loader2 } from "lucide-react";
 import type { SiteState } from "@/lib/demo/sites";
+import { siteCovariates, counterfactual } from "@/lib/causal";
 
-type Section = "overview" | "alerts" | "forecasting" | "lineages" | "fusion" | "briefings" | "streams" | "dataroom";
+type Section = "overview" | "alerts" | "forecasting" | "lineages" | "fusion" | "causal" | "briefings" | "streams" | "dataroom";
 
 interface Msg { role: "user" | "assistant"; content: string }
 
@@ -46,6 +47,9 @@ export function Assistant({ open, onClose, sites, site, section, onNavigate, onS
     setMessages((m) => [...m, { role: "assistant", content: "" }]);
 
     const elevated = site.panels.filter((p) => p.level === "HIGH" || p.level === "CRITICAL");
+    const cov = siteCovariates(site);
+    const cfImmunity = counterfactual(site, { immunity: Math.min(95, cov.immunity + 15) });
+    const cfNpi = counterfactual(site, { npi: 0.5 });
     const context = {
       siteLabel: site.label,
       siteId: site.id,
@@ -69,6 +73,11 @@ export function Assistant({ open, onClose, sites, site, section, onNavigate, onS
         topLineage: site.variants[0] ? { name: site.variants[0].name, growthAdvantage: site.variants[0].growthAdvantage, immuneEscape: site.variants[0].immuneEscape } : null,
         scenarios: site.scenarios,
         streamContrib: site.streamContrib,
+        counterfactuals: {
+          note: "Model-implied under the assumed structural causal model (Causal tab).",
+          doImmunityPlus15pp: Number((cfImmunity.delta * 100).toFixed(1)),
+          doNpiHalfPP: Number((cfNpi.delta * 100).toFixed(1)),
+        },
       },
       topSites: [...sites].slice(0, 6).map((s) => ({ label: s.label, pOutbreak: s.pOutbreak, level: s.level })),
       sites: sites.map((s) => ({ id: s.id, label: s.label, country: s.country, pOutbreak: s.pOutbreak, level: s.level })),

@@ -95,6 +95,34 @@ def run_detect_kl_anomaly() -> bool:
         return False
 
 
+def run_causal() -> bool:
+    """Run the causal-inference layer: identification + treatment-effect estimation."""
+    print("\n[causal] Structural causal model + treatment-effect estimation…")
+    try:
+        from mosaic_core.causal import causal_report
+
+        r = causal_report(do_immunity=80, do_npi=0.5)
+        ident = r["identification"]
+        eff = r["effects"]
+        print(f"  treatment: {ident['treatment']} -> outcome: {ident['outcome']}")
+        print(f"  adjustment set: {ident['adjustment_set']}")
+        print(f"  never adjust for (bad controls): {ident['bad_controls']}")
+        print(f"  backdoor paths to block: {ident['n_backdoor_paths']}")
+        print(f"\n  true ATE (SCM):        {eff['true_ate'] * 100:+.1f} pp")
+        for name, e in eff["estimates"].items():
+            print(f"    {name:<14} {e['ate'] * 100:+.1f} pp  [{e['ci_low'] * 100:+.1f}, {e['ci_high'] * 100:+.1f}]")
+        print(f"    bad control     {eff['bad_control']['ate'] * 100:+.1f} pp  (biased by conditioning on a descendant)")
+        cf = r["counterfactual"]
+        print(f"\n  counterfactual do({cf['interventions']}): "
+              f"P(Rt>1) {cf['p_observed'] * 100:.1f}% -> {cf['p_counterfactual'] * 100:.1f}% "
+              f"({cf['delta'] * 100:+.1f} pp)")
+        print(f"\n  {r['assumptions_note']}")
+        return True
+    except Exception as e:
+        logger.error("Causal layer failed: %s", e)
+        return False
+
+
 def run_all() -> bool:
     """Run the complete pipeline: ingest → detect."""
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
@@ -151,6 +179,7 @@ Examples:
     subparsers.add_parser("detect-bocpd", help="Run BOCPD detection only")
     subparsers.add_parser("detect-beast", help="Run BEAST detection only")
     subparsers.add_parser("detect-kl-anomaly", help="Run KL-divergence detection only")
+    subparsers.add_parser("causal", help="Run the causal-inference layer (identification + ATE)")
 
     args = parser.parse_args()
 
@@ -174,6 +203,9 @@ Examples:
         sys.exit(0 if success else 1)
     elif args.command == "detect-kl-anomaly":
         success = run_detect_kl_anomaly()
+        sys.exit(0 if success else 1)
+    elif args.command == "causal":
+        success = run_causal()
         sys.exit(0 if success else 1)
     else:
         parser.print_help()
