@@ -19,10 +19,10 @@
 % , - arXiv-style headings (small caps) , , , , , , , , , , , , -
 \titleformat{\section}{\large\bfseries\scshape}{\thesection}{0.6em}{}
 \titleformat{\subsection}{\normalsize\bfseries\scshape}{\thesubsection}{0.6em}{}
-\titleformat{\subsubsection}{\normalsize\itshape}{\thesubsubsection}{0.6em}{}
-% Run-in paragraph leads are italic, not bold, so the sub-topics read as part of
-% the prose rather than as disconnected bold labels.
-\titleformat{\paragraph}[runin]{\normalfont\itshape}{}{0pt}{}\titlespacing*{\paragraph}{0pt}{4pt}{0.5em}
+\titleformat{\subsubsection}{\normalsize\bfseries}{\thesubsubsection}{0.6em}{}
+% Run-in paragraph leads and subsubsection headings are bold, not italic, matching
+% standard arXiv style.
+\titleformat{\paragraph}[runin]{\normalfont\bfseries}{}{0pt}{}\titlespacing*{\paragraph}{0pt}{4pt}{0.5em}
 \captionsetup{font=small,labelfont=bf}
 \setlength{\tabcolsep}{4pt}
 \renewcommand{\arraystretch}{1.05}
@@ -126,14 +126,14 @@ trust and act on.
 The stakes of this gap are asymmetric. In the exponential-growth phase of an
 epidemic, a detection delay of a single generation interval can multiply the
 eventual burden, because the number of infections at the moment of intervention
-sets the scale of everything that follows. Conversely, a \emph{false} alarm is
+sets the scale of everything that follows. Conversely, a false alarm is
 comparatively cheap if it is accompanied by an honest probability and an explicit
 uncertainty, because a calibrated $30\%$ invites monitoring rather than
 lockdown. This asymmetry is the reason I privilege early, probabilistic,
-\emph{calibrated} signals over late, categorical, point alerts.
+calibrated signals over late, categorical, point alerts.
 
 This points to two binding constraints, neither of which is data scarcity.
-The first is \emph{integration}: municipal wastewater is sampled routinely and
+The first is integration: municipal wastewater is sampled routinely and
 published as a standing national program \citep{nwss,naughton2023}; pathogen
 genomes are deposited continuously and shared openly with phylogenetic context
 \citep{hadfield2018}; and structured outbreak reports are issued by the World
@@ -145,7 +145,7 @@ counts), and differently noised (over-dispersed counts versus
 Dirichlet--multinomial composition versus heavy-tailed reporting). Turning them
 into one coherent signal is a statistical, not merely an engineering, problem.
 
-The second constraint is \emph{calibration}. A system that emits a number, ``a
+The second constraint is calibration. A system that emits a number, ``a
 $78\%$ chance of growth'', is only useful if that number means what it says: if,
 across the many times the system says $78\%$, the event happens about $78\%$ of
 the time. Modern statistical and machine-learning systems are frequently and
@@ -162,12 +162,12 @@ p_t \;=\; \Prob\!\big(\Rt > 1 \,\big|\, \text{data up to } t\big),
 \end{equation}
 where $\Rt$ is the instantaneous (effective) reproduction number, the expected
 number of secondary infections per infectious individual at time $t$. I choose
-Eq.~\eqref{eq:target} for three reasons. It is \emph{unitless}, hence comparable
+Eq.~\eqref{eq:target} for three reasons. It is unitless, hence comparable
 across pathogens, locations, and data modalities. It has a crisp
-\emph{operational} meaning: $\Rt>1$ is exactly the condition under which the
-epidemic curve is turning upward. And, crucially, it is \emph{falsifiable}: the
+operational meaning: $\Rt>1$ is exactly the condition under which the
+epidemic curve is turning upward. And, crucially, it is falsifiable: the
 event $\{\Rt>1\}$ is, with a lag, observable through subsequent growth, so the
-calibration of $p_t$ is something one can \emph{measure} rather than merely
+calibration of $p_t$ is something one can measure rather than merely
 assert. This last property is what allows me to report, in
 \S\ref{sec:results}, an Expected Calibration Error for the live system rather
 than a methodological promise.
@@ -195,7 +195,7 @@ documented numerical correction I recommend other implementations check.
 A recurring failure of research surveillance tools is that they are demonstrated
 once and then decay, because they depend on a server, a credentialed data feed,
 or a maintainer's laptop. A second theme of this paper is therefore
-\emph{operational}: the entire MOSAIC pipeline runs in a serverless edge
+operational: the entire MOSAIC pipeline runs in a serverless edge
 function with no backend and no authenticated data access, so the public
 dashboard is always live and reproducible by anyone who forks the repository.
 This constraint is not free, it forces every detector to have a closed-form or
@@ -228,7 +228,7 @@ independent of care-seeking and testing behaviour
 metrics; the U.S.\ NWSS reports, per site, a percentile of current activity
 relative to that site's own history. Most public-facing tools display
 concentrations or qualitative trend arrows. MOSAIC instead converts the national
-record into a \emph{calibrated growth probability}, which is what makes its
+record into a calibrated growth probability, which is what makes its
 output validatable.
 
 \paragraph{Reproduction-number estimation.}
@@ -292,7 +292,7 @@ evaluated in closed form on the edge without a sampler at all.
 \label{sec:problem}
 
 I index discrete time (days) by $t$. The unit of analysis is a
-\emph{surveillance cell} $(k,\ell)$: a pathogen $k$ in a location $\ell$. For a
+surveillance cell $(k,\ell)$: a pathogen $k$ in a location $\ell$. For a
 fixed cell, let $I_t \ge 0$ denote latent new infections on day $t$. The three
 streams provide noisy, lagged, partial observations of $I_{1:T}$:
 \begin{itemize}[leftmargin=1.2em,itemsep=1pt,topsep=2pt]
@@ -373,7 +373,7 @@ renormalised; for SARS-CoV-2 I use mean $5.1$ and standard deviation $4.0$ days
 The renewal equation is the discrete-time analogue of the Lotka integral equation
 of demography and underlies essentially all modern $\Rt$ estimators
 \citep{wallinga2004,fraser2007,cori2013}. Its key property for my purposes is
-that $\Rt$ is a \emph{local} quantity: it depends only on the ratio of current
+that $\Rt$ is a local quantity: it depends only on the ratio of current
 incidence to recent infectiousness, not on the absolute scale of the epidemic.
 This is what lets me read $\{\Rt>1\}$ off a relative activity index such as the
 wastewater percentile without knowing the true number of infections, and it is
@@ -471,11 +471,11 @@ Forecast damping $\phi$ & $0.8$ & mean-reversion \\
 \subsubsection{Bayesian online change-point detection}
 \label{sec:bocpd}
 For the count streams I detect abrupt regime changes with BOCPD
-\citep{adams2007}. Let $r_t\in\{0,1,2,\dots\}$ be the \emph{run length}, the
+\citep{adams2007}. Let $r_t\in\{0,1,2,\dots\}$ be the run length, the
 number of steps since the last change-point. BOCPD maintains the joint
 $p(r_t, n_{1:t})$ and hence the run-length posterior $p(r_t\mid n_{1:t})$ by a
-forward recursion with two messages: a \emph{growth} message (no change, run
-length increments) and a \emph{change-point} message (run length resets to $0$).
+forward recursion with two messages: a growth message (no change, run
+length increments) and a change-point message (run length resets to $0$).
 With a constant hazard $H=1/\mu_{\mathrm{RL}}$,
 \begin{align}
 p(r_t{=}r{+}1, n_{1:t}) &= p(r_{t-1}{=}r, n_{1:t-1})\,(1{-}H)\,\pi_r(n_t),\label{eq:growth}\\
@@ -516,7 +516,7 @@ floor $\approx H$. Hence the cumulative ``has a change occurred in the window''
 probability $1-\prod_{\tau}(1-P(r_\tau{=}0))$ converges to $1$ as $W$ grows,
 independently of the data.
 \end{proposition}
-\noindent\emph{Sketch.} If $P(r_\tau{=}0)\ge H>0$ for all $\tau$, then
+\noindent\textbf{Sketch.} If $P(r_\tau{=}0)\ge H>0$ for all $\tau$, then
 $\prod_{\tau=t-W+1}^{t}(1-P(r_\tau{=}0)) \le (1-H)^{W}\to 0$, so the complement
 $\to 1$. The windowed maximum \eqref{eq:cp-alarm} instead returns the single
 strongest recent reset, which stays near the floor under the null and spikes only
@@ -631,7 +631,7 @@ $\jsd$ is symmetric and satisfies $0\le\jsd(\mathbf p\|\mathbf q)\le\log 2$, wit
 equality on the left iff $\mathbf p=\mathbf q$ and on the right iff the supports
 are disjoint. It is finite even when some component frequencies are zero.
 \end{lemma}
-\noindent\emph{Sketch.} Symmetry is immediate from \eqref{eq:jsd}. Writing
+\noindent\textbf{Sketch.} Symmetry is immediate from \eqref{eq:jsd}. Writing
 $\jsd=\mathcal H(\mathbf m)-\tfrac12\mathcal H(\mathbf p)-\tfrac12\mathcal H(\mathbf q)$
 with $\mathcal H$ the Shannon entropy, Jensen's inequality gives $\jsd\ge0$, and
 each KL term is bounded by $\log2$ because $\mathbf m\ge\tfrac12\mathbf p$ so
@@ -640,7 +640,7 @@ $\KL(\mathbf p\|\mathbf m)\le\log 2$; finiteness follows because $\mathbf m_i=0
 
 \noindent The alarm is the empirical right-tail probability of $\jsd$ against a
 null estimated from quiescent windows. A degenerate single-lineage panel has
-$\jsd\equiv0$ and is reported as \emph{no} anomaly rather than a spurious one.
+$\jsd\equiv0$ and is reported as no anomaly rather than a spurious one.
 
 \paragraph{A complexity pitfall.}
 A naive implementation recomputes each window's ordered frequency vector inside
@@ -760,13 +760,13 @@ $p_k$ in \eqref{eq:noisyor} is non-decreasing in each $a^{(j)}_k$, equals
 $\max_j a^{(j)}_k$ when a single stream is present, and satisfies
 $p_k\ge\frac{1}{|\mathcal A_k|}\max_j a^{(j)}_k$ always.
 \end{proposition}
-\noindent\emph{Sketch.} Monotonicity is immediate since
+\noindent\textbf{Sketch.} Monotonicity is immediate since
 $\partial p_k/\partial a^{(j)}=\omega_j\prod_{j'\ne j}q_{j'}\ge0$. With one
 present stream $|\mathcal A_k|{=}1$, $\omega{=}1$ and $p_k=a$. For the bound,
 expanding the product keeps the first-order term $\omega_j a^{(j)}$, and all
 omitted terms are non-negative. $\square$
 
-\emph{Renormalising} the weights over the present streams (rather than over all
+Renormalising the weights over the present streams (rather than over all
 three) is exactly what makes Proposition~\ref{prop:fuse} useful: a filovirus seen
 only in text has no wastewater or genomic panel, and dividing its single alarm by
 three would bury a real outbreak. With renormalisation a text-only cell uses
@@ -828,65 +828,127 @@ projection.
 \subsection{Causal interpretation and interventional queries}
 \label{sec:causal}
 
-The calibrated posterior $p_t=\Prob(\Rt>1)$ is an \emph{observational} quantity:
-it says whether transmission is growing, not what would happen under an action.
-To support interventional and counterfactual questions I add an explicit causal
-layer, and I am deliberate about its epistemic status. Open surveillance data
-contain no randomised interventions, so no treatment effect can be identified
+The calibrated posterior $p_t=\Prob(\Rt>1)$ is an observational quantity: it
+reports whether transmission is growing, not what would happen under an action.
+A public-health team, however, does not only ask whether growth is underway; it
+asks what a lever it controls, raising immunity coverage, tightening travel, or
+imposing a non-pharmaceutical intervention (NPI), would do to that growth, and
+which of the many correlated drivers actually causes it rather than merely
+mirroring it. Answering interventional and counterfactual questions requires a
+causal model, and I am explicit about its epistemic status. Open surveillance
+data contain no randomised interventions, so no treatment effect is identifiable
 from outcomes alone; the graph and the structural coefficients below are stated
-\emph{assumptions}, exposed to the user, and every effect they produce is
-model-implied.
+assumptions, displayed to the user rather than hidden, and every quantity the
+layer reports is model-implied under them. The one empirical anchor is each
+site's observed $\Rt$, which the counterfactual is constructed to reproduce
+exactly at the null intervention.
 
-\paragraph{Causal graph.} I posit a directed acyclic graph $\mathcal G$ over the
-driver covariates (climate suitability, immunity coverage, travel inflow), a
-non-pharmaceutical-intervention (NPI) policy lever, the dominant-variant growth
-advantage, latent incidence, and the growth outcome $\Rt$. The three drivers and
-the NPI lever are causes of $\Rt$; the wastewater, clinical, test-positivity,
-ICU, and genomic signals are \emph{descendants} of latent incidence. Standard
-graph operations then give, for a treatment $X$ (e.g.\ immunity) and outcome
-$\Rt$, the backdoor adjustment set and the set of forbidden ``bad controls'', the
-descendants of $X$ or of $\Rt$ \citep{pearl2009,cinelli2022}. The descendant
-structure is the substantive point: conditioning on a consequence of transmission
-(ICU headroom, clinical visits) does not clean up an effect estimate, it biases
-it.
+\paragraph{Causal graph.} I posit a directed acyclic graph $\mathcal G$
+(Fig.~\ref{fig:causal_dag}) over the driver covariates (climate suitability
+$C$, immunity coverage $V$, travel inflow $M$), an NPI policy lever $A$, the
+dominant-variant growth advantage $G$, a regional context $R$, latent incidence,
+and the growth outcome $\Rt$. The drivers, the variant term, and the NPI lever
+are causes of $\Rt$; crucially, the measured surveillance signals, wastewater
+activity, clinical syndromic visits, test positivity, ICU headroom, and the
+genomic anomaly, are all descendants of latent incidence, which is itself driven
+by $\Rt$. This descendant structure is the substantive point. For a treatment
+$X$ and outcome $\Rt$ the layer computes, directly on $\mathcal G$, the set of
+open backdoor paths, a valid adjustment set by the backdoor criterion, and the
+forbidden ``bad controls'', the descendants of $X$ or of $\Rt$
+\citep{pearl2009,cinelli2022}. For the immunity effect there is a single backdoor
+path $V \leftarrow R \rightarrow C \rightarrow \Rt$, blocked by adjusting for
+$\{R,C\}$, whereas the five downstream signals are bad controls: conditioning on
+a consequence of transmission does not remove confounding, it opens or amputates
+part of the very effect being estimated. d-separation, the adjustment set, and
+the bad-control set are computed by path enumeration on the graph and are
+unit-tested.
 
-\paragraph{Structural model and interventions.} On the log scale I take
-$\log\Rt = \beta_0 + \beta_{\mathrm c}\,\mathrm{climate} + \beta_{\mathrm i}\,
-\mathrm{immunity} + \beta_{\mathrm m}\,\mathrm{mobility} + \beta_{\mathrm v}\,
-\mathrm{variant} + \beta_{\mathrm n}\,\mathrm{npi} + u_R$, with
-$\beta_{\mathrm i},\beta_{\mathrm n}<0$ and
-$\beta_{\mathrm c},\beta_{\mathrm m},\beta_{\mathrm v}>0$, coefficients fixed to
-literature-anchored values (for instance a strong NPI reducing $\Rt$ by about
-$30\%$). The intervention $\mathrm{do}(X{=}x)$ is graph surgery on $\mathcal G$;
-counterfactuals follow Pearl's abduction--action--prediction, recovering the
-site residual $u_R$ so the null intervention reproduces the observed $\Rt$
-exactly, then reading off $\Prob(\Rt>1)=\Phi(\log\Rt/\sigma)$ under the action.
-This yields per-site counterfactual growth probabilities and individual
-treatment effects.
+\paragraph{Structural causal model.} On the log scale I take a linear structural
+equation for growth,
+\begin{equation}
+\resizebox{0.92\columnwidth}{!}{$\displaystyle
+\log\Rt = \beta_0 + \beta_{C}(C{-}\bar C) + \beta_{V}(V{-}\bar V)
++ \beta_{M}(M{-}\bar M) + \beta_{G}(G{-}\bar G) + \beta_{A} A + u_R$},
+\label{eq:scm}
+\end{equation}
+with $\beta_{V},\beta_{A}<0$ (immunity and NPIs reduce transmission) and
+$\beta_{C},\beta_{M},\beta_{G}>0$, and a growth probability obtained from the
+same Gaussian tail used for the renewal posterior,
+$\Prob(\Rt>1)=\Phi(\log\Rt/\sigma)$. The coefficients are fixed to
+literature-anchored magnitudes rather than fitted (for instance $\beta_A$ set so
+a full-intensity NPI cuts $\Rt$ by about $30\%$, consistent with
+\citealp{flaxman2020}); they are shown in the console alongside the graph, so the
+assumptions travel with the answer.
 
-\paragraph{Confounding-adjusted effect estimation.} For a population summary I
-estimate the average treatment effect of a lever with confounding adjustment
-four ways: the naive contrast, g-computation \citep{robins1986}, inverse
-propensity weighting, and doubly-robust augmented IPW, each with a bootstrap
-interval. On a cohort simulated from a known structural model with confounded
-assignment (Fig.~\ref{fig:causal}), the naive estimate is biased while the three
-adjusted estimators recover the truth; adding a descendant of the outcome to the
-adjustment set reintroduces bias, reproducing the classic bad-control failure.
-The estimators, the graph operations, and this recovery property are unit-tested
-against the known-truth simulation.
+\paragraph{Interventions, counterfactuals, potential outcomes.} The intervention
+$\mathrm{do}(X{=}x)$ is graph surgery: sever the arrows into $X$, fix its value,
+and propagate \eqref{eq:scm} to $\Rt$. Site-level counterfactuals follow Pearl's
+three-step recipe \citep{pearl2009}. Abduction recovers the exogenous
+residual that reconciles the model with the observation,
+$u_R=\log\Rt^{\mathrm{obs}}-f_\beta(X^{\mathrm{obs}})$, where $f_\beta$ is the
+structural mean in \eqref{eq:scm}; the action step applies $\mathrm{do}(X_j{=}x')$;
+and prediction reads off
+$\Rt^{\mathrm{cf}}=\exp\!\big(f_\beta(X_{-j}^{\mathrm{obs}},x')+u_R\big)$ and
+$\Prob(\Rt>1)^{\mathrm{cf}}=\Phi(\log\Rt^{\mathrm{cf}}/\sigma)$. Holding $u_R$
+fixed guarantees the null intervention reproduces the site's observed value
+exactly, so the reported counterfactual is a shift from the real headline rather
+than a re-simulation. For a binary treatment this gives the potential outcomes
+$Y_i(0),Y_i(1)$ and the individual treatment effect $Y_i(1)-Y_i(0)$.
 
-\begin{figure}[t]
+\paragraph{Confounding-adjusted effect estimation.} For a population summary of a
+lever's effect I estimate the average treatment effect
+$\tau=\E[Y(1)-Y(0)]$ across the site cohort with a confounded treatment
+(high-immunity sites concentrate in regions whose climate independently raises
+growth). Writing $\hat e(x)=\hat\Prob(T{=}1\mid X{=}x)$ for a fitted propensity
+and $\hat\mu(t,x)=\hat\E[Y\mid T{=}t,X{=}x]$ for a fitted outcome model over the
+backdoor set $X=\{R,C\}$, I compute four estimators
+\citep{robins1986,hernanrobins2020}:
+\begin{equation}
+\hat\tau_{\mathrm{naive}} = \bar Y_{T=1}-\bar Y_{T=0},
+\label{eq:naive}
+\end{equation}
+\begin{equation}
+\hat\tau_{\mathrm{g}} = \tfrac1n\textstyle\sum_i\big[\hat\mu(1,X_i)-\hat\mu(0,X_i)\big],
+\label{eq:gcomp}
+\end{equation}
+\begin{equation}
+\resizebox{0.92\columnwidth}{!}{$\displaystyle
+\hat\tau_{\mathrm{ipw}} =
+\frac{\sum_i T_iY_i/\hat e_i}{\sum_i T_i/\hat e_i}
+-\frac{\sum_i (1{-}T_i)Y_i/(1{-}\hat e_i)}{\sum_i (1{-}T_i)/(1{-}\hat e_i)}$},
+\label{eq:ipw}
+\end{equation}
+\begin{equation}
+\resizebox{0.95\columnwidth}{!}{$\displaystyle
+\hat\tau_{\mathrm{aipw}} = \tfrac1n\sum_i\Big[
+\hat\mu(1,X_i)-\hat\mu(0,X_i)
++\tfrac{T_i(Y_i-\hat\mu(1,X_i))}{\hat e_i}
+-\tfrac{(1{-}T_i)(Y_i-\hat\mu(0,X_i))}{1{-}\hat e_i}\Big]$},
+\label{eq:aipw}
+\end{equation}
+with confidence intervals from a seeded nonparametric bootstrap over sites. The
+naive contrast \eqref{eq:naive} ignores confounding; g-computation \eqref{eq:gcomp}
+standardises the outcome model; IPW \eqref{eq:ipw} reweights by the propensity in
+the stabilised (H\'ajek) form; and augmented IPW \eqref{eq:aipw} is doubly
+robust, consistent if either the outcome model or the propensity model is
+correct. The propensity is a ridge-regularised logistic fit by iteratively
+reweighted least squares and the outcome models are ridge linear fits, both
+implemented from first principles with no external estimator library, so the lite
+tier and the Python backend agree numerically.
+
+\begin{figure*}[t]
 \centering
-\includegraphics[width=0.86\linewidth]{figures/fig_causal.pdf}
-\caption{Causal treatment-effect estimation. Average treatment effect of raising
-immunity coverage on $\Prob(\Rt>1)$, estimated four ways against the structural
-model's known truth (dashed). Confounded treatment assignment biases the naive
-contrast; g-computation, IPW, and doubly-robust AIPW recover the truth after
-backdoor adjustment; conditioning on a descendant of the outcome (ICU headroom)
-is a bad control that reintroduces bias. All values are model-implied under the
-stated assumptions.}
-\label{fig:causal}
-\end{figure}
+\includegraphics[width=0.92\linewidth]{figures/fig_causal_dag.pdf}
+\caption{The assumed causal graph $\mathcal G$. Upstream causes of growth
+(climate, immunity, travel inflow, NPI intensity, variant advantage) sit on the
+left; the outcome $\Rt$ drives latent incidence, and every measured surveillance
+signal on the right is a descendant of that incidence. For the immunity effect
+the backdoor criterion selects the adjustment set $\{$region$\}$ (dashed ring),
+while the five downstream signals are bad controls (dashed red): conditioning on
+a consequence of transmission reintroduces bias. Red edges denote a
+transmission-reducing (negative) structural effect.}
+\label{fig:causal_dag}
+\end{figure*}
 
 % ============================================================================
 \subsection{Calibration methodology}
@@ -895,14 +957,14 @@ stated assumptions.}
 For probabilistic forecasts $\{(p_i,y_i)\}_{i=1}^N$ with $y_i\in\{0,1\}$ I use
 four standard instruments. Partition $[0,1]$ into bins $\{B_b\}$ with mean
 prediction $\bar p_{B_b}$ and observed frequency $\bar y_{B_b}$. The
-\emph{reliability diagram} plots $\bar y_{B_b}$ against $\bar p_{B_b}$; a perfect
-forecaster lies on the diagonal. The \emph{Expected Calibration Error}
+reliability diagram plots $\bar y_{B_b}$ against $\bar p_{B_b}$; a perfect
+forecaster lies on the diagonal. The Expected Calibration Error
 \citep{guo2017} is the average diagonal gap,
 \begin{equation}
 \mathrm{ECE}=\sum_b\frac{|B_b|}{N}\,\big|\bar p_{B_b}-\bar y_{B_b}\big|.
 \label{eq:ece}
 \end{equation}
-The \emph{Brier score} $\mathrm{BS}=\frac1N\sum_i(p_i-y_i)^2$ is a strictly proper
+The Brier score $\mathrm{BS}=\frac1N\sum_i(p_i-y_i)^2$ is a strictly proper
 scoring rule \citep{brier1950,gneiting2007} and admits the Murphy decomposition
 \citep{murphy1973}
 \begin{equation}
@@ -913,13 +975,13 @@ scoring rule \citep{brier1950,gneiting2007} and admits the Murphy decomposition
 \label{eq:murphy}
 \end{equation}
 which separates miscalibration (reliability, lower is better) from informativeness
-(resolution, higher is better). Finally, the \emph{AUROC} measures rank
+(resolution, higher is better). Finally, the AUROC measures rank
 discrimination between positive and negative days via the Mann--Whitney identity,
 $\mathrm{AUROC}=\frac{1}{|P||N|}\sum_{i\in P}\sum_{j\in N}\big(\mathbf 1[p_i>p_j]+\tfrac12\mathbf 1[p_i=p_j]\big)$.
 
-Two further summaries are useful. The \emph{Maximum Calibration Error} replaces
+Two further summaries are useful. The Maximum Calibration Error replaces
 the average in \eqref{eq:ece} with a maximum over bins and bounds the worst-case
-gap. \emph{Sharpness} is the variance of the forecasts, $\frac1N\sum_i(p_i-\bar
+gap. Sharpness is the variance of the forecasts, $\frac1N\sum_i(p_i-\bar
 p)^2$; a forecaster can be perfectly calibrated yet useless if it always emits the
 base rate (zero sharpness), so calibration must be read together with sharpness
 and resolution, which is why I report all of them.
@@ -933,7 +995,7 @@ This is the operational content of $\Prob(\Rt>1)$: the probability that activity
 is about to rise. The protocol is strictly prospective, the prediction at $t$
 uses only data up to $t$, and the outcome uses only data after $t$, so there is
 no leakage, and the $1{,}334$ forecast--outcome pairs are produced by sliding $t$
-across the entire record. I deliberately do \emph{not} apply any post-hoc
+across the entire record. I deliberately do not apply any post-hoc
 recalibration before reporting, so the diagram in \S\ref{sec:results} reflects the
 raw served probability; I revisit recalibration in \S\ref{sec:discuss}.
 
@@ -942,9 +1004,9 @@ raw served probability; I revisit recalibration in \S\ref{sec:discuss}.
 \label{sec:impl}
 
 MOSAIC runs in two faithful tiers that share observation models and target. The
-\emph{lightweight tier} executes the entire pipeline, BOCPD, JSD, EpiEstim,
+lightweight tier executes the entire pipeline, BOCPD, JSD, EpiEstim,
 fusion, calibration, and forecasting, in TypeScript on serverless
-infrastructure, with no backend; the \emph{full tier} fits the hierarchical
+infrastructure, with no backend; the full tier fits the hierarchical
 posterior \eqref{eq:joint} in Python with NumPyro when a backend URL is
 configured. Three engineering decisions make the lightweight tier robust.
 
@@ -1001,6 +1063,7 @@ Endpoint & Purpose \\
 \code{/nextstrain} & genomic JSD anomaly series \\
 \code{/promed} & extracted events + daily counts \\
 \code{/calibration} & reliability diagram + metrics \\
+\code{/causal} & DAG + adjustment set + ATE \\
 \code{/health} & per-stream status + freshness \\
 \bottomrule
 \end{tabular}
@@ -1032,8 +1095,8 @@ The mechanism is worth stating because it explains why the calibration succeeds.
 Faecal shedding of SARS-CoV-2 begins early in infection and is independent of
 whether the infected person seeks care or gets tested, so wastewater activity is a
 near-real-time census of community prevalence rather than a lagged, ascertainment-
-biased proxy like reported cases. The renewal estimator turns the \emph{level} of
-that census into a statement about its \emph{slope}: $\Prob(\Rt>1)$ is high exactly
+biased proxy like reported cases. The renewal estimator turns the level of
+that census into a statement about its slope: $\Prob(\Rt>1)$ is high exactly
 when recent activity exceeds what the past few weeks of activity would generate
 under a stationary reproduction number. Reading the figure wave by wave, each
 winter and summer wave is preceded by a red excursion above $50\%$ weeks before
@@ -1066,11 +1129,11 @@ under-confidence in the high bins.
 This is what makes the number actionable. A decision-maker reading a calibrated
 $30\%$ knows it is a watch-and-wait signal that will be wrong about a third of the
 time, while a calibrated $80\%$ warrants a concrete response; the two are
-\emph{different} recommendations precisely because the probability is faithful.
+different recommendations precisely because the probability is faithful.
 An uncalibrated score, however good its ranking, does not support this kind of
 threshold-based decision, because the threshold's meaning drifts with the data.
 The direction of the residual miscalibration is also benign for early warning: the
-high bins grow \emph{more} often than stated (the model is under-confident, not
+high bins grow more often than stated (the model is under-confident, not
 over-confident), so the system errs toward caution rather than false
 reassurance. I report the raw curve without the single isotonic recalibration map
 that would close this gap, both for honesty and because the gap is small enough
@@ -1132,7 +1195,7 @@ provide. The lineage panel underneath makes the same story concrete: the origina
 B-lineage gives way abruptly to Omicron at the end of 2021, after which a sequence
 of sub-lineages (BA.2, BA.5, the XBB family, JN.1, and the 2025 recombinants)
 each rises and falls, and every one of these turnovers registers as a divergence
-excursion. The genomic stream is therefore highly \emph{informative} about
+excursion. The genomic stream is therefore highly informative about
 antigenic change, but, unlike the wastewater stream, its alarm is not, on its
 own, a calibrated probability of growth, because a lineage turnover need not
 coincide with a change in transmission. This is the empirical reason I calibrate
@@ -1208,15 +1271,15 @@ the growing uncertainty of multi-week projection.
 \end{figure}
 
 \subsection{Discrimination and sharpness}
-Beyond calibration I examine \emph{discrimination}, the ability to separate
-growth from non-growth days, and \emph{sharpness}, how concentrated the
+Beyond calibration I examine discrimination, the ability to separate
+growth from non-growth days, and sharpness, how concentrated the
 forecasts are away from the base rate. Figure~\ref{fig:roc} (left) plots the ROC
 curve; the area under it is $0.917$, far above the chance diagonal, so a randomly
 chosen growth day receives a higher $\Prob(\Rt>1)$ than a randomly chosen
 non-growth day $92\%$ of the time. Figure~\ref{fig:roc} (right) shows the
 distribution of predicted probabilities: it is bimodal, with substantial mass
 near $0$ and near $1$, and a mean of $0.50$ that matches the base growth rate of
-$0.49$. A sharp \emph{and} calibrated forecaster is the goal, sharpness without
+$0.49$. A sharp and calibrated forecaster is the goal, sharpness without
 calibration is overconfidence, calibration without sharpness is the useless
 climatological forecast, and MOSAIC achieves both.
 
@@ -1235,8 +1298,8 @@ distribution is bimodal and its mean matches the base rate.}
 The validation outcome depends on the horizon $h$ over which I ask whether
 activity rises. Table~\ref{tab:horizon} and Figure~\ref{fig:horizon} sweep
 $h\in\{7,14,21,28\}$ days. A clear and interpretable trade-off emerges: as the
-horizon lengthens, the ECE \emph{improves} (from $0.100$ at one week to $0.044$ at
-four weeks) while the AUROC \emph{declines} (from $0.931$ to $0.861$). Longer
+horizon lengthens, the ECE improves (from $0.100$ at one week to $0.044$ at
+four weeks) while the AUROC declines (from $0.931$ to $0.861$). Longer
 horizons average out short-term noise in the growth label, which makes the
 probability easier to calibrate, but they also blur the near-term signal the
 instantaneous $\Rt$ is designed to capture, which costs discrimination. The
@@ -1272,7 +1335,7 @@ $h$ & $N$ & ECE & Brier & AUROC \\
 EpiEstim requires an assumed generation/serial interval, which is uncertain in
 practice. Table-free, I sweep the assumed serial-interval mean from $3.5$ to
 $8.0$ days (Figure~\ref{fig:si}). The discrimination is essentially invariant
-(AUROC $0.906$--$0.927$), confirming that the \emph{ranking} of growth days does
+(AUROC $0.906$--$0.927$), confirming that the ranking of growth days does
 not depend on the exact interval, while the calibration shifts predictably: a
 shorter assumed interval makes the estimator more reactive and slightly
 over-confident (ECE $0.145$ at $3.5$ days), a longer interval smooths it toward
@@ -1329,11 +1392,11 @@ Finally I quantify the lead time directly. I detect the national wave peaks in
 the percentile series (prominence-based peak detection) and, for each, find the
 last upward crossing of $\Prob(\Rt>1)$ through $0.5$ during the preceding rise.
 Across the detected waves with an identifiable crossing
-(Table~\ref{tab:leadwave}), $\Prob(\Rt>1)$ exceeds $0.5$ a \emph{median of $68$
-days} (mean $73$, interquartile range $[67,77]$) before the wave peaks; the two
+(Table~\ref{tab:leadwave}), $\Prob(\Rt>1)$ exceeds $0.5$ a median of $68$
+days (mean $73$, interquartile range $[67,77]$) before the wave peaks; the two
 waves marked ``--'' have no in-window crossing because their rise predates the
 start of the record. This is the operational pay-off of a derivative-like target:
-the growth probability turns at the \emph{onset} of a wave, long before the level
+the growth probability turns at the onset of a wave, long before the level
 itself peaks, which is precisely the window in which an early-warning signal is
 actionable.
 
@@ -1370,7 +1433,7 @@ Figure~\ref{fig:roc} in a predictable way; a user who can tolerate a $20\%$
 false-positive rate operates near the upper-left knee of that curve, capturing the
 large majority of true growth onsets. The point I stress is that this entire
 exercise, choosing a threshold and knowing its consequences, is only possible
-\emph{because} the probability is calibrated; on an uncalibrated score the same
+because the probability is calibrated; on an uncalibrated score the same
 numeric threshold would mean different things in different years.
 
 \subsection{Retrospective lead times}
@@ -1395,6 +1458,68 @@ H5N1 cattle (USA) & 2024-03-25 & 8--15 d \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+% ============================================================================
+\subsection{Causal estimation recovers a known effect}
+\label{sec:res-causal}
+Because the causal layer is built on stated assumptions rather than measured
+interventions, its correctness claim is not about the world but about the
+estimators: given a structural model, do the adjustment procedures recover the
+effect that model encodes, and do the shortcuts fail as theory predicts? I test
+this on a cohort of $n=2{,}000$ units simulated from the structural model of
+\S\ref{sec:causal} with a confounded treatment assignment, so the true average
+treatment effect of raising immunity coverage is known ($\tau=-14.0$ percentage
+points on $\Prob(\Rt>1)$) and $52\%$ of units are treated. Table~\ref{tab:causal}
+and Fig.~\ref{fig:causal} report the four estimators. The naive contrast is
+biased by more than ten points ($-24.5$ pp), because high-immunity units
+concentrate where climate independently raises growth; g-computation, IPW, and
+the doubly-robust AIPW all recover the truth to within $0.3$ pp once the backdoor
+set $\{$region, climate$\}$ is adjusted for. Adding ICU headroom, a descendant of
+the outcome, to that set is the textbook bad control: it drags the estimate to
+$-8.2$ pp, biased in the opposite direction, illustrating that ``more controls''
+is not safer. The recovery of $\tau$ by the adjusted estimators, the bias of the
+naive contrast, and the bad-control failure are asserted as unit tests
+(\code{tests/test\_causal.py}), so a regression in any estimator or in the graph
+logic breaks the build. At the site level the same model answers concrete
+what-ifs: for a representative growing site at $\Prob(\Rt>1)=0.67$, the joint
+intervention $\mathrm{do}(\text{immunity}{=}80\%,\ \text{NPI}{=}0.5)$ lowers the
+counterfactual growth probability to $0.09$, a shift the console renders live as
+the user moves the levers.
+
+\begin{table}[t]
+\centering
+\caption{Average treatment effect of raising immunity coverage on
+$\Prob(\Rt>1)$, estimated four ways on a cohort simulated from a known structural
+model ($n=2{,}000$, true $\tau=-14.0$ pp), with $95\%$ bootstrap intervals. The
+naive estimator is confounded; the three adjusted estimators recover the truth;
+conditioning on a descendant of the outcome (final row) reintroduces bias.}
+\label{tab:causal}
+\begin{tabular}{lcc}
+\toprule
+Estimator & ATE (pp) & $95\%$ CI \\
+\midrule
+Naive (unadjusted)              & $-24.5$ & $[-25.5,-23.5]$ \\
+g-computation                   & $-14.2$ & $[-14.6,-13.9]$ \\
+IPW (H\'ajek)                   & $-14.3$ & $[-14.8,-13.7]$ \\
+AIPW (doubly robust)            & $-14.3$ & $[-14.6,-14.0]$ \\
+\midrule
+g-comp $+$ bad control (ICU)    & $-8.2$  & $[-8.6,-7.8]$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.72\linewidth]{figures/fig_causal.pdf}
+\caption{Confounding-adjusted treatment-effect estimation. Point estimates and
+$95\%$ bootstrap intervals for the effect of raising immunity coverage on
+$\Prob(\Rt>1)$, against the structural model's known truth (dashed). The naive
+contrast is biased; g-computation, IPW, and doubly-robust AIPW recover the truth
+after backdoor adjustment; conditioning on a descendant of the outcome (ICU
+headroom) is a bad control that reintroduces bias. All values are model-implied
+under the stated assumptions.}
+\label{fig:causal}
+\end{figure*}
 
 % ============================================================================
 \section{Discussion}
@@ -1470,7 +1595,7 @@ named outbreaks, but that bar is both too easy (any sufficiently trigger-happy
 detector ``catches'' past outbreaks in hindsight) and too hard (the sample of
 labelled outbreaks is tiny and idiosyncratic). Calibration against continuous
 realised growth is a far more demanding and more honest test: it scores the system
-on \emph{every} day, including the many quiet days on which the correct answer is
+on every day, including the many quiet days on which the correct answer is
 ``probably not,'' and it penalises both over- and under-confidence. A system that
 is well-calibrated across $1{,}334$ days has demonstrably learned the base rate,
 the dynamics, and its own uncertainty, in a way that a four-outbreak hit rate
@@ -1571,9 +1696,9 @@ data, code, and figure-generation scripts are open-source: \github.
 \label{sec:limitations}
 
 \paragraph{Proxies and staleness.}
-The NWSS percentile is a site-relative \emph{level}, not a concentration, so the
+The NWSS percentile is a site-relative level, not a concentration, so the
 renewal-equation incidence proxy is approximate; the strong calibration result
-indicates the approximation is informative for \emph{growth}, but absolute $\Rt$
+indicates the approximation is informative for growth, but absolute $\Rt$
 magnitudes should be read with care. Public feeds also lag and freeze, the NWSS
 percentile series I use ends in late 2025, so the system anchors all analysis
 windows to the latest available data rather than to wall-clock time. Regex
@@ -1718,6 +1843,14 @@ Natl. Acad. Sci.}, 17(12):684--688, 1931.
 \bibitem[Cinelli et al.(2022)]{cinelli2022}
 C.~Cinelli, A.~Forney, and J.~Pearl. A crash course in good and bad controls.
 \emph{Sociol. Methods Res.}, 2022.
+
+\bibitem[Flaxman et al.(2020)]{flaxman2020}
+S.~Flaxman et al. Estimating the effects of non-pharmaceutical interventions on
+COVID-19 in Europe. \emph{Nature}, 584:257--261, 2020.
+
+\bibitem[Hern\'an \& Robins(2020)]{hernanrobins2020}
+M.~A. Hern\'an and J.~M. Robins. \emph{Causal Inference: What If}. Chapman \&
+Hall/CRC, 2020.
 
 \bibitem[Pearl(2009)]{pearl2009}
 J.~Pearl. \emph{Causality: Models, Reasoning, and Inference}. Cambridge
