@@ -288,6 +288,11 @@ export default function ResearchPage() {
       live rather than asserted.
      </p>
      <Figure
+      src="/research/fig_causal_dag.png"
+      alt="Assumed causal graph"
+      caption="The assumed causal DAG. Upstream causes of growth (climate, immunity, travel, NPIs, variant advantage) feed Rt; every measured surveillance signal on the right is a descendant of latent incidence, which is what makes them bad controls. The immunity backdoor set is {region}; the five downstream signals must never be adjusted for."
+     />
+     <Figure
       src="/research/fig_causal.png"
       alt="Causal treatment-effect estimation"
       caption="Average treatment effect of raising immunity on P(Rt > 1), estimated four ways against the structural-model truth (dashed). The naive estimate is biased by confounding; g-computation, IPW, and AIPW recover the truth; conditioning on a descendant (ICU) is a bad control."
