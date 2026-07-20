@@ -123,3 +123,33 @@ class NextstrainResponse(BaseModel):
     topCirculatingLineages: list[dict]
     anomalyTimeSeries: list[dict]
     meta: dict
+
+
+class ATEEstimate(BaseModel):
+    """A single treatment-effect estimate with a bootstrap CI (on P(Rt>1))."""
+    ate: float
+    ci_low: float
+    ci_high: float
+
+
+class CausalIdentification(BaseModel):
+    treatment: str
+    outcome: str
+    adjustment_set: list[str]
+    bad_controls: list[str]
+    n_backdoor_paths: int
+
+
+class CausalResponse(BaseModel):
+    """Response from GET /api/v1/causal.
+
+    Outputs are model-implied under an explicitly assumed structural causal
+    model, not learned from interventional data.
+    """
+    graph: dict
+    identification: CausalIdentification
+    params: dict
+    effects: dict
+    counterfactual: dict
+    assumptions_note: str
+    meta: dict | None = None

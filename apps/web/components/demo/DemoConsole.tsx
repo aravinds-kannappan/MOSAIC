@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import {
-  LayoutDashboard, Bell, LineChart, Dna, FileText, Database, Activity, GitMerge,
+  LayoutDashboard, Bell, LineChart, Dna, FileText, Database, Activity, GitMerge, GitBranch,
   ChevronDown, ChevronsLeft, ChevronsRight, Github, ArrowLeft, Radio, MapPin, Sparkles,
 } from "lucide-react";
 import { getSites, datasetMeta, type SiteState } from "@/lib/demo/sites";
@@ -19,6 +19,7 @@ import {
   DriversPanel, RiskFactors, VariantTraits, ScenarioBands,
 } from "./panels";
 import { Assistant } from "./Assistant";
+import { CausalConsole } from "./causal/CausalConsole";
 import { CalibrationPanel } from "@/components/dashboard/CalibrationPanel";
 
 const GlobalSiteMap = dynamic(() => import("./GlobalSiteMap").then((m) => m.GlobalSiteMap), {
@@ -26,7 +27,7 @@ const GlobalSiteMap = dynamic(() => import("./GlobalSiteMap").then((m) => m.Glob
   loading: () => <div className="h-[280px] animate-pulse rounded-lg bg-muted/20" />,
 });
 
-type Section = "overview" | "alerts" | "forecasting" | "lineages" | "fusion" | "briefings" | "streams" | "dataroom";
+type Section = "overview" | "alerts" | "forecasting" | "lineages" | "fusion" | "causal" | "briefings" | "streams" | "dataroom";
 
 const REGION_ORDER = ["United States", "Americas", "Europe", "Asia-Pacific", "Middle East", "Africa"];
 
@@ -39,6 +40,9 @@ const NAV: { group: string; items: { id: Section; label: string; icon: React.Ele
   { group: "Genomics", items: [
     { id: "lineages", label: "Lineages", icon: Dna },
     { id: "fusion", label: "Fusion model", icon: GitMerge },
+  ]},
+  { group: "Causal inference", items: [
+    { id: "causal", label: "Interventions", icon: GitBranch },
   ]},
   { group: "Report", items: [
     { id: "briefings", label: "Briefings", icon: FileText },
@@ -362,6 +366,13 @@ export function DemoConsole({ initialSiteId }: { initialSiteId?: string }) {
                   </p>
                   <CalibrationPanel />
                 </Card>
+              </div>
+            )}
+
+            {section === "causal" && (
+              <div className="space-y-5">
+                <SiteHeader site={site} />
+                <CausalConsole site={site} />
               </div>
             )}
 

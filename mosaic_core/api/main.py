@@ -239,6 +239,34 @@ async def get_calibration():
     }
 
 
+@app.get("/api/v1/causal")
+async def get_causal(
+    do_immunity: float | None = Query(None, description="do(immunity coverage %)"),
+    do_mobility: float | None = Query(None, description="do(travel inflow index)"),
+    do_npi: float | None = Query(None, description="do(NPI intensity 0..1)"),
+    seed: int = Query(42, description="RNG seed for the simulated cohort"),
+):
+    """
+    Causal-inference layer: the assumed DAG, backdoor identification, the average
+    treatment effect of raising immunity estimated naive vs g-computation / IPW /
+    AIPW against the SCM truth, and a counterfactual under the requested do()
+    levers. Outputs are model-implied under an explicitly assumed structural
+    causal model, not learned from interventional data.
+    """
+    try:
+        from mosaic_core.causal import causal_report
+        report = causal_report(do_immunity=do_immunity, do_mobility=do_mobility, do_npi=do_npi, seed=seed)
+        report["meta"] = {
+            "source": "MOSAIC structural causal model",
+            "method": "assumed-scm",
+            "fetchedAt": datetime.now(tz=timezone.utc).isoformat(),
+        }
+        return report
+    except Exception as exc:
+        logger.exception("Causal report failed")
+        raise HTTPException(status_code=502, detail=str(exc))
+
+
 @app.get("/api/v1/alerts")
 async def get_alerts():
     """Aggregate all three streams and return active alerts."""

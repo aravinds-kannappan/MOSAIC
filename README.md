@@ -132,6 +132,7 @@ The console at `/demo` opens on a site (top by `P(Rt > 1)`) and exposes eight se
 | Forecasting | The fused `P(Rt > 1)` posterior over a 45-day history and 14-day projection, a stream-contribution breakdown, per-target trajectories, and an explainer of why wastewater leads clinical data. |
 | Lineages | A stacked lineage-composition area chart over rolling windows, the current mix with week-over-week shifts, and a genomic anomaly (JSD) timeline with the alarm threshold. |
 | Fusion | The multi-stream pipeline, the per-stream contribution at this site, the method write-up, and a live reliability diagram from the real calibration computation. |
+| Causal (Interventions) | The causal-inference layer: an explicit DAG over the drivers, backdoor identification (what to adjust for and what to never adjust for), an interactive do-operator for per-site counterfactual `P(Rt > 1)`, and the average treatment effect of raising immunity estimated naive vs g-computation, IPW, and doubly-robust AIPW, with a live bad-control demonstration. |
 | Briefings | An auto-generated daily situation report, recommended actions tuned to the alert level, a briefing archive, and the pathogen target detail table. |
 | Stream health | Per-stream status and latency, coverage and detection metrics, a data-freshness view, and source provenance for this site. |
 | Data room | Data sources and links, a metrics glossary, and a dataset table marking which feeds are live versus modeled, with links to the research page and paper. |
@@ -198,6 +199,22 @@ Full derivations are in the [paper](paper/mosaic.pdf); the essentials follow.
 
 ---
 
+## Causal inference layer
+
+The calibrated posterior answers "is transmission growing?" The causal layer answers the next two questions a public-health team actually asks: "what would happen if we intervened?" and "which of the correlated drivers actually causes growth, versus merely mirrors it?" It lives at `/demo` under the Causal tab, at `GET /api/v1/causal`, and in the Python package `mosaic_core/causal/`.
+
+**Everything here is model-implied under an explicitly assumed structural causal model.** No interventional ground truth exists in open surveillance data, so these effects cannot be learned from outcomes. The causal graph and the structural coefficients are stated assumptions, shown to the user rather than hidden. The only real anchor is each US site's observed `Rt` and `P(Rt > 1)`, which the counterfactual reproduces exactly at the null intervention.
+
+**The causal graph (DAG).** An explicit directed acyclic graph over the six driver covariates, an NPI policy lever, the variant advantage, latent transmission, and the growth outcome. Its structure mirrors how the driver panel is generated: `climate`, `immunity`, and `mobility` are upstream causes of transmission, while `clinical`, `positivity`, `ICU headroom`, the wastewater signal, and the genomic anomaly are DESCENDANTS of latent incidence. That descendant structure is the point: they are "bad controls." The layer computes d-separation, the backdoor adjustment set, and the set of nodes you must never adjust for, all from the graph.
+
+**Structural causal model.** `log Rt = b0 + b_climate·climate + b_immunity·immunity + b_mobility·mobility + b_variant·variant + b_npi·npi + u_R`, with `b_immunity < 0`, `b_npi < 0`, `b_mobility, b_variant, b_climate > 0`. The site residual `u_R` is recovered by abduction so the model reproduces the observed `Rt`, and `P(Rt > 1) = Phi(log Rt / sigma)`. Coefficients are illustrative and literature-anchored (for example, a strong NPI cutting `Rt` by roughly 30 percent), and are displayed in the console.
+
+**Three interventional queries.** `do(x = v)` performs graph surgery: cut the incoming edges to `x`, set its value, propagate to `Rt`, and recompute `P(Rt > 1)`. Counterfactuals use Pearl's abduction-action-prediction (hold `u_R` fixed, apply the intervention), yielding per-site individual treatment effects. Potential outcomes `Y(0)`, `Y(1)` and `ITE` follow for a binary treatment.
+
+**Treatment-effect estimation with confounding adjustment.** Across the site cohort, the layer estimates the average treatment effect of raising immunity coverage four ways: naive (unadjusted), g-computation (standardisation), inverse propensity weighting, and doubly-robust AIPW, each with a bootstrap confidence interval. Because treatment is confounded by region and climate, the naive estimate is biased and the adjusted estimators recover the truth. A live bad-control demonstration shows that adding a descendant of the outcome (ICU headroom) to the adjustment set reintroduces bias, and a conditional-ATE view shows the intervention buys more where transmission pressure is high. The Python test suite (`tests/test_causal.py`) validates this end to end: on a cohort simulated from a known SCM, g-computation and AIPW recover the true ATE while the naive estimator stays biased and the bad control worsens it.
+
+---
+
 ## Calibration and validation
 
 We treat `P(Rt > 1)` as a probabilistic forecast and validate it on the real multi-year CDC NWSS national record (December 2021 to September 2025). At each day we compute `P(Rt>1)` from data available up to that day, then label the outcome by whether activity actually rose over the next 14 days.
@@ -239,6 +256,7 @@ Served by the Next.js app (lite tier) or proxied to the Python backend when `MOS
 | `GET /api/v1/promed` | Extracted WHO/ProMED events and per-pathogen daily counts. |
 | `GET /api/v1/news?city=Dallas&iso=US&limit=12` | Live city-specific media coverage (Google News) plus WHO and ProMED official reports, for the console's Alerts tab. |
 | `GET /api/v1/calibration` | Reliability diagram and ECE, Brier, AUROC. |
+| `GET /api/v1/causal?site=&do_immunity=&do_mobility=&do_npi=` | Causal graph, backdoor identification, ATE (naive / g-computation / IPW / AIPW) against the SCM truth, and a per-site counterfactual under the requested do() levers. |
 | `GET /api/v1/health` | Per-stream status and data freshness. |
 | `POST /api/chat` | Streaming MOSAIC assistant (Anthropic SDK, tool use). Requires `ANTHROPIC_API_KEY`. |
 
@@ -327,10 +345,11 @@ MOSAIC/
 |  |- components/landing/          # LivePreview and landing pieces
 |  |- lib/                         # streams, fusion, bocpd, kl-divergence,
 |  |  |                            #   rt-estimation, calibration, countries
+|  |  |- causal/                   # DAG, structural causal model, estimators
 |  |  |- demo/sites.ts             # demo data layer (real + modeled sites)
 |  |- data/                        # sites.json, bundled nextstrain snapshots
 |  |- public/                      # mosaic.pdf, research figures
-|- mosaic_core/                    # Python backend (ingest, detect, fusion, api)
+|- mosaic_core/                    # Python backend (ingest, detect, fusion, causal, api)
 |- paper/                          # mosaic.tex/pdf, figures, make_figures.py
 |- data/                           # historical and current cached source data
 |- docker-compose.yml

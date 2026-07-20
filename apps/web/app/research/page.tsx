@@ -262,6 +262,38 @@ export default function ResearchPage() {
      </div>
     </section>
 
+    {/* Finding 7, causal inference */}
+    <section className="space-y-4">
+     <H n="7">Causal inference: interventions, counterfactuals, and confounding</H>
+     <p className="text-sm text-muted-foreground leading-relaxed">
+      Calibration tells you the probability is trustworthy; it does not tell you what would happen if
+      you acted. The causal layer adds an explicit directed acyclic graph over the drivers and a
+      structural causal model on top of the renewal equation, so the console can answer
+      interventional and counterfactual questions. It is honest about what it is: no interventional
+      ground truth exists in open surveillance data, so the graph and coefficients are stated
+      <span className="text-foreground"> assumptions</span>, shown to the user, and every effect is
+      model-implied. The one real anchor is each site&apos;s observed{" "}
+      <span className="text-foreground">P(R<sub>t</sub>&nbsp;&gt;&nbsp;1)</span>, which the
+      counterfactual reproduces exactly at the null intervention.
+     </p>
+     <p className="text-sm text-muted-foreground leading-relaxed">
+      The graph makes the identification explicit. `climate`, `immunity`, and `mobility` are upstream
+      causes; `clinical`, `positivity`, `ICU headroom`, wastewater, and the genomic anomaly are
+      <span className="text-foreground"> descendants</span> of latent incidence, which makes them bad
+      controls. Estimating the effect of raising immunity across the cohort, the{" "}
+      <span className="text-red-400">naive</span> contrast is biased by region and climate, while
+      g-computation, IPW, and doubly-robust <span className="text-emerald-400">AIPW</span> recover
+      the true effect after backdoor adjustment. Adding a descendant of the outcome (ICU headroom) to
+      the adjustment set visibly reintroduces bias, the textbook bad-control failure, demonstrated
+      live rather than asserted.
+     </p>
+     <Figure
+      src="/research/fig_causal.png"
+      alt="Causal treatment-effect estimation"
+      caption="Average treatment effect of raising immunity on P(Rt > 1), estimated four ways against the structural-model truth (dashed). The naive estimate is biased by confounding; g-computation, IPW, and AIPW recover the truth; conditioning on a descendant (ICU) is a bad control."
+     />
+    </section>
+
     {/* Methods */}
     <section className="space-y-3 rounded-xl border border-border/50 bg-card/40 p-5">
      <h2 className="text-base font-semibold text-foreground">Methods, in brief</h2>
@@ -271,6 +303,7 @@ export default function ResearchPage() {
       <li><span className="text-foreground">Text (Poisson):</span> WHO DON / ProMED extraction with multi-country ISO resolution; BOCPD on dense daily counts with recency/intensity weighting.</li>
       <li><span className="text-foreground">Genomic (Dirichlet-multinomial):</span> Jensen-Shannon divergence anomaly vs. a 90-window baseline (bounded, symmetric, finite on sparse data).</li>
       <li><span className="text-foreground">Fusion:</span> weighted logarithmic / noisy-or pool over present streams; full hierarchical NumPyro / NUTS posterior in the backend.</li>
+      <li><span className="text-foreground">Causal:</span> explicit DAG with d-separation and backdoor identification; assumed structural causal model for do() / counterfactuals / potential outcomes; ATE via g-computation, IPW, and doubly-robust AIPW, validated against a known-truth simulation.</li>
      </ul>
      <p className="text-[11px] text-muted-foreground pt-1">
       The reliability diagram validates the lightweight EpiEstim estimator served by the live

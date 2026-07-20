@@ -825,6 +825,70 @@ $\sqrt h$ to communicate the rapidly growing uncertainty of multi-week
 projection.
 
 % ============================================================================
+\subsection{Causal interpretation and interventional queries}
+\label{sec:causal}
+
+The calibrated posterior $p_t=\Prob(\Rt>1)$ is an \emph{observational} quantity:
+it says whether transmission is growing, not what would happen under an action.
+To support interventional and counterfactual questions I add an explicit causal
+layer, and I am deliberate about its epistemic status. Open surveillance data
+contain no randomised interventions, so no treatment effect can be identified
+from outcomes alone; the graph and the structural coefficients below are stated
+\emph{assumptions}, exposed to the user, and every effect they produce is
+model-implied.
+
+\paragraph{Causal graph.} I posit a directed acyclic graph $\mathcal G$ over the
+driver covariates (climate suitability, immunity coverage, travel inflow), a
+non-pharmaceutical-intervention (NPI) policy lever, the dominant-variant growth
+advantage, latent incidence, and the growth outcome $\Rt$. The three drivers and
+the NPI lever are causes of $\Rt$; the wastewater, clinical, test-positivity,
+ICU, and genomic signals are \emph{descendants} of latent incidence. Standard
+graph operations then give, for a treatment $X$ (e.g.\ immunity) and outcome
+$\Rt$, the backdoor adjustment set and the set of forbidden ``bad controls'', the
+descendants of $X$ or of $\Rt$ \citep{pearl2009,cinelli2022}. The descendant
+structure is the substantive point: conditioning on a consequence of transmission
+(ICU headroom, clinical visits) does not clean up an effect estimate, it biases
+it.
+
+\paragraph{Structural model and interventions.} On the log scale I take
+$\log\Rt = \beta_0 + \beta_{\mathrm c}\,\mathrm{climate} + \beta_{\mathrm i}\,
+\mathrm{immunity} + \beta_{\mathrm m}\,\mathrm{mobility} + \beta_{\mathrm v}\,
+\mathrm{variant} + \beta_{\mathrm n}\,\mathrm{npi} + u_R$, with
+$\beta_{\mathrm i},\beta_{\mathrm n}<0$ and
+$\beta_{\mathrm c},\beta_{\mathrm m},\beta_{\mathrm v}>0$, coefficients fixed to
+literature-anchored values (for instance a strong NPI reducing $\Rt$ by about
+$30\%$). The intervention $\mathrm{do}(X{=}x)$ is graph surgery on $\mathcal G$;
+counterfactuals follow Pearl's abduction--action--prediction, recovering the
+site residual $u_R$ so the null intervention reproduces the observed $\Rt$
+exactly, then reading off $\Prob(\Rt>1)=\Phi(\log\Rt/\sigma)$ under the action.
+This yields per-site counterfactual growth probabilities and individual
+treatment effects.
+
+\paragraph{Confounding-adjusted effect estimation.} For a population summary I
+estimate the average treatment effect of a lever with confounding adjustment
+four ways: the naive contrast, g-computation \citep{robins1986}, inverse
+propensity weighting, and doubly-robust augmented IPW, each with a bootstrap
+interval. On a cohort simulated from a known structural model with confounded
+assignment (Fig.~\ref{fig:causal}), the naive estimate is biased while the three
+adjusted estimators recover the truth; adding a descendant of the outcome to the
+adjustment set reintroduces bias, reproducing the classic bad-control failure.
+The estimators, the graph operations, and this recovery property are unit-tested
+against the known-truth simulation.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.86\linewidth]{figures/fig_causal.pdf}
+\caption{Causal treatment-effect estimation. Average treatment effect of raising
+immunity coverage on $\Prob(\Rt>1)$, estimated four ways against the structural
+model's known truth (dashed). Confounded treatment assignment biases the naive
+contrast; g-computation, IPW, and doubly-robust AIPW recover the truth after
+backdoor adjustment; conditioning on a descendant of the outcome (ICU headroom)
+is a bad control that reintroduces bias. All values are model-implied under the
+stated assumptions.}
+\label{fig:causal}
+\end{figure}
+
+% ============================================================================
 \subsection{Calibration methodology}
 \label{sec:calmethod}
 
@@ -1650,6 +1714,18 @@ impacts of control measures. \emph{Am. J. Epidemiol.}, 160(6):509--516, 2004.
 \bibitem[Wilson \& Hilferty(1931)]{wilsonhilferty1931}
 E.~B. Wilson and M.~M. Hilferty. The distribution of chi-square. \emph{Proc.
 Natl. Acad. Sci.}, 17(12):684--688, 1931.
+
+\bibitem[Cinelli et al.(2022)]{cinelli2022}
+C.~Cinelli, A.~Forney, and J.~Pearl. A crash course in good and bad controls.
+\emph{Sociol. Methods Res.}, 2022.
+
+\bibitem[Pearl(2009)]{pearl2009}
+J.~Pearl. \emph{Causality: Models, Reasoning, and Inference}. Cambridge
+University Press, 2nd edition, 2009.
+
+\bibitem[Robins(1986)]{robins1986}
+J.~Robins. A new approach to causal inference in mortality studies with a
+sustained exposure period. \emph{Math. Modelling}, 7(9--12):1393--1512, 1986.
 
 \end{thebibliography}
 }
